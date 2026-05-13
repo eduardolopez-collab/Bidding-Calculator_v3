@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Environment variables — never commit secrets
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# OS junk
+desktop.ini
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Claude session data
+.claude/
+
+# Build / dist
+dist/
+build/
+
+# Logs
+*.log
+logs/
