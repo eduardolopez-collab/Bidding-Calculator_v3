@@ -399,8 +399,8 @@ table.log-tbl tr:hover td{background:var(--bh)}
 .mat-cost{width:160px;min-width:120px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;transition:border-color .15s,color .15s}
 .mat-cost:focus{outline:none;border-color:var(--in-b)}
 .mat-cost:not(:placeholder-shown){border-color:var(--in-b);color:var(--in-t)}
-.add-mat-btn{margin-top:6px;padding:6px 14px;font-size:11px;font-weight:600;color:var(--fg);background:transparent;border:1px dashed var(--fg-dim2);border-radius:6px;cursor:pointer;transition:background .15s;min-height:36px}
-.add-mat-btn:hover{background:var(--fg-dim)}
+.add-mat-btn,.add-lab-btn{margin-top:6px;padding:6px 14px;font-size:11px;font-weight:600;color:var(--fg);background:transparent;border:1px dashed var(--fg-dim2);border-radius:6px;cursor:pointer;transition:background .15s;min-height:36px}
+.add-mat-btn:hover,.add-lab-btn:hover{background:var(--fg-dim)}
 .remove-mat-btn{flex-shrink:0;width:32px;height:32px;padding:0;font-size:12px;line-height:32px;text-align:center;color:var(--tp-dim);background:transparent;border:1px solid var(--bm);border-radius:6px;cursor:pointer;transition:color .15s,background .15s;display:flex;align-items:center;justify-content:center}
 .remove-mat-btn:hover{color:#e55;background:rgba(220,50,50,.12);border-color:#e55}
 .split-summary-row{font-size:11px;color:var(--tm);display:flex;justify-content:space-between;margin-top:4px}
@@ -1416,13 +1416,29 @@ function snapshotAllBreakdowns() {
   services.forEach(svc => {
     const snap = {};
     const lr = document.getElementById('labor_rows_' + svc.idx);
-    if (lr) lr.querySelectorAll('.lr-hrs').forEach((el, i) => {
-      snap['lhrs_' + i] = el.value;
-      const wEl = document.getElementById('lwrk_' + svc.idx + '_' + i);
-      if (wEl) snap['lwrk_' + i] = parseInt(wEl.value) || 1;
-      const rEl = document.getElementById('lrate_' + svc.idx + '_' + i);
-      if (rEl) snap['lrate_' + i] = rEl.value;
-    });
+    if (lr) {
+      // Snapshot static (service-defined) labor rows using known element IDs
+      [0, 1].forEach(i => {
+        const hrsEl = document.getElementById('lhrs_'  + svc.idx + '_' + i);
+        if (!hrsEl) return;
+        snap['lhrs_' + i] = hrsEl.value;
+        const wEl = document.getElementById('lwrk_' + svc.idx + '_' + i);
+        if (wEl) snap['lwrk_' + i] = parseInt(wEl.value) || 1;
+        const rEl = document.getElementById('lrate_' + svc.idx + '_' + i);
+        if (rEl) snap['lrate_' + i] = rEl.value;
+      });
+      lr.querySelectorAll('.labor-row-dynamic').forEach((row, i) => {
+        const tradeSel = row.querySelector('select');
+        const hrsEl   = row.querySelector('.lr-hrs');
+        const wrkEl   = row.querySelector('.lr-workers');
+        const rateEl  = row.querySelector('.lr-rate-override');
+        snap['dl_trade_' + i] = tradeSel ? tradeSel.value : '';
+        snap['dl_hrs_'   + i] = hrsEl   ? hrsEl.value   : '1';
+        snap['dl_wrk_'   + i] = wrkEl   ? (parseInt(wrkEl.value) || 1) : 1;
+        snap['dl_rate_'  + i] = rateEl  ? rateEl.value  : '';
+      });
+      snap['dl_count'] = lr.querySelectorAll('.labor-row-dynamic').length;
+    }
     const mr = document.getElementById('mat_rows_' + svc.idx);
     if (mr) {
       mr.querySelectorAll('.mat-row').forEach((row, i) => {
@@ -1576,6 +1592,7 @@ function buildServiceFields(svc, ordinal) {
     <div class="breakdown-section" id="breakdown_${svc.idx}" style="display:${svc.svcId?'block':'none'}">
       <div class="breakdown-label">&#9874; Labor</div>
       <div id="labor_rows_${svc.idx}"></div>
+      <button type="button" class="add-lab-btn" onclick="addLaborRow(${svc.idx})">+ Add Laborer</button>
       <div class="breakdown-label" style="margin-top:10px">&#9726; Materials</div>
       <div id="mat_rows_${svc.idx}"></div>
       <button type="button" class="add-mat-btn" onclick="addMatRow(${svc.idx})">+ Add Material</button>
@@ -1784,10 +1801,72 @@ function buildBreakdown(svc) {
 
       // Restore saved labor hours only when resuming the same service (not a service switch)
       if (!serviceChanged) {
-        lr.querySelectorAll('.lr-hrs').forEach((el, i) => {
+        [0, 1].forEach(i => {
+          const el = document.getElementById('lhrs_' + svc.idx + '_' + i);
+          if (!el) return;
           const v = snap['lhrs_' + i];
           if (v !== undefined && v !== '') el.value = v;
         });
+      }
+
+      // Restore dynamic laborer rows from snapshot
+      if (!serviceChanged && snap['dl_count'] > 0) {
+        for (let i = 0; i < snap['dl_count']; i++) {
+          const uid  = 'dlhrs_'  + svc.idx + '_' + i;
+          const wuid = 'dlwrk_'  + svc.idx + '_' + i;
+          const ruid = 'dlrate_' + svc.idx + '_' + i;
+          const tuid = 'dltrade_'+ svc.idx + '_' + i;
+          const savedTrade = snap['dl_trade_' + i] || '';
+          const savedHrs   = snap['dl_hrs_'   + i] || '1';
+          const savedWrk   = snap['dl_wrk_'   + i] || 1;
+          const savedRate  = snap['dl_rate_'  + i] || '';
+          const rates = LABOR_RATES[savedTrade];
+          const adjLow  = rates ? Math.round(rates.low  * city.laborMult) : 0;
+          const adjHigh = rates ? Math.round(rates.high * city.laborMult) : 0;
+          const adjMed  = rates ? Math.round(rates.med  * city.laborMult) : 0;
+          const tradeOptions = Object.keys(LABOR_RATES).map(t =>
+            `<option value="${t}"${t === savedTrade ? ' selected' : ''}>${t}</option>`
+          ).join('');
+          const effectiveRate = savedRate !== '' ? parseFloat(savedRate) : adjMed;
+          const rowTotal = effectiveRate * parseFloat(savedHrs) * savedWrk;
+          const row = document.createElement('div');
+          row.className = 'labor-row labor-row-dynamic';
+          row.id = 'dlrow_' + svc.idx + '_' + i;
+          row.innerHTML = `
+            <select class="lr-trade" id="${tuid}" style="width:100px;min-width:80px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none" onchange="laborChanged(${svc.idx},${i},this.value)">
+              <option value="">— Trade —</option>
+              ${tradeOptions}
+            </select>
+            <span class="lr-workers-lbl">Workers</span>
+            <div class="spin-wrap">
+              <input type="number" class="lr-workers" id="${wuid}" value="${savedWrk}" min="1" step="1" title="Number of workers" oninput="recalcBreakdown(${svc.idx})">
+              <div class="spin-btns">
+                <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${wuid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${wuid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+            <div class="lr-sep"></div>
+            <span class="lr-workers-lbl">Hrs</span>
+            <div class="spin-wrap">
+              <input type="number" class="lr-hrs" id="${uid}" value="${savedHrs}" min="0" step="0.25" title="Labor hours" oninput="recalcBreakdown(${svc.idx})">
+              <div class="spin-btns">
+                <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+            <span class="lr-rate-badge" id="dlbadge_${svc.idx}_${i}">${rates ? `City-adjusted: $${adjLow}–$${adjHigh}/Hr` : ''}</span>
+            <div class="spin-wrap">
+              <input type="number" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="${rates ? `Benchmark: $${adjMed}/Hr` : 'Benchmark: —/Hr'}" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
+              <div class="spin-btns">
+                <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+            <span class="lr-total-badge" id="dltot_${svc.idx}_${i}">${rowTotal > 0 ? fmt(rowTotal) : '—'}</span>
+            <button type="button" class="remove-mat-btn" title="Remove row" onclick="this.closest('.labor-row-dynamic').remove();recalcBreakdown(${svc.idx})">&#x2715;</button>
+          `;
+          lr.appendChild(row);
+        }
       }
 
       // ── Material rows ─────────────────────────────────────────────────────
@@ -1949,6 +2028,77 @@ function addMatRow(svcIdx) {
   mr.appendChild(row);
 }
 
+function addLaborRow(svcIdx) {
+  const lr = document.getElementById('labor_rows_' + svcIdx);
+  if (!lr) return;
+  // Dynamic rows use a separate namespace: dlhrs_, dlwrk_, dlrate_, dltrade_ + dl_remove_
+  const existingDynamic = lr.querySelectorAll('.labor-row-dynamic');
+  const rowIdx = existingDynamic.length;
+  const uid     = 'dlhrs_'  + svcIdx + '_' + rowIdx;
+  const wuid    = 'dlwrk_'  + svcIdx + '_' + rowIdx;
+  const ruid    = 'dlrate_' + svcIdx + '_' + rowIdx;
+  const tuid    = 'dltrade_'+ svcIdx + '_' + rowIdx;
+  const city = getCity();
+  const tradeOptions = Object.keys(LABOR_RATES).map(t =>
+    `<option value="${t}">${t}</option>`
+  ).join('');
+  const row = document.createElement('div');
+  row.className = 'labor-row labor-row-dynamic';
+  row.id = 'dlrow_' + svcIdx + '_' + rowIdx;
+  row.innerHTML = `
+    <select class="lr-trade" id="${tuid}" style="width:100px;min-width:80px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none" onchange="laborChanged(${svcIdx},${rowIdx},this.value)">
+      <option value="">— Trade —</option>
+      ${tradeOptions}
+    </select>
+    <span class="lr-workers-lbl">Workers</span>
+    <div class="spin-wrap">
+      <input type="number" class="lr-workers" id="${wuid}" value="1" min="1" step="1" title="Number of workers" oninput="recalcBreakdown(${svcIdx})">
+      <div class="spin-btns">
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${wuid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${wuid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    <div class="lr-sep"></div>
+    <span class="lr-workers-lbl">Hrs</span>
+    <div class="spin-wrap">
+      <input type="number" class="lr-hrs" id="${uid}" value="1" min="0" step="0.25" title="Labor hours" oninput="recalcBreakdown(${svcIdx})">
+      <div class="spin-btns">
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    <span class="lr-rate-badge" id="dlbadge_${svcIdx}_${rowIdx}"></span>
+    <div class="spin-wrap">
+      <input type="number" class="lr-rate-override" id="${ruid}" value="" min="0" step="1" placeholder="Benchmark: —/Hr" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svcIdx})">
+      <div class="spin-btns">
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    <span class="lr-total-badge" id="dltot_${svcIdx}_${rowIdx}">—</span>
+    <button type="button" class="remove-mat-btn" title="Remove row" onclick="this.closest('.labor-row-dynamic').remove();recalcBreakdown(${svcIdx})">&#x2715;</button>
+  `;
+  lr.appendChild(row);
+}
+
+function laborChanged(svcIdx, rowIdx, trade) {
+  const city = getCity();
+  const rates = LABOR_RATES[trade];
+  const rateEl  = document.getElementById('dlrate_' + svcIdx + '_' + rowIdx);
+  const badgeEl = document.getElementById('dlbadge_' + svcIdx + '_' + rowIdx);
+  if (rates && city) {
+    const adjLow  = Math.round(rates.low  * city.laborMult);
+    const adjHigh = Math.round(rates.high * city.laborMult);
+    const adjMed  = Math.round(rates.med  * city.laborMult);
+    if (badgeEl) badgeEl.textContent = `City-adjusted: $${adjLow}–$${adjHigh}/Hr`;
+    if (rateEl)  rateEl.placeholder  = `Benchmark: $${adjMed}/Hr`;
+  } else {
+    if (badgeEl) badgeEl.textContent = '';
+    if (rateEl)  rateEl.placeholder  = 'Benchmark: —/Hr';
+  }
+  recalcBreakdown(svcIdx);
+}
+
 function recalcBreakdown(svcIdx) {
   const city = getCity();
   const svc  = services.find(s => s.idx === svcIdx);
@@ -1968,6 +2118,28 @@ function recalcBreakdown(svcIdx) {
       const effectiveRate = getEffectiveLaborRate(svc, lp.trade, city, i);
       const rowTotal = effectiveRate * hrs * workers;
       totEl.textContent = fmt(rowTotal);
+      laborTotal += rowTotal;
+    });
+  }
+  // Tally dynamic laborer rows
+  const lr = document.getElementById('labor_rows_' + svcIdx);
+  if (lr) {
+    lr.querySelectorAll('.labor-row-dynamic').forEach(row => {
+      const tradeSel = row.querySelector('select');
+      const hrsEl   = row.querySelector('.lr-hrs');
+      const wrkEl   = row.querySelector('.lr-workers');
+      const rateEl  = row.querySelector('.lr-rate-override');
+      const totEl   = row.querySelector('.lr-total-badge');
+      const trade   = tradeSel ? tradeSel.value : '';
+      const hrs     = hrsEl  ? (parseFloat(hrsEl.value)  || 0) : 0;
+      const workers = wrkEl  ? (parseInt(wrkEl.value)    || 1) : 1;
+      const rates   = LABOR_RATES[trade] || {med:0};
+      const overrideVal = rateEl && rateEl.value !== '' ? parseFloat(rateEl.value) : null;
+      const effectiveRate = (overrideVal !== null && !isNaN(overrideVal) && overrideVal > 0)
+        ? overrideVal
+        : rates.med * city.laborMult;
+      const rowTotal = effectiveRate * hrs * workers;
+      if (totEl) totEl.textContent = rowTotal > 0 ? fmt(rowTotal) : '—';
       laborTotal += rowTotal;
     });
   }
@@ -2191,6 +2363,28 @@ function recalcResults() {
         const effectiveRate = getEffectiveLaborRate(svc, lp.trade, city, i);
         laborProposalMed += effectiveRate * hrs * workers * labScale;
       });
+      // Dynamic laborer rows — contribute to both Benchmark and Proposal
+      const dlr = document.getElementById('labor_rows_' + svc.idx);
+      if (dlr) {
+        dlr.querySelectorAll('.labor-row-dynamic').forEach(row => {
+          const tradeSel = row.querySelector('select');
+          const hrsEl   = row.querySelector('.lr-hrs');
+          const wrkEl   = row.querySelector('.lr-workers');
+          const rateEl  = row.querySelector('.lr-rate-override');
+          const trade   = tradeSel ? tradeSel.value : '';
+          if (!trade) return;
+          const hrs     = hrsEl  ? (parseFloat(hrsEl.value)  || 0) : 0;
+          const workers = wrkEl  ? (parseInt(wrkEl.value)    || 1) : 1;
+          const r = LABOR_RATES[trade] || {low:0,med:0,high:0};
+          laborBenchLow  += r.low  * city.laborMult * hrs * workers;
+          laborBenchMed  += r.med  * city.laborMult * hrs * workers;
+          laborBenchHigh += r.high * city.laborMult * hrs * workers;
+          const overrideVal = rateEl && rateEl.value !== '' ? parseFloat(rateEl.value) : null;
+          const effectiveRate = (overrideVal !== null && !isNaN(overrideVal) && overrideVal > 0)
+            ? overrideVal : r.med * city.laborMult;
+          laborProposalMed += effectiveRate * hrs * workers;
+        });
+      }
       // Non-unit-based: travel and materials repeat per qty unit
       const svcScale = s.ub ? 1 : qty;
       travelBench    += getMarketTravelCost(svc, s, city) * svcScale;
