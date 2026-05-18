@@ -1468,7 +1468,6 @@ function renderServicesDOM() {
     services.forEach(svc => {
       const catSel = document.getElementById('cat_'+svc.idx);
       const svcSel = document.getElementById('svc_'+svc.idx);
-      const qtySel = document.getElementById('qty_'+svc.idx);
       const tierSel= document.getElementById('tier_'+svc.idx);
       const travSel= document.getElementById('trav_'+svc.idx);
       if (catSel) {
@@ -1489,10 +1488,6 @@ function renderServicesDOM() {
           svcSel.classList.remove('placeholder-active');
           saveState();recalc();
         };
-      }
-      if (qtySel) {
-        qtySel.value = svc.qty > 0 ? svc.qty : '';
-        qtySel.oninput = ()=>{svc.qty=parseFloat(qtySel.value)||0;saveState();recalc();};
       }
       if (tierSel){ tierSel.value= svc.tier||''; tierSel.classList.toggle('placeholder-active', !svc.tier); tierSel.onchange=()=>{svc.tier=tierSel.value;tierSel.classList.remove('placeholder-active');saveState();recalc();}; }
       if (travSel){
@@ -1528,7 +1523,6 @@ function buildServiceFields(svc, ordinal) {
   const svcsForCat = SERVICES.filter(s=>s.cat===svc.catVal);
   const svcPlaceholder = `<option value="" disabled ${!svc.svcId?' selected':''}>e.g. Leak Repair, Gate Repair...</option>`;
   const svcs = svcsForCat.map(s=>`<option value="${s.id}"${s.id===svc.svcId?' selected':''}>${esc(s.sub)}</option>`).join('');
-  const qtyVal = svc.qty && svc.qty > 0 ? svc.qty : '';
   return `
     <div class="svc-half-label">Benchmark</div>
     <div class="row r2">
@@ -1536,15 +1530,6 @@ function buildServiceFields(svc, ordinal) {
       <div class="field"><label>Subtype</label><select id="svc_${svc.idx}" class="${!svc.svcId?'placeholder-active':''}">${svcPlaceholder}${svcs}</select></div>
     </div>
     <div class="row r5">
-      <div class="field"><label>Quantity</label>
-        <div class="spin-wrap">
-          <input type="number" id="qty_${svc.idx}" value="${qtyVal}" placeholder="e.g. 1, 500, 25" min="0.01" step="any">
-          <div class="spin-btns">
-            <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('qty_${svc.idx}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('qty_${svc.idx}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          </div>
-        </div>
-      </div>
       <div class="field"><label>Urgency Level</label>
         <select id="tier_${svc.idx}" class="${!svc.tier?'placeholder-active':''}">
           <option value="" disabled ${!svc.tier?' selected':''}>e.g. Low, Medium, High</option>
@@ -1680,7 +1665,7 @@ function updateUnitInfo(svc) {
     const marketTravel = (s.travel || 0) * city.laborMult;
     travOverrideEl.placeholder = marketTravel > 0 ? `Benchmark: $${marketTravel.toFixed(2)}` : 'Benchmark rate';
   }
-  const qty  = svc.qty || 1;
+  const qty  = 1;
   const travelCost = getTravelCost(svc, s, city) * qty;
   const travelLabel = travelCost > 0 ? ` + ${fmt(travelCost)} Travel` : '';
   // Badges show combined rate card totals scaled by qty.
@@ -1708,7 +1693,7 @@ function buildBreakdown(svc) {
 
   bdEl.style.display = 'block';
   const city = getCity();
-  const qty  = svc.qty || 1;
+  const qty  = 1;
   const lr   = document.getElementById('labor_rows_'  + svc.idx);
   const mr   = document.getElementById('mat_rows_'    + svc.idx);
   if (!lr || !mr) return;
@@ -2135,9 +2120,6 @@ function removeBid(id) {
 â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function recalc() {
   services.forEach(svc => {
-    // sync qty from DOM
-    const qEl=document.getElementById('qty_'+svc.idx);
-    if (qEl) svc.qty=parseFloat(qEl.value)||1;
     updateUnitInfo(svc);
   });
   recalcResults();
@@ -2173,7 +2155,7 @@ function recalcResults() {
     activeSvcs.forEach(svc => {
       const s = SERVICES.find(x => x.id === svc.svcId);
       if (!s) return;
-      const qty = svc.qty || 1;
+      const qty = 1;
       const pairs = [];
       if (s.t1) pairs.push({trade:s.t1, rowKey:0});
       if (s.t2) pairs.push({trade:s.t2, rowKey:1});
@@ -2359,7 +2341,6 @@ function recalcResults() {
           if (city.laborMult > 1.2) extras.push({t:`High-cost city multiplier (${city.laborMult.toFixed(2)}x) — Local labor rates are significantly above baseline; validate vendor credentials.`, sev:'wn'});
           if (city.laborMult < 0.9) extras.push(`Low-cost city multiplier (${city.laborMult.toFixed(2)}x) — Vendor bids above benchmark may still reflect local market norms; review carefully.`);
           // Quantity flags
-          if (activeSvcs.some(sv=>(sv.qty||1)>3)) extras.push(`High quantity on one or more services — Negotiate a volume or unit-rate discount.`);
           if (!extras.length) return '';
           const flagHtml = extras.map(e => {
             const sev = e.sev || null;
@@ -2382,11 +2363,9 @@ function recalcResults() {
     if (!s) return;
     const tr=svc.travel==='yes';
     const travel=tr?(s.travel||0):0;
-    // Static benchmark: default hrs × rate × city mult × qty — unaffected by proposal spinners
-    const qty=svc.qty||1;
     let labLow=0, labMed=0, labHigh=0;
-    if(s.t1){const r=LABOR_RATES[s.t1]||{low:0,med:0,high:0};labLow+=r.low*(s.h1||0)*city.laborMult*qty;labMed+=r.med*(s.h1||0)*city.laborMult*qty;labHigh+=r.high*(s.h1||0)*city.laborMult*qty;}
-    if(s.t2){const r=LABOR_RATES[s.t2]||{low:0,med:0,high:0};labLow+=r.low*(s.h2||0)*city.laborMult*qty;labMed+=r.med*(s.h2||0)*city.laborMult*qty;labHigh+=r.high*(s.h2||0)*city.laborMult*qty;}
+    if(s.t1){const r=LABOR_RATES[s.t1]||{low:0,med:0,high:0};labLow+=r.low*(s.h1||0)*city.laborMult;labMed+=r.med*(s.h1||0)*city.laborMult;labHigh+=r.high*(s.h1||0)*city.laborMult;}
+    if(s.t2){const r=LABOR_RATES[s.t2]||{low:0,med:0,high:0};labLow+=r.low*(s.h2||0)*city.laborMult;labMed+=r.med*(s.h2||0)*city.laborMult;labHigh+=r.high*(s.h2||0)*city.laborMult;}
     // Default materials × city mult × qty
     let matLow=0, matMed=0, matHigh=0;
     if(s.m1){const m=MATERIALS.find(x=>x.id===s.m1);if(m){matLow+=m.low*(s.q1||0)*city.matMult*qty;matMed+=m.med*(s.q1||0)*city.matMult*qty;matHigh+=m.high*(s.q1||0)*city.matMult*qty;}}
@@ -2410,7 +2389,7 @@ function recalcResults() {
   activeSvcs.forEach(svc => {
     const s = SERVICES.find(x => x.id === svc.svcId);
     if (!s) return;
-    const qty = svc.qty || 1;
+    const qty = 1;
     let sMed=0, sHigh=0;
     if (s.t1 && LABOR_RATES[s.t1]) { sMed+=LABOR_RATES[s.t1].med*(s.h1||0)*city.laborMult*qty; sHigh+=LABOR_RATES[s.t1].high*(s.h1||0)*city.laborMult*qty; }
     if (s.t2 && LABOR_RATES[s.t2]) { sMed+=LABOR_RATES[s.t2].med*(s.h2||0)*city.laborMult*qty; sHigh+=LABOR_RATES[s.t2].high*(s.h2||0)*city.laborMult*qty; }
@@ -2514,7 +2493,7 @@ function buildPrintInvoice(city,activeSvcs,validBids,lowestA,lowestBid,totalRef,
     allSvcRows += `<tr style="background:#FFFFFF;border-top:2px solid ${BRAND.green}">
       <td colspan="6" style="padding:5px 8px;font-family:'Dazzed','Roboto',sans-serif;font-size:12px;font-weight:700;color:#353535;line-height:1.2;border-left:3px solid ${BRAND.green}">
         <span style="font-family:'Roboto',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#888888;margin-right:8px">${s.cat}</span>${s.sub}
-        <span style="float:right;font-family:'Roboto',sans-serif;font-size:11px;color:#888888;font-weight:400;text-transform:capitalize">${svc.tier} tier &nbsp;·&nbsp; ${svc.qty||1} ${s.unit}${tr?' &nbsp;·&nbsp; Travel':''}</span>
+        <span style="float:right;font-family:'Roboto',sans-serif;font-size:11px;color:#888888;font-weight:400;text-transform:capitalize">${svc.tier} tier${tr?' &nbsp;·&nbsp; Travel':''}</span>
       </td>
     </tr>`;
 
@@ -2841,7 +2820,6 @@ function saveToLog() {
   activeSvcsCheck.forEach((svc, i) => {
     const catEl  = document.getElementById('cat_'+svc.idx);
     const svcEl  = document.getElementById('svc_'+svc.idx);
-    const qtyEl  = document.getElementById('qty_'+svc.idx);
     if (!svc.catVal || svc.catVal==='') {
       if (catEl) markError(catEl);
       errors.push('Service '+(i+1)+' Category');
@@ -2854,10 +2832,6 @@ function saveToLog() {
       const tierEl = document.getElementById('tier_'+svc.idx);
       if (tierEl) markError(tierEl);
       errors.push('Service '+(i+1)+' Pricing Tier');
-    }
-    if (!qtyEl || !parseFloat(qtyEl.value) || parseFloat(qtyEl.value) <= 0) {
-      if (qtyEl) markError(qtyEl);
-      errors.push('Service '+(i+1)+' Quantity');
     }
   });
   // Materials — vendor cost required when item is selected
