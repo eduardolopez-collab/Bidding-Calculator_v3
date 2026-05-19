@@ -313,6 +313,7 @@ table.log-tbl tr:hover td{background:var(--bh)}
   .bd-total{flex:1;min-width:80px}
   .lr-rate-badge,.mat-range{display:none !important}
   .lr-rate-override{width:120px}
+  .row-divider-mob{display:block;border:none;border-top:1px solid var(--fg);width:100%;margin:0 0 4px 0}
   /* Metric cards: stack value + delta badge vertically */
   .metric{padding:10px 12px}
   .m-val{font-size:20px}
@@ -383,6 +384,7 @@ table.log-tbl tr:hover td{background:var(--bh)}
 .svc-half-label::after{content:'';flex:1;height:1px;background:var(--bd)}
 .svc-half-divider{border:none;border-top:1px dashed var(--bd);margin:16px 0}
 .bd-section-divider{border:none;border-top:1px solid var(--bd);margin:10px 0}
+.row-divider-mob{display:none}
 .breakdown-totals{display:flex;justify-content:flex-end;gap:8px;margin-top:12px;padding-top:8px;border-top:1px solid var(--bd);flex-wrap:wrap}
 .bd-total{background:var(--bi);border:1px solid var(--bd);border-radius:6px;padding:5px 10px;text-align:left}
 .bd-total-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tm)}
@@ -1821,7 +1823,7 @@ function buildBreakdown(svc) {
         const uid  = 'lhrs_'  + svc.idx + '_' + i;
         const wuid = 'lwrk_'  + svc.idx + '_' + i;
         const ruid = 'lrate_' + svc.idx + '_' + i;
-        return `<div class="labor-row">
+        return `${i > 0 ? '<hr class="row-divider-mob">' : ''}<div class="labor-row">
           <span class="lr-trade">${lp.trade}</span>
           <span class="lr-workers-lbl">Workers</span>
           <div class="spin-wrap">
@@ -1921,6 +1923,11 @@ function buildBreakdown(svc) {
             <span class="lr-total-badge" id="dltot_${svc.idx}_${i}">${rowTotal > 0 ? fmt(rowTotal) : '—'}</span>
             <button type="button" class="remove-mat-btn" title="Remove laborer row" onclick="if(confirm('Remove this laborer row?'))this.closest('.labor-row-dynamic').remove(),recalcBreakdown(${svc.idx})">&#x2715;</button>
           `;
+          if (lr.querySelector('.labor-row,.labor-row-dynamic')) {
+            const hr = document.createElement('hr');
+            hr.className = 'row-divider-mob';
+            lr.appendChild(hr);
+          }
           lr.appendChild(row);
           // Wire label↔select toggle for restored rows that have a saved trade
           if (hasSavedTrade) {
@@ -1964,7 +1971,7 @@ function buildBreakdown(svc) {
         const matOptions = catMats.map(m =>
           `<option value="${m.id}"${m.id === mp.matId ? ' selected' : ''}>${esc(m.item)}</option>`
         ).join('');
-        return `<div class="mat-row" id="${uid}">
+        return `${i > 0 ? '<hr class="row-divider-mob">' : ''}<div class="mat-row" id="${uid}">
           <select class="mat-item" onchange="matChanged(${svc.idx},${i},this.value)">
             <option value="">— Select materials —</option>
             ${matOptions}
@@ -2098,6 +2105,11 @@ function addMatRow(svcIdx) {
     <span class="lr-total-badge" id="mtot_${svcIdx}_${rowIdx}">—</span>
     <button type="button" class="remove-mat-btn" title="Remove material row" onclick="if(confirm('Remove this material row?'))this.closest('.mat-row').remove(),recalcBreakdown(${svcIdx})">&#x2715;</button>
   `;
+  if (mr.querySelector('.mat-row')) {
+    const hr = document.createElement('hr');
+    hr.className = 'row-divider-mob';
+    mr.appendChild(hr);
+  }
   mr.appendChild(row);
 }
 
@@ -2152,6 +2164,11 @@ function addLaborRow(svcIdx) {
     <span class="lr-total-badge" id="dltot_${svcIdx}_${rowIdx}">—</span>
     <button type="button" class="remove-mat-btn" title="Remove laborer row" onclick="if(confirm('Remove this laborer row?'))this.closest('.labor-row-dynamic').remove(),recalcBreakdown(${svcIdx})">&#x2715;</button>
   `;
+  if (lr.querySelector('.labor-row,.labor-row-dynamic')) {
+    const hr = document.createElement('hr');
+    hr.className = 'row-divider-mob';
+    lr.appendChild(hr);
+  }
   lr.appendChild(row);
 }
 
