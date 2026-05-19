@@ -143,6 +143,12 @@ body{background:var(--bp);color:var(--tp);min-height:100vh;transition:background
 .field input.field-error,.field select.field-error,.field textarea.field-error,.field-error{border-color:var(--er-b) !important;box-shadow:0 0 0 2px var(--er-bg) !important}
 .field input:focus,.field select:focus{outline:none;border-color:var(--fg);box-shadow:0 0 0 2px var(--fg-dim)}
 .field input[readonly]{opacity:.4;cursor:default;background-image:none}
+.unit-meas-wrap{display:flex;align-items:stretch;border:1px solid var(--bm);border-radius:8px;overflow:hidden;background:var(--bi)}
+.unit-meas-wrap:focus-within{border-color:var(--fg);box-shadow:0 0 0 2px var(--fg-dim)}
+.unit-meas-label{padding:8px 10px;font-size:13px;color:var(--tm);opacity:.5;background:var(--bi);white-space:nowrap;border-right:1px solid var(--bm);cursor:default;display:flex;align-items:center;min-width:30px}
+.unit-meas-input{flex:1;min-width:0;border:none;background:transparent;color:var(--tp);padding:8px 10px;font-size:13px;font-family:'Roboto',sans-serif;outline:none;-moz-appearance:textfield}
+.unit-meas-input::-webkit-inner-spin-button,.unit-meas-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.unit-meas-input:disabled{opacity:.35;cursor:default}
 /* ── Custom date picker ─────────────────────────────────────────────────── */
 .dp-wrap{position:relative;display:block}
 .dp-input{width:100%;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:8px;padding:8px 36px 8px 12px;font-size:13px;font-family:'Roboto',sans-serif;cursor:pointer;transition:border-color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;user-select:none}
@@ -1591,11 +1597,14 @@ function buildServiceFields(svc, ordinal) {
           value="${svc.travelOverride||''}"
           style="${svc.travelOverride?'border-color:var(--in-b);color:var(--in-t)':''}">
       </div>
-      <div class="field"><label>Unit</label><input type="text" id="unit_${svc.idx}" readonly></div>
-      <div class="field" id="meas_field_${svc.idx}" style="display:none">
-        <label id="meas_lbl_${svc.idx}">Measurement</label>
-        <input type="number" id="meas_${svc.idx}" min="0" step="1" placeholder="0"
-          value="${svc.measurement||''}" oninput="measurementChanged(${svc.idx},this.value)">
+      <div class="field">
+        <label id="meas_lbl_${svc.idx}">Unit</label>
+        <div class="unit-meas-wrap">
+          <span class="unit-meas-label" id="unit_${svc.idx}">—</span>
+          <input type="number" class="unit-meas-input" id="meas_${svc.idx}" min="0" step="1"
+            placeholder="—" value="${svc.measurement||''}" disabled
+            oninput="measurementChanged(${svc.idx},this.value)">
+        </div>
       </div>
     </div>
     <div id="info_${svc.idx}"></div>
@@ -1701,9 +1710,9 @@ function updateUnitInfo(svc) {
   const s = SERVICES.find(x=>x.id===svc.svcId);
   const unitEl = document.getElementById('unit_'+svc.idx);
   const infoEl = document.getElementById('info_'+svc.idx);
-  if (!s) return;
+  if (!s) { if (unitEl) unitEl.textContent = '—'; return; }
   const unitDisplay = toTitleCase(s.unit);
-  if (unitEl) unitEl.value = unitDisplay;
+  if (unitEl) unitEl.textContent = unitDisplay;
   if (!infoEl) return;
   const city = getCity();
   const travOverrideEl = document.getElementById('trav_override_' + svc.idx);
@@ -1729,15 +1738,15 @@ function updateUnitInfo(svc) {
   if (s.sp==='Pest') h+=`<div class=”proc-note”>&#9432; Pest &mdash; Removal handled by Procurement.</div>`;
   infoEl.innerHTML = h;
   buildBreakdown(svc);
-  const measField = document.getElementById('meas_field_' + svc.idx);
   const measLbl   = document.getElementById('meas_lbl_'   + svc.idx);
-  if (measField) {
-    if (s && s.ub) {
-      measField.style.display = 'flex';
-      if (measLbl) measLbl.textContent = s.unit.replace(/^Per /i,'');
-    } else {
-      measField.style.display = 'none';
-    }
+  const measInput = document.getElementById('meas_'        + svc.idx);
+  if (s.ub) {
+    if (measLbl)  measLbl.textContent  = 'Measurement (' + s.unit.replace(/^Per /i,'') + ')';
+    if (unitEl)   unitEl.textContent   = s.unit.replace(/^Per /i,'');
+    if (measInput) { measInput.disabled = false; measInput.placeholder = '0'; }
+  } else {
+    if (measLbl)  measLbl.textContent  = 'Unit';
+    if (measInput) { measInput.disabled = true; measInput.value = ''; measInput.placeholder = '—'; }
   }
 }
 
