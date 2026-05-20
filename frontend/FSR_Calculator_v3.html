@@ -1550,6 +1550,8 @@ function renderServicesDOM() {
           if (overrideField) overrideField.style.display = svc.travel === 'yes' ? 'flex' : 'none';
           const unitField = document.getElementById('meas_field_' + svc.idx);
           if (unitField) unitField.classList.toggle('span2', svc.travel !== 'yes');
+          const measInputEl = document.getElementById('meas_' + svc.idx);
+          if (measInputEl && measInputEl.disabled) measInputEl.placeholder = svc.travel === 'yes' ? 'Manual Input' : 'Manual Input: Workers / Hrs';
           saveState(); recalc();
         };
       }
@@ -1757,7 +1759,7 @@ function updateUnitInfo(svc) {
     if (measInput) { measInput.disabled = false; measInput.placeholder = 'e.g. 500'; }
   } else {
     if (measLbl)  measLbl.textContent  = 'Unit';
-    if (measInput) { measInput.disabled = true; measInput.value = ''; measInput.placeholder = 'Manual Input: Workers / Hrs'; }
+    if (measInput) { measInput.disabled = true; measInput.value = ''; measInput.placeholder = svc.travel === 'yes' ? 'Manual Input' : 'Manual Input: Workers / Hrs'; }
   }
 }
 
