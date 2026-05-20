@@ -2765,14 +2765,15 @@ function recalcResults() {
     if (!s) return;
     const tr=svc.travel==='yes';
     const travel=tr?(s.travel||0):0;
+    const ubMult = s.ub ? (parseFloat(svc.measurement) || 1) : 1;
     let labLow=0, labMed=0, labHigh=0;
-    if(s.t1){const r=LABOR_RATES[s.t1]||{low:0,med:0,high:0};labLow+=r.low*(s.h1||0)*city.laborMult;labMed+=r.med*(s.h1||0)*city.laborMult;labHigh+=r.high*(s.h1||0)*city.laborMult;}
-    if(s.t2){const r=LABOR_RATES[s.t2]||{low:0,med:0,high:0};labLow+=r.low*(s.h2||0)*city.laborMult;labMed+=r.med*(s.h2||0)*city.laborMult;labHigh+=r.high*(s.h2||0)*city.laborMult;}
-    // Default materials × city mult × qty
+    if(s.t1){const r=LABOR_RATES[s.t1]||{low:0,med:0,high:0};labLow+=r.low*(s.h1||0)*city.laborMult*ubMult;labMed+=r.med*(s.h1||0)*city.laborMult*ubMult;labHigh+=r.high*(s.h1||0)*city.laborMult*ubMult;}
+    if(s.t2){const r=LABOR_RATES[s.t2]||{low:0,med:0,high:0};labLow+=r.low*(s.h2||0)*city.laborMult*ubMult;labMed+=r.med*(s.h2||0)*city.laborMult*ubMult;labHigh+=r.high*(s.h2||0)*city.laborMult*ubMult;}
+    // Default materials × city mult × qty × ubMult
     let matLow=0, matMed=0, matHigh=0;
-    if(s.m1){const m=MATERIALS.find(x=>x.id===s.m1);if(m){matLow+=m.low*(s.q1||0)*city.matMult;matMed+=m.med*(s.q1||0)*city.matMult;matHigh+=m.high*(s.q1||0)*city.matMult;}}
-    if(s.m2){const m=MATERIALS.find(x=>x.id===s.m2);if(m){matLow+=m.low*(s.q2||0)*city.matMult;matMed+=m.med*(s.q2||0)*city.matMult;matHigh+=m.high*(s.q2||0)*city.matMult;}}
-    if(s.m3){const m=MATERIALS.find(x=>x.id===s.m3);if(m){matLow+=m.low*(s.q3||0)*city.matMult;matMed+=m.med*(s.q3||0)*city.matMult;matHigh+=m.high*(s.q3||0)*city.matMult;}}
+    if(s.m1){const m=MATERIALS.find(x=>x.id===s.m1);if(m){matLow+=m.low*(s.q1||0)*city.matMult*ubMult;matMed+=m.med*(s.q1||0)*city.matMult*ubMult;matHigh+=m.high*(s.q1||0)*city.matMult*ubMult;}}
+    if(s.m2){const m=MATERIALS.find(x=>x.id===s.m2);if(m){matLow+=m.low*(s.q2||0)*city.matMult*ubMult;matMed+=m.med*(s.q2||0)*city.matMult*ubMult;matHigh+=m.high*(s.q2||0)*city.matMult*ubMult;}}
+    if(s.m3){const m=MATERIALS.find(x=>x.id===s.m3);if(m){matLow+=m.low*(s.q3||0)*city.matMult*ubMult;matMed+=m.med*(s.q3||0)*city.matMult*ubMult;matHigh+=m.high*(s.q3||0)*city.matMult*ubMult;}}
     const travelScaled=travel;
     const ref =labLow +travelScaled+matLow;
     const med =labMed +travelScaled+matMed;
