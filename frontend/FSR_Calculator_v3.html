@@ -1610,7 +1610,7 @@ function buildServiceFields(svc, ordinal) {
       <div class="field unit-field" id="meas_field_${svc.idx}">
         <label id="meas_lbl_${svc.idx}">Unit</label>
         <div class="unit-meas-wrap">
-          <span class="unit-meas-label" id="unit_${svc.idx}">—</span>
+          <span class="unit-meas-label" id="unit_${svc.idx}"></span>
           <input type="number" class="unit-meas-input" id="meas_${svc.idx}" min="0" step="1"
             placeholder="e.g. 500" value="${svc.measurement||''}" disabled
             oninput="measurementChanged(${svc.idx},this.value)">
@@ -1721,7 +1721,7 @@ function updateUnitInfo(svc) {
   const s = SERVICES.find(x=>x.id===svc.svcId);
   const unitEl = document.getElementById('unit_'+svc.idx);
   const infoEl = document.getElementById('info_'+svc.idx);
-  if (!s) { if (unitEl) unitEl.textContent = '—'; return; }
+  if (!s) { if (unitEl) unitEl.textContent = ''; return; }
   const unitDisplay = toTitleCase(s.unit);
   if (unitEl) unitEl.textContent = unitDisplay;
   if (!infoEl) return;
