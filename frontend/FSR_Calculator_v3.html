@@ -398,6 +398,7 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
 .lr-hrs{width:60px;height:24px;min-width:0;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none}
 .lr-workers{width:60px;min-width:44px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none}
 .lr-workers-lbl{font-size:10px;color:var(--tm);white-space:nowrap}
+.mat-item-label{font-size:12px;color:var(--ts);cursor:pointer;text-decoration:underline dotted;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:235px}
 .lr-sep{width:1px;height:20px;background:var(--bd);margin:0 4px;flex-shrink:0}
 .lr-rate-badge{font-size:11px;color:var(--tm);flex:1 1 0;min-width:0;overflow:hidden;white-space:nowrap}
 .lr-rate-override{width:160px;min-width:90px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none;transition:border-color .15s,color .15s}
@@ -683,8 +684,8 @@ const LABOR_RATES={
 };
 
 const MATERIALS=[
-{id:"M01",item:"LED Lamp – Standard (A19/PAR)",unit:"Each",low:5,med:10,high:18,type:"Lighting"},
-{id:"M02",item:"LED Lamp – High Output / HID Replace",unit:"Each",low:20,med:35,high:60,type:"Lighting"},
+{id:"M01",item:"LED Lamp | Standard (A19/PAR)",unit:"Each",low:5,med:10,high:18,type:"Lighting"},
+{id:"M02",item:"LED Lamp | High Output / HID Replace",unit:"Each",low:20,med:35,high:60,type:"Lighting"},
 {id:"M03",item:"LED Tube (T8/T5 Retrofit)",unit:"Each",low:8,med:14,high:25,type:"Lighting"},
 {id:"M04",item:"LED Troffer Fixture 2x2",unit:"Each",low:70,med:120,high:190,type:"Lighting"},
 {id:"M05",item:"LED Troffer Fixture 2x4",unit:"Each",low:90,med:150,high:240,type:"Lighting"},
@@ -697,51 +698,51 @@ const MATERIALS=[
 {id:"M12",item:"Ballast / Driver",unit:"Each",low:35,med:60,high:110,type:"Lighting"},
 {id:"M13",item:"Occupancy / Daylight Sensor",unit:"Each",low:55,med:95,high:165,type:"Lighting"},
 {id:"M14",item:"Photocell",unit:"Each",low:25,med:45,high:80,type:"Lighting"},
-{id:"M15",item:"Duplex Outlet – Standard",unit:"Each",low:4,med:8,high:18,type:"Electrical"},
+{id:"M15",item:"Duplex Outlet | Standard",unit:"Each",low:4,med:8,high:18,type:"Electrical"},
 {id:"M16",item:"GFCI Outlet",unit:"Each",low:18,med:28,high:45,type:"Electrical"},
 {id:"M17",item:"USB / Smart Outlet",unit:"Each",low:28,med:48,high:85,type:"Electrical"},
 {id:"M18",item:"Light Switch / Dimmer",unit:"Each",low:8,med:18,high:40,type:"Electrical"},
 {id:"M19",item:"Wall Plate / Cover",unit:"Each",low:2,med:5,high:12,type:"Electrical"},
-{id:"M20",item:"Circuit Breaker – Single Pole",unit:"Each",low:25,med:45,high:80,type:"Electrical"},
-{id:"M21",item:"Circuit Breaker – Double Pole",unit:"Each",low:45,med:80,high:140,type:"Electrical"},
+{id:"M20",item:"Circuit Breaker | Single Pole",unit:"Each",low:25,med:45,high:80,type:"Electrical"},
+{id:"M21",item:"Circuit Breaker | Double Pole",unit:"Each",low:45,med:80,high:140,type:"Electrical"},
 {id:"M22",item:"GFCI / AFCI Breaker",unit:"Each",low:55,med:95,high:170,type:"Electrical"},
-{id:"M23",item:"Electrical Panel – Subpanel",unit:"Each",low:225,med:425,high:800,type:"Electrical"},
-{id:"M24",item:"Electrical Panel – Main",unit:"Each",low:500,med:950,high:1750,type:"Electrical"},
+{id:"M23",item:"Electrical Panel | Subpanel",unit:"Each",low:225,med:425,high:800,type:"Electrical"},
+{id:"M24",item:"Electrical Panel | Main",unit:"Each",low:500,med:950,high:1750,type:"Electrical"},
 {id:"M25",item:"Junction Box",unit:"Each",low:5,med:10,high:20,type:"Electrical"},
 {id:"M26",item:"Conduit EMT (1/2\" or 3/4\")",unit:"Per Ft",low:1.5,med:3,high:6,type:"Electrical"},
 {id:"M27",item:"Conduit PVC (electrical)",unit:"Per Ft",low:1.5,med:2.5,high:5,type:"Electrical"},
 {id:"M28",item:"THHN Wire (12/14 AWG)",unit:"Per Ft",low:0.5,med:0.9,high:1.5,type:"Electrical"},
-{id:"M29",item:"Wire – Heavy Gauge (6/8/10 AWG)",unit:"Per Ft",low:1.5,med:2.75,high:5,type:"Electrical"},
+{id:"M29",item:"Wire | Heavy Gauge (6/8/10 AWG)",unit:"Per Ft",low:1.5,med:2.75,high:5,type:"Electrical"},
 {id:"M30",item:"Conduit + Wire Bundle (pulled)",unit:"Per Ft",low:2,med:4,high:7,type:"Electrical"},
 {id:"M31",item:"Wire Nuts / Connectors (bag)",unit:"Per Job",low:10,med:20,high:40,type:"Electrical"},
 {id:"M32",item:"PVC Pipe + Fittings (1\")",unit:"Per Ft",low:3,med:5,high:10,type:"Plumbing"},
-{id:"M33",item:"PVC Pipe – Heavy (2\"+)",unit:"Per Ft",low:5,med:9,high:16,type:"Plumbing"},
+{id:"M33",item:"PVC Pipe | Heavy (2\"+)",unit:"Per Ft",low:5,med:9,high:16,type:"Plumbing"},
 {id:"M34",item:"Copper Pipe + Fittings (1/2-3/4\")",unit:"Per Ft",low:7,med:11,high:18,type:"Plumbing"},
-{id:"M35",item:"Copper Pipe – Heavy (1\"+)",unit:"Per Ft",low:12,med:19,high:32,type:"Plumbing"},
+{id:"M35",item:"Copper Pipe | Heavy (1\"+)",unit:"Per Ft",low:12,med:19,high:32,type:"Plumbing"},
 {id:"M36",item:"PEX Pipe + Fittings",unit:"Per Ft",low:3,med:5,high:9,type:"Plumbing"},
 {id:"M37",item:"Cast Iron / ABS Drain Pipe",unit:"Per Ft",low:8,med:15,high:28,type:"Plumbing"},
 {id:"M38",item:"Supply Line (flex, per pair)",unit:"Each",low:12,med:20,high:35,type:"Plumbing"},
-{id:"M39",item:"Toilet – Commercial",unit:"Each",low:275,med:475,high:750,type:"Restroom Renovation"},
-{id:"M40",item:"Toilet – ADA Commercial",unit:"Each",low:375,med:625,high:950,type:"Restroom Renovation"},
+{id:"M39",item:"Toilet | Commercial",unit:"Each",low:275,med:475,high:750,type:"Restroom Renovation"},
+{id:"M40",item:"Toilet | ADA Commercial",unit:"Each",low:375,med:625,high:950,type:"Restroom Renovation"},
 {id:"M41",item:"Urinal",unit:"Each",low:325,med:525,high:825,type:"Restroom Renovation"},
-{id:"M42",item:"Faucet – Commercial Lavatory",unit:"Each",low:100,med:185,high:320,type:"Restroom Renovation"},
-{id:"M43",item:"Faucet – Sensor / Touchless",unit:"Each",low:175,med:310,high:525,type:"Restroom Renovation"},
+{id:"M42",item:"Faucet | Commercial Lavatory",unit:"Each",low:100,med:185,high:320,type:"Restroom Renovation"},
+{id:"M43",item:"Faucet | Sensor / Touchless",unit:"Each",low:175,med:310,high:525,type:"Restroom Renovation"},
 {id:"M44",item:"Kitchen / Break Room Faucet",unit:"Each",low:125,med:225,high:400,type:"Plumbing"},
 {id:"M45",item:"Flush Valve (Sloan or equiv.)",unit:"Each",low:90,med:165,high:275,type:"Restroom Renovation"},
-{id:"M46",item:"Water Heater – Tank (commercial)",unit:"Each",low:800,med:1500,high:2800,type:"Plumbing"},
-{id:"M47",item:"Water Heater – Tankless",unit:"Each",low:1200,med:2200,high:3800,type:"Plumbing"},
-{id:"M48",item:"Sink – Lavatory",unit:"Each",low:150,med:275,high:475,type:"Restroom Renovation"},
-{id:"M49",item:"Sink – Mop / Utility",unit:"Each",low:225,med:400,high:675,type:"Plumbing"},
+{id:"M46",item:"Water Heater | Tank (commercial)",unit:"Each",low:800,med:1500,high:2800,type:"Plumbing"},
+{id:"M47",item:"Water Heater | Tankless",unit:"Each",low:1200,med:2200,high:3800,type:"Plumbing"},
+{id:"M48",item:"Sink | Lavatory",unit:"Each",low:150,med:275,high:475,type:"Restroom Renovation"},
+{id:"M49",item:"Sink | Mop / Utility",unit:"Each",low:225,med:400,high:675,type:"Plumbing"},
 {id:"M50",item:"Backflow Preventer",unit:"Each",low:175,med:325,high:575,type:"Plumbing"},
 {id:"M51",item:"Floor Drain / Strainer",unit:"Each",low:75,med:135,high:235,type:"Plumbing"},
 {id:"M52",item:"Hand / Hair Dryer",unit:"Each",low:325,med:550,high:925,type:"Restroom Renovation"},
-{id:"M53",item:"Thermostat – Programmable",unit:"Each",low:55,med:120,high:225,type:"HVAC"},
-{id:"M54",item:"Thermostat – Smart / BMS",unit:"Each",low:175,med:325,high:575,type:"HVAC"},
-{id:"M55",item:"Air Filter – Pleated Commercial",unit:"Each",low:12,med:25,high:50,type:"HVAC"},
-{id:"M56",item:"Air Filter – HEPA / High-MERV",unit:"Each",low:35,med:65,high:115,type:"HVAC"},
-{id:"M57",item:"Belt – V-Belt / Motor",unit:"Each",low:15,med:30,high:55,type:"HVAC"},
-{id:"M58",item:"HVAC Motor – Fan / Blower",unit:"Each",low:225,med:425,high:775,type:"HVAC"},
-{id:"M59",item:"Compressor – HVAC",unit:"Each",low:850,med:1600,high:2850,type:"HVAC"},
+{id:"M53",item:"Thermostat | Programmable",unit:"Each",low:55,med:120,high:225,type:"HVAC"},
+{id:"M54",item:"Thermostat | Smart / BMS",unit:"Each",low:175,med:325,high:575,type:"HVAC"},
+{id:"M55",item:"Air Filter | Pleated Commercial",unit:"Each",low:12,med:25,high:50,type:"HVAC"},
+{id:"M56",item:"Air Filter | HEPA / High-MERV",unit:"Each",low:35,med:65,high:115,type:"HVAC"},
+{id:"M57",item:"Belt | V-Belt / Motor",unit:"Each",low:15,med:30,high:55,type:"HVAC"},
+{id:"M58",item:"HVAC Motor | Fan / Blower",unit:"Each",low:225,med:425,high:775,type:"HVAC"},
+{id:"M59",item:"Compressor | HVAC",unit:"Each",low:850,med:1600,high:2850,type:"HVAC"},
 {id:"M60",item:"Refrigerant (R-410A)",unit:"Per Lb",low:40,med:70,high:110,type:"HVAC"},
 {id:"M61",item:"Refrigerant (R-32 / Other)",unit:"Per Lb",low:55,med:90,high:135,type:"HVAC"},
 {id:"M62",item:"Duct Sealant / Mastic",unit:"Per Job",low:25,med:55,high:110,type:"HVAC"},
@@ -749,11 +750,11 @@ const MATERIALS=[
 {id:"M64",item:"Sheet Metal Duct",unit:"Per Sq Ft",low:6,med:11,high:18,type:"HVAC"},
 {id:"M65",item:"Condensate Pump",unit:"Each",low:75,med:135,high:235,type:"HVAC"},
 {id:"M66",item:"Exhaust Fan",unit:"Each",low:175,med:325,high:575,type:"HVAC"},
-{id:"M67",item:"Ceiling Tile – 2x2 or 2x4 (standard)",unit:"Each",low:4,med:7,high:12,type:"Ceiling"},
-{id:"M68",item:"Ceiling Tile – Decorative / Tegular",unit:"Each",low:8,med:14,high:24,type:"Ceiling"},
+{id:"M67",item:"Ceiling Tile | 2x2 or 2x4 (standard)",unit:"Each",low:4,med:7,high:12,type:"Ceiling"},
+{id:"M68",item:"Ceiling Tile | Decorative / Tegular",unit:"Each",low:8,med:14,high:24,type:"Ceiling"},
 {id:"M69",item:"Ceiling Grid / T-Bar",unit:"Per Ft",low:2,med:4,high:7,type:"Ceiling"},
 {id:"M70",item:"Drywall Sheet (4x8, 1/2\")",unit:"Sheet",low:14,med:22,high:35,type:"Wall Repair"},
-{id:"M71",item:"Drywall Sheet – Fire/Moisture",unit:"Sheet",low:22,med:35,high:55,type:"Wall Repair"},
+{id:"M71",item:"Drywall Sheet | Fire/Moisture",unit:"Sheet",low:22,med:35,high:55,type:"Wall Repair"},
 {id:"M72",item:"Drywall Mud / Tape (per sheet)",unit:"Per Sheet",low:4,med:8,high:14,type:"Wall Repair"},
 {id:"M73",item:"Wall Insulation (batt/roll)",unit:"Per Sq Ft",low:1,med:2,high:4,type:"Wall Repair"},
 {id:"M74",item:"Wood Stud / Framing",unit:"Each",low:6,med:11,high:18,type:"Wall Repair"},
@@ -761,9 +762,9 @@ const MATERIALS=[
 {id:"M76",item:"Plywood / OSB Sheet",unit:"Sheet",low:28,med:45,high:75,type:"Wall Repair"},
 {id:"M77",item:"Trim / Molding (MDF or wood)",unit:"Per Ft",low:2,med:4,high:8,type:"Interior Painting"},
 {id:"M78",item:"Base / Cove Molding",unit:"Per Ft",low:3,med:5,high:9,type:"Interior Painting"},
-{id:"M79",item:"Paint – Interior Latex",unit:"Per Gal",low:35,med:55,high:85,type:"Interior Painting"},
-{id:"M80",item:"Paint – Exterior",unit:"Per Gal",low:45,med:70,high:105,type:"Exterior Painting"},
-{id:"M81",item:"Paint – Specialty (Epoxy, DTM, Elast.)",unit:"Per Gal",low:60,med:95,high:150,type:"Exterior Painting"},
+{id:"M79",item:"Paint | Interior Latex",unit:"Per Gal",low:35,med:55,high:85,type:"Interior Painting"},
+{id:"M80",item:"Paint | Exterior",unit:"Per Gal",low:45,med:70,high:105,type:"Exterior Painting"},
+{id:"M81",item:"Paint | Specialty (Epoxy, DTM, Elast.)",unit:"Per Gal",low:60,med:95,high:150,type:"Exterior Painting"},
 {id:"M82",item:"Primer",unit:"Per Gal",low:30,med:48,high:75,type:"Interior Painting"},
 {id:"M83",item:"Stain / Sealer (wood)",unit:"Per Gal",low:35,med:55,high:90,type:"Interior Painting"},
 {id:"M84",item:"Concrete / Floor Sealer",unit:"Per Gal",low:45,med:75,high:120,type:"Interior Flooring"},
@@ -771,43 +772,43 @@ const MATERIALS=[
 {id:"M86",item:"LVP / LVT",unit:"Per Sq Ft",low:3,med:5,high:9,type:"Interior Flooring"},
 {id:"M87",item:"Ceramic / Porcelain Tile",unit:"Per Sq Ft",low:4,med:7,high:13,type:"Interior Flooring"},
 {id:"M88",item:"Carpet Tile",unit:"Per Sq Ft",low:3,med:5,high:9,type:"Interior Flooring"},
-{id:"M89",item:"Carpet – Broadloom",unit:"Per Sq Ft",low:3,med:5.5,high:10,type:"Interior Flooring"},
+{id:"M89",item:"Carpet | Broadloom",unit:"Per Sq Ft",low:3,med:5.5,high:10,type:"Interior Flooring"},
 {id:"M90",item:"Rubber / Recycled Flooring",unit:"Per Sq Ft",low:5,med:9,high:15,type:"Interior Flooring"},
 {id:"M91",item:"Floor Adhesive",unit:"Per Gal",low:45,med:75,high:120,type:"Interior Flooring"},
 {id:"M92",item:"Grout / Thinset",unit:"Per Bag",low:18,med:32,high:55,type:"Interior Flooring"},
 {id:"M93",item:"Floor Wax / Finish",unit:"Per Gal",low:40,med:65,high:100,type:"Interior Flooring"},
-{id:"M94",item:"Door Hardware – Lockset (Grade 1)",unit:"Each",low:150,med:275,high:475,type:"Access Points"},
+{id:"M94",item:"Door Hardware | Lockset (Grade 1)",unit:"Each",low:150,med:275,high:475,type:"Access Points"},
 {id:"M95",item:"Door Closer",unit:"Each",low:95,med:180,high:310,type:"Access Points"},
 {id:"M96",item:"Panic Bar / Crash Bar",unit:"Each",low:275,med:475,high:775,type:"Access Points"},
 {id:"M97",item:"Hinge (commercial, pair)",unit:"Each",low:35,med:60,high:105,type:"Access Points"},
 {id:"M98",item:"Weather Stripping / Door Seal",unit:"Per Ft",low:2,med:4,high:7,type:"Access Points"},
-{id:"M99",item:"Door – Interior (hollow-core)",unit:"Each",low:175,med:325,high:575,type:"Access Points"},
-{id:"M100",item:"Door – Exterior (steel/commercial)",unit:"Each",low:450,med:825,high:1450,type:"Access Points"},
+{id:"M99",item:"Door | Interior (hollow-core)",unit:"Each",low:175,med:325,high:575,type:"Access Points"},
+{id:"M100",item:"Door | Exterior (steel/commercial)",unit:"Each",low:450,med:825,high:1450,type:"Access Points"},
 {id:"M101",item:"Door Frame",unit:"Each",low:175,med:300,high:525,type:"Access Points"},
 {id:"M102",item:"Electric Strike / Magnetic Lock",unit:"Each",low:225,med:395,high:675,type:"Access Points"},
 {id:"M103",item:"Key / Re-key (cylinder)",unit:"Each",low:25,med:45,high:80,type:"Access Points"},
-{id:"M104",item:"Asphalt – Hot Mix",unit:"Per Ton",low:90,med:135,high:195,type:"Pavement"},
-{id:"M105",item:"Asphalt – Cold Patch",unit:"Per Bag",low:18,med:32,high:55,type:"Pavement"},
-{id:"M106",item:"Concrete – Ready Mix",unit:"Per Cu Yd",low:150,med:195,high:275,type:"Pavement"},
-{id:"M107",item:"Concrete – Bag Mix",unit:"Per Bag",low:8,med:14,high:22,type:"Pavement"},
+{id:"M104",item:"Asphalt | Hot Mix",unit:"Per Ton",low:90,med:135,high:195,type:"Pavement"},
+{id:"M105",item:"Asphalt | Cold Patch",unit:"Per Bag",low:18,med:32,high:55,type:"Pavement"},
+{id:"M106",item:"Concrete | Ready Mix",unit:"Per Cu Yd",low:150,med:195,high:275,type:"Pavement"},
+{id:"M107",item:"Concrete | Bag Mix",unit:"Per Bag",low:8,med:14,high:22,type:"Pavement"},
 {id:"M108",item:"Asphalt Sealcoat",unit:"Per Gal",low:18,med:32,high:55,type:"Pavement"},
 {id:"M109",item:"Crack Filler (hot or cold)",unit:"Per Gal",low:25,med:45,high:75,type:"Pavement"},
 {id:"M110",item:"Line-Striping Paint",unit:"Per Gal",low:40,med:65,high:100,type:"Pavement"},
 {id:"M111",item:"Rebar / Wire Mesh",unit:"Per Ft",low:2,med:4,high:7,type:"Pavement"},
-{id:"M112",item:"Bollard – Steel",unit:"Each",low:175,med:325,high:550,type:"Pavement"},
+{id:"M112",item:"Bollard | Steel",unit:"Each",low:175,med:325,high:550,type:"Pavement"},
 {id:"M113",item:"Speed Bump / Hump",unit:"Each",low:175,med:300,high:525,type:"Pavement"},
 {id:"M114",item:"Wheel Stop",unit:"Each",low:45,med:85,high:150,type:"Pavement"},
-{id:"M115",item:"Roof Membrane – TPO/EPDM (60 mil)",unit:"Per Sq Ft",low:3,med:5.5,high:9,type:"Roof"},
+{id:"M115",item:"Roof Membrane | TPO/EPDM (60 mil)",unit:"Per Sq Ft",low:3,med:5.5,high:9,type:"Roof"},
 {id:"M116",item:"Roof Coating (elastomeric)",unit:"Per Gal",low:45,med:75,high:125,type:"Roof"},
-{id:"M117",item:"Flashing – Sheet Metal",unit:"Per Sq Ft",low:5,med:9,high:15,type:"Roof"},
-{id:"M118",item:"Gutter – Aluminum",unit:"Per Ft",low:8,med:14,high:24,type:"Roof"},
+{id:"M117",item:"Flashing | Sheet Metal",unit:"Per Sq Ft",low:5,med:9,high:15,type:"Roof"},
+{id:"M118",item:"Gutter | Aluminum",unit:"Per Ft",low:8,med:14,high:24,type:"Roof"},
 {id:"M119",item:"Downspout",unit:"Per Ft",low:7,med:12,high:20,type:"Roof"},
 {id:"M120",item:"Roof Drain",unit:"Each",low:175,med:325,high:575,type:"Roof"},
 {id:"M121",item:"Skylight",unit:"Each",low:475,med:875,high:1550,type:"Roof"},
 {id:"M122",item:"Roofing Cement / Mastic",unit:"Per Gal",low:25,med:45,high:80,type:"Roof"},
-{id:"M123",item:"Camera – Indoor IP",unit:"Each",low:95,med:175,high:300,type:"Access Points"},
-{id:"M124",item:"Camera – Outdoor / Vandal",unit:"Each",low:175,med:325,high:575,type:"Access Points"},
-{id:"M125",item:"Camera – PTZ",unit:"Each",low:550,med:975,high:1650,type:"Access Points"},
+{id:"M123",item:"Camera | Indoor IP",unit:"Each",low:95,med:175,high:300,type:"Access Points"},
+{id:"M124",item:"Camera | Outdoor / Vandal",unit:"Each",low:175,med:325,high:575,type:"Access Points"},
+{id:"M125",item:"Camera | PTZ",unit:"Each",low:550,med:975,high:1650,type:"Access Points"},
 {id:"M126",item:"NVR / DVR",unit:"Each",low:450,med:825,high:1450,type:"Access Points"},
 {id:"M127",item:"Hard Drive / Storage (per TB)",unit:"Each",low:65,med:115,high:185,type:"Access Points"},
 {id:"M128",item:"Card Reader / Access Keypad",unit:"Each",low:175,med:325,high:575,type:"Access Points"},
@@ -828,11 +829,11 @@ const MATERIALS=[
 {id:"M143",item:"Vinyl Lettering / Decal",unit:"Per Sq Ft",low:4,med:8,high:14,type:"Other"},
 {id:"M144",item:"ADA / Braille Sign",unit:"Each",low:45,med:85,high:155,type:"Other"},
 {id:"M145",item:"Interior Sign (standard)",unit:"Each",low:75,med:140,high:250,type:"Other"},
-{id:"M146",item:"Exterior Sign – Non-Illuminated",unit:"Each",low:225,med:425,high:775,type:"Other"},
-{id:"M147",item:"Exterior Sign – Illuminated",unit:"Each",low:675,med:1275,high:2300,type:"Lighting"},
+{id:"M146",item:"Exterior Sign | Non-Illuminated",unit:"Each",low:225,med:425,high:775,type:"Other"},
+{id:"M147",item:"Exterior Sign | Illuminated",unit:"Each",low:675,med:1275,high:2300,type:"Lighting"},
 {id:"M148",item:"Digital Display / Monitor",unit:"Each",low:550,med:1050,high:1850,type:"Other"},
 {id:"M149",item:"Sign Post / Pole",unit:"Each",low:125,med:225,high:395,type:"Other"},
-{id:"M150",item:"Mulch – Bulk",unit:"Per Cu Yd",low:35,med:55,high:85,type:"Landscaping"},
+{id:"M150",item:"Mulch | Bulk",unit:"Per Cu Yd",low:35,med:55,high:85,type:"Landscaping"},
 {id:"M151",item:"Sod",unit:"Per Sq Ft",low:0.5,med:0.9,high:1.5,type:"Landscaping"},
 {id:"M152",item:"Topsoil",unit:"Per Cu Yd",low:35,med:55,high:85,type:"Landscaping"},
 {id:"M153",item:"Plants / Shrubs (small)",unit:"Each",low:15,med:30,high:55,type:"Landscaping"},
@@ -844,25 +845,25 @@ const MATERIALS=[
 {id:"M159",item:"Pest Chemical / Bait (job)",unit:"Per Job",low:25,med:55,high:100,type:"Pest Removal"},
 {id:"M160",item:"Rodent Trap / Bait Station",unit:"Each",low:15,med:28,high:48,type:"Pest Removal"},
 {id:"M161",item:"Bird Spike / Netting",unit:"Per Ft",low:5,med:9,high:15,type:"Pest Removal"},
-{id:"M162",item:"Glass Pane – Standard",unit:"Per Sq Ft",low:12,med:22,high:38,type:"Other"},
+{id:"M162",item:"Glass Pane | Standard",unit:"Per Sq Ft",low:12,med:22,high:38,type:"Other"},
 {id:"M163",item:"Tempered / Safety Glass",unit:"Per Sq Ft",low:18,med:32,high:55,type:"Other"},
-{id:"M164",item:"Window – Commercial Unit",unit:"Each",low:475,med:875,high:1550,type:"Other"},
+{id:"M164",item:"Window | Commercial Unit",unit:"Each",low:475,med:875,high:1550,type:"Other"},
 {id:"M165",item:"Window Film / Tint",unit:"Per Sq Ft",low:4,med:7,high:12,type:"Other"},
 {id:"M166",item:"Sneeze Guard / Barrier",unit:"Each",low:175,med:325,high:575,type:"Other"},
-{id:"M167",item:"Partition – Toilet Stall (full)",unit:"Each",low:325,med:575,high:1000,type:"Restroom Renovation"},
+{id:"M167",item:"Partition | Toilet Stall (full)",unit:"Each",low:325,med:575,high:1000,type:"Restroom Renovation"},
 {id:"M168",item:"Grab Bar (ADA)",unit:"Each",low:45,med:85,high:145,type:"Restroom Renovation"},
 {id:"M169",item:"Soap / Paper / Sanitizer Dispenser",unit:"Each",low:45,med:85,high:150,type:"Restroom Renovation"},
 {id:"M170",item:"Mirror (commercial)",unit:"Each",low:55,med:100,high:175,type:"Restroom Renovation"},
 {id:"M171",item:"Baby Changing Station",unit:"Each",low:225,med:395,high:675,type:"Restroom Renovation"},
-{id:"M172",item:"Bench – Standard (indoor)",unit:"Each",low:275,med:475,high:825,type:"Lobby Seating"},
-{id:"M173",item:"Bench – Exterior / Heavy Duty",unit:"Each",low:425,med:775,high:1350,type:"Lobby Seating"},
-{id:"M174",item:"Chair – Lobby / Waiting",unit:"Each",low:175,med:325,high:575,type:"Lobby Seating"},
+{id:"M172",item:"Bench | Standard (indoor)",unit:"Each",low:275,med:475,high:825,type:"Lobby Seating"},
+{id:"M173",item:"Bench | Exterior / Heavy Duty",unit:"Each",low:425,med:775,high:1350,type:"Lobby Seating"},
+{id:"M174",item:"Chair | Lobby / Waiting",unit:"Each",low:175,med:325,high:575,type:"Lobby Seating"},
 {id:"M175",item:"Cushion / Upholstery",unit:"Each",low:75,med:135,high:235,type:"Lobby Seating"},
 {id:"M176",item:"Counter / Countertop Material",unit:"Per Sq Ft",low:35,med:65,high:115,type:"Ticket Counter Refresh"},
-{id:"M177",item:"Caulk / Sealant – Silicone",unit:"Tube",low:5,med:9,high:14,type:"Other"},
-{id:"M178",item:"Caulk / Sealant – Polyurethane",unit:"Tube",low:7,med:12,high:20,type:"Other"},
-{id:"M179",item:"Adhesive – Construction",unit:"Tube",low:5,med:10,high:16,type:"Other"},
-{id:"M180",item:"Tape – Duct / Electrical / Painters",unit:"Roll",low:5,med:10,high:18,type:"Other"},
+{id:"M177",item:"Caulk / Sealant | Silicone",unit:"Tube",low:5,med:9,high:14,type:"Other"},
+{id:"M178",item:"Caulk / Sealant | Polyurethane",unit:"Tube",low:7,med:12,high:20,type:"Other"},
+{id:"M179",item:"Adhesive | Construction",unit:"Tube",low:5,med:10,high:16,type:"Other"},
+{id:"M180",item:"Tape | Duct / Electrical / Painters",unit:"Roll",low:5,med:10,high:18,type:"Other"},
 {id:"M181",item:"Fasteners / Anchors (bag)",unit:"Per Job",low:10,med:22,high:45,type:"Other"},
 {id:"M182",item:"Screws / Nails (box)",unit:"Per Box",low:8,med:16,high:30,type:"Other"},
 {id:"M183",item:"Rags / Wipes / PPE",unit:"Per Job",low:15,med:28,high:55,type:"Janitorial"},
@@ -1843,7 +1844,7 @@ function buildBreakdown(svc) {
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
-          <span class="lr-rate-badge">$${adjLow}–$${adjHigh}/Hr</span>
+          <span class="lr-rate-badge">$${adjLow}|$${adjHigh}/Hr</span>
           <div class="spin-wrap">
             <input type="number" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="Benchmark: $${adjMed}/Hr" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
             <div class="spin-btns">
@@ -1913,7 +1914,7 @@ function buildBreakdown(svc) {
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               </div>
             </div>
-            <span class="lr-rate-badge" id="dlbadge_${svc.idx}_${i}">${rates ? `$${adjLow}–$${adjHigh}/Hr` : ''}</span>
+            <span class="lr-rate-badge" id="dlbadge_${svc.idx}_${i}">${rates ? `$${adjLow}|$${adjHigh}/Hr` : ''}</span>
             <div class="spin-wrap">
               <input type="number" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="${rates ? `Benchmark: $${adjMed}/Hr` : 'Benchmark: —/Hr'}" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
               <div class="spin-btns">
@@ -1960,7 +1961,7 @@ function buildBreakdown(svc) {
         const adjLow  = mat ? Math.round(mat.low  * city.matMult * 100) / 100 : 0;
         const adjHigh = mat ? Math.round(mat.high * city.matMult * 100) / 100 : 0;
         const adjMedMat = mat ? Math.round(mat.med * city.matMult * 100) / 100 : 0;
-        const rangeText = mat ? `$${adjLow}–$${adjHigh} / ${mat.unit}` : '';
+        const rangeText = mat ? `$${adjLow}|$${adjHigh} / ${mat.unit}` : '';
         const initMatCost = mp.cost !== '' ? parseFloat(mp.cost) : adjMedMat;
         const initMatTotal = initMatCost * (parseFloat(mp.qty) || 0);
         const uid = 'mrow_' + svc.idx + '_' + i;
@@ -1968,10 +1969,11 @@ function buildBreakdown(svc) {
           `<option value="${m.id}"${m.id === mp.matId ? ' selected' : ''}>${esc(m.item)}</option>`
         ).join('');
         return `<div class="mat-row" id="${uid}">
-          <select class="mat-item" onchange="matChanged(${svc.idx},${i},this.value)">
+          <select class="mat-item" id="msel_el_${svc.idx}_${i}" onchange="matChanged(${svc.idx},${i},this.value)" style="${mp.matId?'display:none':''}">
             <option value="">— Select materials —</option>
             ${matOptions}
           </select>
+          <span class="mat-item-label" id="mlabel_${svc.idx}_${i}" style="${mp.matId?'display:inline':'display:none'};cursor:pointer" title="Tap to change material">${mp.matId?(MATERIALS.find(x=>x.id===mp.matId)||{item:''}).item:''}</span>
           <span class="lr-workers-lbl">Qty</span>
           <div class="spin-wrap">
             <input type="number" class="mat-qty" id="mqty_${svc.idx}_${i}" value="${mp.qty}" min="0" step="1" title="Quantity" oninput="recalcBreakdown(${svc.idx})">
@@ -1994,6 +1996,18 @@ function buildBreakdown(svc) {
       }).join('');
     }
 
+    // Wire mat-item-label click handlers for restored rows
+    mr.querySelectorAll('.mat-row').forEach((row, i) => {
+      const selEl   = row.querySelector('.mat-item');
+      const labelEl = row.querySelector('.mat-item-label');
+      if (selEl && labelEl && labelEl.style.display !== 'none') {
+        labelEl.onclick = () => {
+          labelEl.style.display = 'none';
+          selEl.style.display   = '';
+          selEl.focus();
+        };
+      }
+    });
     // Always update rate badges and tally the footer totals (Labor / Materials / Combined).
     // Inlined here (not via recalcBreakdown) so saveState is never triggered mid-build.
     let laborTotal = 0;
@@ -2006,7 +2020,7 @@ function buildBreakdown(svc) {
       const adjHigh = Math.round(rates.high * city.laborMult);
       const laborRow = el.closest('.labor-row');
       const badge = laborRow && laborRow.querySelector('.lr-rate-badge');
-      if (badge) badge.textContent = `$${adjLow}–$${adjHigh}/Hr`;
+      if (badge) badge.textContent = `$${adjLow}|$${adjHigh}/Hr`;
       const hrs = parseFloat(el.value) || 0;
       const wEl = document.getElementById('lwrk_' + svc.idx + '_' + i);
       const workers = wEl ? (parseInt(wEl.value) || 1) : 1;
@@ -2055,11 +2069,27 @@ function matChanged(svcIdx, rowIdx, matId) {
     const adjLow  = Math.round(mat.low  * city.matMult * 100) / 100;
     const adjHigh = Math.round(mat.high * city.matMult * 100) / 100;
     const adjMed  = Math.round(mat.med  * city.matMult * 100) / 100;
-    rangeEl.textContent = `$${adjLow}–$${adjHigh} / ${mat.unit}`;
+    rangeEl.textContent = `$${adjLow}|$${adjHigh} / ${mat.unit}`;
     if (costEl) costEl.placeholder = `Benchmark: $${adjMed}`;
   } else if (rangeEl) {
     rangeEl.textContent = '';
     if (costEl) costEl.placeholder = 'Vendor $/unit';
+  }
+  // Collapse select to flat label
+  const selEl   = document.getElementById('msel_el_'  + svcIdx + '_' + rowIdx);
+  const labelEl = document.getElementById('mlabel_' + svcIdx + '_' + rowIdx);
+  if (mat && selEl && labelEl) {
+    labelEl.textContent = mat.item;
+    labelEl.style.display = 'inline';
+    selEl.style.display   = 'none';
+    labelEl.onclick = () => {
+      labelEl.style.display = 'none';
+      selEl.style.display   = '';
+      selEl.focus();
+    };
+  } else if (selEl && labelEl) {
+    labelEl.style.display = 'none';
+    selEl.style.display   = '';
   }
   recalcBreakdown(svcIdx);
 }
@@ -2080,10 +2110,11 @@ function addMatRow(svcIdx) {
   row.className = 'mat-row';
   row.id = uid;
   row.innerHTML = `
-    <select class="mat-item" onchange="matChanged(${svcIdx},${rowIdx},this.value)">
+    <select class="mat-item" id="msel_el_${svcIdx}_${rowIdx}" onchange="matChanged(${svcIdx},${rowIdx},this.value)">
       <option value="">— Select materials —</option>
       ${matOptions}
     </select>
+    <span class="mat-item-label" id="mlabel_${svcIdx}_${rowIdx}" style="display:none" title="Tap to change material"></span>
     <span class="lr-workers-lbl">Qty</span>
     <div class="spin-wrap">
       <input type="number" class="mat-qty" id="mqty_${svcIdx}_${rowIdx}" value="1" min="0" step="1" title="Quantity" oninput="recalcBreakdown(${svcIdx})">
@@ -2171,7 +2202,7 @@ function laborChanged(svcIdx, rowIdx, trade) {
     const adjLow  = Math.round(rates.low  * city.laborMult);
     const adjHigh = Math.round(rates.high * city.laborMult);
     const adjMed  = Math.round(rates.med  * city.laborMult);
-    if (badgeEl) badgeEl.textContent = `$${adjLow}–$${adjHigh}/Hr`;
+    if (badgeEl) badgeEl.textContent = `$${adjLow}|$${adjHigh}/Hr`;
     if (rateEl)  rateEl.placeholder  = `Benchmark: $${adjMed}/Hr`;
   } else {
     if (badgeEl) badgeEl.textContent = '';
@@ -2656,7 +2687,7 @@ function recalcResults() {
           if (matBenchMed === 0 && activeSvcs.some(sv=>{ const sx=SERVICES.find(x=>x.id===sv.svcId); return sx&&(sx.m1||sx.m2||sx.m3); })) extras.push({t:`No material costs tallied — Verify materials have been selected in the proposal.`, sev:'wn'});
           // Cost tier flags
           if (combBenchMed > 5000) extras.push(`High-value scope (${fmt(combBenchMed)}) — Consider requiring 3 competitive bids before award.`);
-          if (combBenchHigh > 0 && combBenchMed > 0 && (combBenchHigh / combBenchMed) > 2) extras.push(`Wide Low–High spread detected — Pricing for this service type varies significantly by market; verify city tier is correct.`);
+          if (combBenchHigh > 0 && combBenchMed > 0 && (combBenchHigh / combBenchMed) > 2) extras.push(`Wide Low|High spread detected — Pricing for this service type varies significantly by market; verify city tier is correct.`);
           if (combBenchMed > 10000) extras.push({t:`Scope exceeds $10K — Senior agent or manager sign-off may be required before vendor engagement.`, sev:'wn'});
           // City multiplier flags
           if (city.laborMult > 1.2) extras.push({t:`High-cost city multiplier (${city.laborMult.toFixed(2)}x) — Local labor rates are significantly above baseline; validate vendor credentials.`, sev:'wn'});
