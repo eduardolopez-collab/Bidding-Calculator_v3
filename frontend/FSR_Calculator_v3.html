@@ -1547,6 +1547,8 @@ function renderServicesDOM() {
           svc.travel = travSel.value;
           const overrideField = document.getElementById('trav_override_field_' + svc.idx);
           if (overrideField) overrideField.style.display = svc.travel === 'yes' ? 'flex' : 'none';
+          const unitField = document.getElementById('meas_field_' + svc.idx);
+          if (unitField) unitField.classList.toggle('span2', svc.travel !== 'yes');
           saveState(); recalc();
         };
       }
@@ -1560,6 +1562,8 @@ function renderServicesDOM() {
         };
       }
       updateUnitInfo(svc);
+      const unitField2 = document.getElementById('meas_field_' + svc.idx);
+      if (unitField2) unitField2.classList.toggle('span2', svc.travel !== 'yes');
     });
   } finally {
     _rebuilding = false;
