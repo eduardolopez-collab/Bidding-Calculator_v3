@@ -1766,8 +1766,9 @@ function updateUnitInfo(svc) {
 function _wireManualInputPlaceholder(el) {
   if (!el) return;
   const update = () => { el.placeholder = el.offsetWidth < 160 ? 'Manual Input' : 'Manual Input: Workers / Hrs'; };
-  update();
-  if (el._roManual) return; // already observing
+  // defer first read until browser has laid out the element
+  requestAnimationFrame(update);
+  if (el._roManual) return;
   const ro = new ResizeObserver(update);
   ro.observe(el);
   el._roManual = ro;
