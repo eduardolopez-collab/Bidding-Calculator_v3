@@ -406,6 +406,7 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
 .lr-rate-override{width:160px;min-width:90px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none;transition:border-color .15s,color .15s}
 .lr-rate-override:focus{outline:none;border-color:var(--in-b)}
 .lr-rate-override:not(:placeholder-shown){border-color:var(--in-b);color:var(--in-t)}
+.lr-hrs.auto-calc{border-color:#97d700;box-shadow:0 0 0 2px rgba(151,215,0,.18);transition:border-color .15s,box-shadow .15s}
 .lr-total-badge{font-size:12px;font-weight:600;color:var(--fg);white-space:nowrap;width:65px;margin-left:auto;text-align:right}
 .mat-item{flex:none;width:248.64px;height:24px;background:var(--bi) url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238B8B8B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") no-repeat right 8px center/12px 8px;color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 28px 4px 8px;font-size:12px;font-family:'Roboto',sans-serif;-webkit-appearance:none;appearance:none;cursor:pointer}
 [data-theme="light"] .mat-item{background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23757575' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E")}
@@ -1775,6 +1776,11 @@ function _wireManualInputPlaceholder(el) {
   el._roManual = ro;
 }
 
+function hrsInput(el, svcIdx) {
+  el.classList.remove('auto-calc');
+  recalcBreakdown(svcIdx);
+}
+
 function measurementChanged(svcIdx, val) {
   const svc = services.find(s => s.idx === svcIdx);
   if (!svc) return;
@@ -1785,7 +1791,9 @@ function measurementChanged(svcIdx, val) {
   [[s.h1,0],[s.h2,1]].forEach(([h,i]) => {
     if (h === undefined || h === null) return;
     const el = document.getElementById('lhrs_' + svcIdx + '_' + i);
-    if (el) el.value = parseFloat((h * m).toFixed(4));
+    if (!el) return;
+    el.value = parseFloat((h * m).toFixed(4));
+    el.classList.toggle('auto-calc', m > 0);
   });
   [[s.q1,0],[s.q2,1],[s.q3,2]].forEach(([q,i]) => {
     if (q === undefined || q === null) return;
@@ -1858,7 +1866,7 @@ function buildBreakdown(svc) {
           <div class="lr-sep"></div>
           <span class="lr-workers-lbl">Hrs</span>
           <div class="spin-wrap">
-            <input type="number" class="lr-hrs" id="${uid}" value="${hrsAdjusted}" min="0" step="0.25" title="Labor hours" oninput="recalcBreakdown(${svc.idx})">
+            <input type="number" class="lr-hrs" id="${uid}" value="${hrsAdjusted}" min="0" step="0.25" title="Labor hours" oninput="hrsInput(this,${svc.idx})">
             <div class="spin-btns">
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
