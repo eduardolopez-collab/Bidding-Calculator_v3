@@ -1755,7 +1755,7 @@ function updateUnitInfo(svc) {
   const measLbl   = document.getElementById('meas_lbl_'   + svc.idx);
   const measInput = document.getElementById('meas_'        + svc.idx);
   if (s.ub) {
-    if (measLbl)  measLbl.textContent  = 'Measurement (' + s.unit.replace(/^Per /i,'') + ')';
+    if (measLbl)  measLbl.textContent  = 'Measurement';
     if (unitEl)   unitEl.textContent   = s.unit.replace(/^Per /i,'');
     if (measInput) { measInput.disabled = false; measInput.placeholder = 'e.g. 500'; }
   } else {
