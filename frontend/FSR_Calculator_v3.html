@@ -2578,10 +2578,10 @@ function recalcResults() {
           laborProposalMed += effectiveRate * hrs * workers;
         });
       }
-      // Non-unit-based: travel and materials repeat per qty unit
-      const svcScale = s.ub ? (parseFloat(svc.measurement) || 1) : qty;
-      travelBench    += getMarketTravelCost(svc, s, city) * svcScale;
-      travelProposal += getTravelCost(svc, s, city) * svcScale;
+      // ub: spinners already hold q×measurement, svcScale=1. Non-ub: scale by qty.
+      const svcScale = s.ub ? 1 : qty;
+      travelBench    += getMarketTravelCost(svc, s, city);
+      travelProposal += getTravelCost(svc, s, city);
       const mr = document.getElementById('mat_rows_' + svc.idx);
       if (mr) {
         mr.querySelectorAll('.mat-row').forEach(row => {
