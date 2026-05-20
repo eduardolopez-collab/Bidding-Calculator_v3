@@ -1551,7 +1551,7 @@ function renderServicesDOM() {
           const unitField = document.getElementById('meas_field_' + svc.idx);
           if (unitField) unitField.classList.toggle('span2', svc.travel !== 'yes');
           const measInputEl = document.getElementById('meas_' + svc.idx);
-          if (measInputEl && measInputEl.disabled) measInputEl.placeholder = (svc.travel === 'yes' && window.innerWidth > 680) ? 'Manual Input' : 'Manual Input: Workers / Hrs';
+          if (measInputEl && measInputEl.disabled) _wireManualInputPlaceholder(measInputEl);
           saveState(); recalc();
         };
       }
@@ -1759,8 +1759,18 @@ function updateUnitInfo(svc) {
     if (measInput) { measInput.disabled = false; measInput.placeholder = 'e.g. 500'; }
   } else {
     if (measLbl)  measLbl.textContent  = 'Unit';
-    if (measInput) { measInput.disabled = true; measInput.value = ''; measInput.placeholder = (svc.travel === 'yes' && window.innerWidth > 680) ? 'Manual Input' : 'Manual Input: Workers / Hrs'; }
+    if (measInput) { measInput.disabled = true; measInput.value = ''; _wireManualInputPlaceholder(measInput); }
   }
+}
+
+function _wireManualInputPlaceholder(el) {
+  if (!el) return;
+  const update = () => { el.placeholder = el.offsetWidth < 160 ? 'Manual Input' : 'Manual Input: Workers / Hrs'; };
+  update();
+  if (el._roManual) return; // already observing
+  const ro = new ResizeObserver(update);
+  ro.observe(el);
+  el._roManual = ro;
 }
 
 function measurementChanged(svcIdx, val) {
