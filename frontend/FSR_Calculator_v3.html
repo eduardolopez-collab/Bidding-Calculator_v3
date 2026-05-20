@@ -1801,22 +1801,24 @@ function measurementChanged(svcIdx, val) {
   svc.measurement = val;
   const s = SERVICES.find(x => x.id === svc.svcId);
   if (!s || !s.ub) return;
-  const m = parseFloat(val) || 0;
+  const m = parseFloat(val);
+  const mScale = (m > 0) ? m : 1;
+  const hasVal = m > 0;
   [[s.h1,0],[s.h2,1]].forEach(([h,i]) => {
     if (h === undefined || h === null) return;
     const el = document.getElementById('lhrs_' + svcIdx + '_' + i);
     if (!el) return;
-    el.value = parseFloat((h * m).toFixed(4));
-    el.classList.toggle('auto-calc', m > 0);
-    if (m > 0) el.classList.remove('hrs-override');
+    el.value = parseFloat((h * mScale).toFixed(4));
+    el.classList.toggle('auto-calc', hasVal);
+    el.classList.remove('hrs-override');
   });
   [[s.q1,0],[s.q2,1],[s.q3,2]].forEach(([q,i]) => {
     if (q === undefined || q === null) return;
     const el = document.getElementById('mqty_' + svcIdx + '_' + i);
     if (!el) return;
-    el.value = parseFloat((q * m).toFixed(4));
-    el.classList.toggle('auto-calc', m > 0);
-    if (m > 0) el.classList.remove('qty-override');
+    el.value = parseFloat((q * mScale).toFixed(4));
+    el.classList.toggle('auto-calc', hasVal);
+    el.classList.remove('qty-override');
   });
   recalcBreakdown(svcIdx);
 }
