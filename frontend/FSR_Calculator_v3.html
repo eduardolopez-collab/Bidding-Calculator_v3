@@ -1900,11 +1900,11 @@ function buildBreakdown(svc) {
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
-          <span class="lr-rate-badge">$${adjLow}|$${adjHigh}/Hr</span>
+          <span class="lr-rate-badge">$${adjLow} — $${adjHigh} / Hr</span>
           <div class="lr-sep"></div>
           <span class="lr-workers-lbl">Rate</span>
           <div class="spin-wrap">
-            <input type="number" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="Benchmark: $${adjMed}/Hr" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
+            <input type="number" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="Benchmark: $${adjMed} / Hr" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
             <div class="spin-btns">
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -1973,11 +1973,11 @@ function buildBreakdown(svc) {
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               </div>
             </div>
-            <span class="lr-rate-badge" id="dlbadge_${svc.idx}_${i}">${rates ? `$${adjLow}|$${adjHigh}/Hr` : ''}</span>
+            <span class="lr-rate-badge" id="dlbadge_${svc.idx}_${i}">${rates ? `$${adjLow} — $${adjHigh} / Hr` : ''}</span>
             <div class="lr-sep"></div>
             <span class="lr-workers-lbl">Rate</span>
             <div class="spin-wrap">
-              <input type="number" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="${rates ? `Benchmark: $${adjMed}/Hr` : 'Benchmark: —/Hr'}" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
+              <input type="number" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="${rates ? `Benchmark: $${adjMed} / Hr` : 'Benchmark: —/Hr'}" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
               <div class="spin-btns">
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2022,7 +2022,7 @@ function buildBreakdown(svc) {
         const adjLow  = mat ? Math.round(mat.low  * city.matMult * 100) / 100 : 0;
         const adjHigh = mat ? Math.round(mat.high * city.matMult * 100) / 100 : 0;
         const adjMedMat = mat ? Math.round(mat.med * city.matMult * 100) / 100 : 0;
-        const rangeText = mat ? `$${adjLow}|$${adjHigh} / ${mat.unit}` : '';
+        const rangeText = mat ? `$${adjLow} — $${adjHigh} / ${mat.unit}` : '';
         const initMatCost = mp.cost !== '' ? parseFloat(mp.cost) : adjMedMat;
         const initMatTotal = initMatCost * (parseFloat(mp.qty) || 0);
         const uid = 'mrow_' + svc.idx + '_' + i;
@@ -2085,7 +2085,7 @@ function buildBreakdown(svc) {
       const adjHigh = Math.round(rates.high * city.laborMult);
       const laborRow = el.closest('.labor-row');
       const badge = laborRow && laborRow.querySelector('.lr-rate-badge');
-      if (badge) badge.textContent = `$${adjLow}|$${adjHigh}/Hr`;
+      if (badge) badge.textContent = `$${adjLow} — $${adjHigh} / Hr`;
       const hrs = parseFloat(el.value) || 0;
       const wEl = document.getElementById('lwrk_' + svc.idx + '_' + i);
       const workers = wEl ? (parseInt(wEl.value) || 1) : 1;
@@ -2134,7 +2134,7 @@ function matChanged(svcIdx, rowIdx, matId) {
     const adjLow  = Math.round(mat.low  * city.matMult * 100) / 100;
     const adjHigh = Math.round(mat.high * city.matMult * 100) / 100;
     const adjMed  = Math.round(mat.med  * city.matMult * 100) / 100;
-    rangeEl.textContent = `$${adjLow}|$${adjHigh} / ${mat.unit}`;
+    rangeEl.textContent = `$${adjLow} — $${adjHigh} / ${mat.unit}`;
     if (costEl) costEl.placeholder = `Benchmark: $${adjMed}`;
   } else if (rangeEl) {
     rangeEl.textContent = '';
@@ -2274,8 +2274,8 @@ function laborChanged(svcIdx, rowIdx, trade) {
     const adjLow  = Math.round(rates.low  * city.laborMult);
     const adjHigh = Math.round(rates.high * city.laborMult);
     const adjMed  = Math.round(rates.med  * city.laborMult);
-    if (badgeEl) badgeEl.textContent = `$${adjLow}|$${adjHigh}/Hr`;
-    if (rateEl)  rateEl.placeholder  = `Benchmark: $${adjMed}/Hr`;
+    if (badgeEl) badgeEl.textContent = `$${adjLow} — $${adjHigh} / Hr`;
+    if (rateEl)  rateEl.placeholder  = `Benchmark: $${adjMed} / Hr`;
   } else {
     if (badgeEl) badgeEl.textContent = '';
     if (rateEl)  rateEl.placeholder  = 'Benchmark: —/Hr';
