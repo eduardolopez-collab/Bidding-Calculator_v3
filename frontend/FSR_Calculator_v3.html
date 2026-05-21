@@ -331,7 +331,7 @@ table.log-tbl tr:hover td{background:var(--bh)}
   .mat-row{flex-wrap:wrap;gap:6px}
   .mat-item{flex:0 0 100%;max-width:100%}
   .mat-item-label{flex:1;width:auto;max-width:none}
-  .mat-cost{flex:1;width:auto;min-width:0}
+  .mat-cost{width:160px;height:24px}
   .mat-cost-wrap{flex:0 0 100%}
   .labor-row~.labor-row,.labor-row~.labor-row-dynamic,.labor-row-dynamic~.labor-row-dynamic{border-top:1px solid var(--fg);padding-top:8px;margin-top:4px}
   .mat-row~.mat-row{border-top:1px solid var(--fg);padding-top:8px;margin-top:4px}
@@ -360,7 +360,7 @@ table.log-tbl tr:hover td{background:var(--bh)}
   .tb-logo svg{width:18px;height:18px}
   .lr-trade{flex-basis:100%;margin-bottom:2px}
   .mat-item{flex-basis:100%}
-  .mat-qty{width:calc(50% - 4px)}
+  .mat-qty,.mat-cost{width:calc(50% - 4px)}
   .section-label{font-size:10px}
 }
 
@@ -418,7 +418,7 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
 [data-theme="light"] .mat-item{background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23757575' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E")}
 .mat-qty{width:60px;min-width:44px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none}
 .mat-range{font-size:11px;color:var(--tm);flex:1 1 0;min-width:0;overflow:hidden;white-space:nowrap}
-.mat-cost{width:160px;min-width:120px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;transition:border-color .15s,color .15s}
+.mat-cost{width:160px;height:24px;min-width:120px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;transition:border-color .15s,color .15s}
 .mat-cost:focus{outline:none;border-color:var(--in-b)}
 .mat-cost:not(:placeholder-shown){border-color:var(--in-b);color:var(--in-t)}
 .add-mat-btn,.add-lab-btn{margin-top:6px;padding:6px 14px;font-size:11px;font-weight:600;color:var(--fg);background:transparent;border:1px dashed var(--fg-dim2);border-radius:6px;cursor:pointer;transition:background .15s;min-height:36px}
