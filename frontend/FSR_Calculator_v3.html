@@ -322,7 +322,7 @@ table.log-tbl tr:hover td{background:var(--bh)}
   .labor-row{flex-wrap:wrap;gap:6px}
   .lr-trade{flex:1;width:100px !important;font-size:12px}
   select.lr-trade{width:100px !important}
-  .lr-workers-lbl{font-size:11px;width:40px}
+  .lr-workers-lbl{font-size:11px}
   .lr-trade~.lr-workers-lbl,.mat-item~.lr-workers-lbl,.mat-item-label~.lr-workers-lbl{margin-left:auto}
   .lr-sep{display:none}
   .lr-rate-override{flex:1;width:auto;min-width:0}
@@ -402,8 +402,9 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
 [data-theme="light"] select.lr-trade{background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23757575' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E")}
 .lr-hrs{width:60px;height:24px;min-width:0;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none}
 .lr-workers{width:60px;min-width:44px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none}
-.lr-workers-lbl{font-size:10px;color:var(--tm);white-space:nowrap;width:40px;height:13px;overflow:hidden}
-.mat-row .lr-workers-lbl{width:40px;height:13px;overflow:hidden}
+.lr-workers-lbl{font-size:10px;color:var(--tm);white-space:nowrap;width:22.5px;height:13px;overflow:hidden}
+.mat-row .lr-workers-lbl{width:22.5px;height:13px;overflow:hidden}
+.lr-workers-lbl.lr-workers-only{width:40px}
 .mat-item-label{font-size:12px;color:var(--ts);cursor:pointer;text-decoration:underline dotted;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:248.65px;max-width:248.65px}
 .lr-sep{width:1px;height:20px;background:var(--bd);margin:0 4px;flex-shrink:0}
 .lr-rate-badge{font-size:11px;color:var(--tm);flex:1 1 0;min-width:0;overflow:hidden;white-space:nowrap}
@@ -1879,7 +1880,7 @@ function buildBreakdown(svc) {
         return `<div class="labor-row">
           <span class="lr-trade">${lp.trade}</span>
           <div class="lr-sep"></div>
-          <span class="lr-workers-lbl">Workers</span>
+          <span class="lr-workers-lbl lr-workers-only">Workers</span>
           <div class="spin-wrap">
             <input type="number" class="lr-workers" id="${wuid}" value="${workersDefault}" min="1" step="1" title="Number of workers" oninput="recalcBreakdown(${svc.idx})">
             <div class="spin-btns">
@@ -1952,7 +1953,7 @@ function buildBreakdown(svc) {
             </select>
             <span class="lr-trade dl-trade-label" id="dllabel_${svc.idx}_${i}" style="display:${hasSavedTrade?'inline':'none'};cursor:pointer;text-decoration:underline dotted" title="Click to change trade">${savedTrade}</span>
             <div class="lr-sep"></div>
-            <span class="lr-workers-lbl">Workers</span>
+            <span class="lr-workers-lbl lr-workers-only">Workers</span>
             <div class="spin-wrap">
               <input type="number" class="lr-workers" id="${wuid}" value="${savedWrk}" min="1" step="1" title="Number of workers" oninput="recalcBreakdown(${svc.idx})">
               <div class="spin-btns">
@@ -2226,7 +2227,7 @@ function addLaborRow(svcIdx) {
     </select>
     <span class="lr-trade dl-trade-label" id="dllabel_${svcIdx}_${rowIdx}" style="display:none;cursor:pointer;text-decoration:underline dotted" title="Click to change trade"></span>
     <div class="lr-sep"></div>
-    <span class="lr-workers-lbl">Workers</span>
+    <span class="lr-workers-lbl lr-workers-only">Workers</span>
     <div class="spin-wrap">
       <input type="number" class="lr-workers" id="${wuid}" value="1" min="1" step="1" title="Number of workers" oninput="recalcBreakdown(${svcIdx})">
       <div class="spin-btns">
