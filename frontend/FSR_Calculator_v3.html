@@ -1898,6 +1898,8 @@ function buildBreakdown(svc) {
             </div>
           </div>
           <span class="lr-rate-badge">$${adjLow}|$${adjHigh}/Hr</span>
+          <div class="lr-sep"></div>
+          <span class="lr-workers-lbl">Rate</span>
           <div class="spin-wrap">
             <input type="number" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="Benchmark: $${adjMed}/Hr" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
             <div class="spin-btns">
@@ -1969,6 +1971,8 @@ function buildBreakdown(svc) {
               </div>
             </div>
             <span class="lr-rate-badge" id="dlbadge_${svc.idx}_${i}">${rates ? `$${adjLow}|$${adjHigh}/Hr` : ''}</span>
+            <div class="lr-sep"></div>
+            <span class="lr-workers-lbl">Rate</span>
             <div class="spin-wrap">
               <input type="number" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="${rates ? `Benchmark: $${adjMed}/Hr` : 'Benchmark: —/Hr'}" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
               <div class="spin-btns">
@@ -2241,6 +2245,8 @@ function addLaborRow(svcIdx) {
       </div>
     </div>
     <span class="lr-rate-badge" id="dlbadge_${svcIdx}_${rowIdx}"></span>
+    <div class="lr-sep"></div>
+    <span class="lr-workers-lbl">Rate</span>
     <div class="spin-wrap">
       <input type="number" class="lr-rate-override" id="${ruid}" value="" min="0" step="1" placeholder="Benchmark: —/Hr" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svcIdx})">
       <div class="spin-btns">
