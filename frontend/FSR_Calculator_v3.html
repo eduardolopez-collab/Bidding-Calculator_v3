@@ -311,6 +311,8 @@ table.log-tbl tr:hover td{background:var(--bh)}
   .btn-exp,.btn-clr{width:100%;justify-content:center;padding:8px 14px}
   .breakdown-totals{justify-content:stretch}
   .bd-total{flex:1;min-width:80px}
+  .bd-total:has(.bd-combined){display:flex;flex-direction:row;align-items:baseline;gap:6px;flex-basis:100%}
+  .bd-total:has(.bd-combined) .bd-total-lbl{margin-top:0}
   .lr-rate-badge,.mat-range{display:none !important}
   .lr-rate-override{width:120px}
   /* Metric cards: stack value + delta badge vertically */
