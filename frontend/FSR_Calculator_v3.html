@@ -418,7 +418,7 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
 .lr-rate-badge,.mat-range{font-size:11px;color:var(--tm);flex:1 1 0;min-width:0;overflow:hidden;white-space:nowrap;display:flex;align-items:center;justify-content:center}
 .mat-cost-break{display:none}
 .mat-range{width:177px;height:13px}
-.lr-rate-override{width:170px;height:24px;min-width:90px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none;transition:border-color .15s,color .15s}
+.lr-rate-override{width:165px;height:24px;min-width:90px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none;transition:border-color .15s,color .15s}
 .lr-rate-override:focus{outline:none;border-color:var(--in-b)}
 .lr-rate-override:not(:placeholder-shown){border-color:var(--in-b);color:var(--in-t)}
 .lr-hrs.auto-calc{border-color:#97d700;box-shadow:0 0 0 2px rgba(151,215,0,.18);transition:border-color .15s,box-shadow .15s}
@@ -430,7 +430,7 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
 .mat-item{flex:none;width:248.64px;height:24px;background:var(--bi) url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238B8B8B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") no-repeat right 8px center/12px 8px;color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 28px 4px 8px;font-size:12px;font-family:'Roboto',sans-serif;-webkit-appearance:none;appearance:none;cursor:pointer}
 [data-theme="light"] .mat-item{background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23757575' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E")}
 .mat-qty{width:60px;min-width:44px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none}
-.mat-cost{width:170px;height:24px;min-width:120px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;transition:border-color .15s,color .15s}
+.mat-cost{width:165px;height:24px;min-width:120px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;transition:border-color .15s,color .15s}
 .mat-cost:focus{outline:none;border-color:var(--in-b)}
 .mat-cost:not(:placeholder-shown){border-color:var(--in-b);color:var(--in-t)}
 .add-mat-btn,.add-lab-btn{margin-top:6px;padding:6px 14px;font-size:11px;font-weight:600;color:var(--fg);background:transparent;border:1px dashed var(--fg-dim2);border-radius:6px;cursor:pointer;transition:background .15s;min-height:36px}
@@ -2029,7 +2029,8 @@ function buildBreakdown(svc) {
         const adjLow  = mat ? Math.round(mat.low  * city.matMult * 100) / 100 : 0;
         const adjHigh = mat ? Math.round(mat.high * city.matMult * 100) / 100 : 0;
         const adjMedMat = mat ? Math.round(mat.med * city.matMult * 100) / 100 : 0;
-        const rangeText = mat ? `$${adjLow} — $${adjHigh} / ${mat.unit}` : '';
+        const matUnitAbv = mat ? unitAbv(mat.unit) : '';
+        const rangeText = mat ? `$${adjLow} — $${adjHigh} / ${matUnitAbv}` : '';
         const initMatCost = mp.cost !== '' ? parseFloat(mp.cost) : adjMedMat;
         const initMatTotal = initMatCost * (parseFloat(mp.qty) || 0);
         const uid = 'mrow_' + svc.idx + '_' + i;
@@ -2056,7 +2057,7 @@ function buildBreakdown(svc) {
           <div class="lr-sep mat-price-sep"></div>
           <span class="lr-workers-lbl">Price</span>
           <div class="spin-wrap">
-            <input type="number" class="mat-cost" id="mcost_${svc.idx}_${i}" value="${mp.cost}" placeholder="Benchmark: $${adjMedMat}${mat ? ' / ' + mat.unit : ''}" min="0" step="1" title="Vendor cost per unit" oninput="recalcBreakdown(${svc.idx})">
+            <input type="number" class="mat-cost" id="mcost_${svc.idx}_${i}" value="${mp.cost}" placeholder="Benchmark: $${adjMedMat}${mat ? ' / ' + matUnitAbv : ''}" min="0" step="1" title="Vendor cost per unit" oninput="recalcBreakdown(${svc.idx})">
             <div class="spin-btns">
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mcost_${svc.idx}_${i}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mcost_${svc.idx}_${i}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2132,6 +2133,9 @@ function buildBreakdown(svc) {
   }
 }
 
+const UNIT_ABV = {'Each':'Ea','Per Ft':'PF','Per Job':'PJ','Per Gal':'PG','Per Sq Ft':'PSF','Per Linear Ft':'PLF','Per Cu Yd':'PCY','Per Bag':'PB','Per Box':'PBx','Per Circuit':'PC','Per Day':'PD','Per Haul':'PH','Per Hour':'PHr','Per Incident':'PI','Per Lb':'PLb','Per Pane':'PPn','Per Patch':'PPt','Per Room':'PR','Per Seat':'PS','Per Sheet':'PSh','Per Stall':'PSt','Per Ton':'PT','Per Tree':'PTr','Per Unit':'PU','Per Visit':'PV','Per Year':'PY','Per Zone':'PZ','Per Acre':'PAc','Roll':'Rol','Sheet':'Sht','Tube':'Tub'};
+function unitAbv(u){return UNIT_ABV[u]||u;}
+
 function matChanged(svcIdx, rowIdx, matId) {
   const city = getCity();
   const mat  = MATERIALS.find(m => m.id === matId);
@@ -2141,8 +2145,8 @@ function matChanged(svcIdx, rowIdx, matId) {
     const adjLow  = Math.round(mat.low  * city.matMult * 100) / 100;
     const adjHigh = Math.round(mat.high * city.matMult * 100) / 100;
     const adjMed  = Math.round(mat.med  * city.matMult * 100) / 100;
-    rangeEl.textContent = `$${adjLow} — $${adjHigh} / ${mat.unit}`;
-    if (costEl) costEl.placeholder = `Benchmark: $${adjMed} / ${mat.unit}`;
+    rangeEl.textContent = `$${adjLow} — $${adjHigh} / ${unitAbv(mat.unit)}`;
+    if (costEl) costEl.placeholder = `Benchmark: $${adjMed} / ${unitAbv(mat.unit)}`;
   } else if (rangeEl) {
     rangeEl.textContent = '';
     if (costEl) costEl.placeholder = 'Vendor $/unit';
