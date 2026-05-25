@@ -2056,7 +2056,7 @@ function buildBreakdown(svc) {
           <div class="lr-sep mat-price-sep"></div>
           <span class="lr-workers-lbl">Price</span>
           <div class="spin-wrap">
-            <input type="number" class="mat-cost" id="mcost_${svc.idx}_${i}" value="${mp.cost}" placeholder="Benchmark: $${adjMedMat}" min="0" step="1" title="Vendor cost per unit" oninput="recalcBreakdown(${svc.idx})">
+            <input type="number" class="mat-cost" id="mcost_${svc.idx}_${i}" value="${mp.cost}" placeholder="Benchmark: $${adjMedMat}${mat ? ' / ' + mat.unit : ''}" min="0" step="1" title="Vendor cost per unit" oninput="recalcBreakdown(${svc.idx})">
             <div class="spin-btns">
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mcost_${svc.idx}_${i}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mcost_${svc.idx}_${i}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2142,7 +2142,7 @@ function matChanged(svcIdx, rowIdx, matId) {
     const adjHigh = Math.round(mat.high * city.matMult * 100) / 100;
     const adjMed  = Math.round(mat.med  * city.matMult * 100) / 100;
     rangeEl.textContent = `$${adjLow} — $${adjHigh} / ${mat.unit}`;
-    if (costEl) costEl.placeholder = `Benchmark: $${adjMed}`;
+    if (costEl) costEl.placeholder = `Benchmark: $${adjMed} / ${mat.unit}`;
   } else if (rangeEl) {
     rangeEl.textContent = '';
     if (costEl) costEl.placeholder = 'Vendor $/unit';
