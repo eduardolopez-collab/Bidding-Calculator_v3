@@ -31,6 +31,7 @@ body{background:var(--bp);color:var(--tp);min-height:100vh;transition:background
 .tb-logo{width:36px;height:36px;background:var(--fg);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .tb-logo svg{width:22px;height:22px}
 .tb-title{font-size:15px;font-weight:600;color:#fff;letter-spacing:0;font-family:var(--font-head)}
+.dz-dollar{font-family:'Dazzed',sans-serif}
 .tb-sub{font-size:11px;color:var(--g3);margin-top:1px}
 .tb-right{display:flex;align-items:center;gap:8px}
 
@@ -1127,7 +1128,7 @@ const SERVICES=[
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    STATE
 â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
-const fmt = v => '$' + v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt = v => '<span class="dz-dollar">$</span>' + v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const CATS = [...new Set(SERVICES.map(s=>s.cat))];
 const ORD  = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th'];
 
@@ -2098,7 +2099,7 @@ function buildBreakdown(svc) {
       const effectiveRate = getEffectiveLaborRate(svc, lp.trade, city, i);
       const rowTotal = effectiveRate * hrs * workers;
       const totEl = document.getElementById('ltot_' + svc.idx + '_' + i);
-      if (totEl) totEl.textContent = fmt(rowTotal);
+      if (totEl) totEl.innerHTML = fmt(rowTotal);
       laborTotal += rowTotal;
     });
     const travelCost = getTravelCost(svc, s, city);
@@ -2120,11 +2121,11 @@ function buildBreakdown(svc) {
     const tvEl    = document.getElementById('bdt_travel_'     + svc.idx);
     const mEl     = document.getElementById('bdt_mat_'        + svc.idx);
     const cEl     = document.getElementById('bdt_comb_'       + svc.idx);
-    if (lEl)     lEl.textContent  = laborTotal > 0 ? fmt(laborTotal) : '—';
+    if (lEl)     lEl.innerHTML  = laborTotal > 0 ? fmt(laborTotal) : '—';
     if (tvRowEl) tvRowEl.style.display = travelCost > 0 ? '' : 'none';
-    if (tvEl)    tvEl.textContent  = travelCost > 0 ? fmt(travelCost) : '—';
-    if (mEl)     mEl.textContent   = matTotal > 0 ? fmt(matTotal) : '—';
-    if (cEl)     cEl.textContent   = (laborWithTravel + matTotal) > 0 ? fmt(laborWithTravel + matTotal) : '—';
+    if (tvEl)    tvEl.innerHTML  = travelCost > 0 ? fmt(travelCost) : '—';
+    if (mEl)     mEl.innerHTML   = matTotal > 0 ? fmt(matTotal) : '—';
+    if (cEl)     cEl.innerHTML   = (laborWithTravel + matTotal) > 0 ? fmt(laborWithTravel + matTotal) : '—';
     _updateSublineBadges();
   } finally {
     _rebuilding = _prevRebuilding;
@@ -2318,7 +2319,7 @@ function recalcBreakdown(svcIdx) {
       const workers = wEl ? (parseInt(wEl.value) || 1) : 1;
       const effectiveRate = getEffectiveLaborRate(svc, lp.trade, city, i);
       const rowTotal = effectiveRate * hrs * workers;
-      totEl.textContent = fmt(rowTotal);
+      totEl.innerHTML = fmt(rowTotal);
       laborTotal += rowTotal;
     });
   }
@@ -2340,7 +2341,7 @@ function recalcBreakdown(svcIdx) {
         ? overrideVal
         : rates.med * city.laborMult;
       const rowTotal = effectiveRate * hrs * workers;
-      if (totEl) totEl.textContent = rowTotal > 0 ? fmt(rowTotal) : '—';
+      if (totEl) totEl.innerHTML = rowTotal > 0 ? fmt(rowTotal) : '—';
       laborTotal += rowTotal;
     });
   }
@@ -2357,7 +2358,7 @@ function recalcBreakdown(svcIdx) {
       const qty = qtyEl ? (parseFloat(qtyEl.value) || 0) : 0;
       const unitCost = costEl && costEl.value !== '' ? parseFloat(costEl.value) : (mat ? mat.med * city.matMult : 0);
       const rowTotal = unitCost * qty;
-      if (totEl) totEl.textContent = rowTotal > 0 ? fmt(rowTotal) : '—';
+      if (totEl) totEl.innerHTML = rowTotal > 0 ? fmt(rowTotal) : '—';
       matTotal += rowTotal;
     });
   }
@@ -2370,11 +2371,11 @@ function recalcBreakdown(svcIdx) {
   const cEl    = document.getElementById('bdt_comb_'  + svcIdx);
   const tvRowEl2 = document.getElementById('bdt_travel_row_' + svcIdx);
   const tvEl2    = document.getElementById('bdt_travel_'     + svcIdx);
-  if (lEl)      lEl.textContent   = laborTotal > 0 ? fmt(laborTotal) : '—';
+  if (lEl)      lEl.innerHTML  = laborTotal > 0 ? fmt(laborTotal) : '—';
   if (tvRowEl2) tvRowEl2.style.display = travelCost > 0 ? '' : 'none';
-  if (tvEl2)    tvEl2.textContent  = travelCost > 0 ? fmt(travelCost) : '—';
-  if (mEl)      mEl.textContent   = matTotal        > 0 ? fmt(matTotal)        : '—';
-  if (cEl)      cEl.textContent   = (laborWithTravel + matTotal) > 0 ? fmt(laborWithTravel + matTotal) : '—';
+  if (tvEl2)    tvEl2.innerHTML  = travelCost > 0 ? fmt(travelCost) : '—';
+  if (mEl)      mEl.innerHTML   = matTotal        > 0 ? fmt(matTotal)        : '—';
+  if (cEl)      cEl.innerHTML   = (laborWithTravel + matTotal) > 0 ? fmt(laborWithTravel + matTotal) : '—';
   _updateSublineBadges();
   recalcResults();
   saveState();
@@ -3382,7 +3383,7 @@ function renderLog(){
   html+='</tbody></table>';
   el.innerHTML=html;
   const total=rows.reduce((s,e)=>s+e.lowest,0);
-  document.getElementById('logStats').textContent=`${rows.length} request${rows.length!==1?'s':''} shown \u00B7 Total: ${fmt(total)}`;
+  document.getElementById('logStats').innerHTML=`${rows.length} request${rows.length!==1?'s':''} shown \u00B7 Total: ${fmt(total)}`;
 }
 function clearLog(){
   const banner = document.getElementById('logClearBanner');
