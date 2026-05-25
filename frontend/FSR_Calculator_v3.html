@@ -311,8 +311,9 @@ table.log-tbl tr:hover td{background:var(--bh)}
   .btn-exp,.btn-clr{width:100%;justify-content:center;padding:8px 14px}
   .breakdown-totals{justify-content:stretch}
   .bd-total{flex:1;min-width:80px}
-  .bd-total:has(.bd-combined){display:flex;flex-direction:row;align-items:baseline;gap:6px;flex-basis:100%}
-  .bd-total:has(.bd-combined) .bd-total-lbl{margin-top:0}
+  .bd-total:has(.bd-combined){display:flex;flex-direction:row;align-items:baseline;gap:8px;flex-basis:100%;padding:7px 12px;border-color:#b8e840}
+  .bd-total:has(.bd-combined) .bd-total-lbl{margin-top:0;font-size:11px;color:#b8e840;letter-spacing:.08em}
+  .bd-total:has(.bd-combined) .bd-total-val{font-size:18px;margin-left:auto}
   .lr-rate-badge,.mat-range{display:none !important}
   .lr-rate-override{width:120px}
   /* Metric cards: stack value + delta badge vertically */
