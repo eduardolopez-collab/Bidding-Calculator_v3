@@ -137,7 +137,8 @@ body{background:var(--bp);color:var(--tp);min-height:100vh;transition:background
 .spin-wrap{position:relative;display:flex;align-items:stretch}
 .spin-wrap input[type=number]{padding-left:6px;padding-right:28px;flex:1;min-width:0}
 .spin-btns{position:absolute;right:1px;top:1px;bottom:1px;width:26px;display:flex;flex-direction:column;border-left:1px solid var(--bm);border-radius:0 7px 7px 0;overflow:hidden}
-.spin-btn{flex:1;background:var(--bi);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tm);padding:0;transition:background .12s}
+.spin-btn{flex:1;background:var(--bi);border:none;border-bottom:1px solid var(--bm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tm);padding:0;transition:background .12s}
+.spin-btn:last-child{border-bottom:none}
 .spin-btn:hover{background:var(--bh);color:var(--tp)}
 .spin-btn:active{background:var(--bst);color:var(--tp)}
 .spin-btn svg{width:8px;height:5px;display:block}
