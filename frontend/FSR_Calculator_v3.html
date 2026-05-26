@@ -2877,8 +2877,7 @@ function approvalHtml(lowest,activeSvcs,totalMed,totalHigh,benchMed) {
     const pctOver = Math.round(((lowest / benchMed) - 1) * 100);
     const bufPct = Math.round(buf.pct * 100);
     const tierMap = {low:'Agent Auto-Approved',medium:'Sr. Agent Approval Required',high:'Sr. Manager Approval Required'};
-    const cls = buf.tier === 'high' ? 'er' : 'wn';
-    return `<div class="appr-box ${cls}"><div class="appr-title">&#9888; Within ${buf.label} Urgency Buffer &mdash; ${tierMap[buf.tier]}</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is +${pctOver}% above benchmark (${fmt(benchMed)}) — within the ${bufPct}% ${buf.label.toLowerCase()} urgency allowance.</div></div>`;
+    return `<div class="appr-box ok"><div class="appr-title">&#10003; Within ${buf.label} Urgency Buffer &mdash; ${tierMap[buf.tier]}</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is +${pctOver}% above benchmark (${fmt(benchMed)}) — within the ${bufPct}% ${buf.label.toLowerCase()} urgency allowance.</div></div>`;
   }
   if (lowest<=totalHigh) return `<div class="appr-box wn"><div class="appr-title">&#9888; Exceeds Buffer &mdash; Sr. Agent Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) exceeds the urgency buffer${buf?' ('+Math.round(buf.pct*100)+'% for '+buf.label+' urgency)':''}. Escalate to Sr. Agent before proceeding.</div></div>`;
   return `<div class="appr-box er"><div class="appr-title">&#9888; Exceeds Proposal Range &mdash; Sr. Manager Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) exceeds the proposal high estimate (${fmt(totalHigh)}). Sr. Manager approval required before proceeding.</div></div>`;
