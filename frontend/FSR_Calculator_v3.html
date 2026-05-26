@@ -406,15 +406,6 @@ table.log-tbl tr:hover td{background:var(--bh)}
 .bd-total-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tm)}
 .bd-total-val{font-size:14px;font-weight:700;color:var(--tp);margin-top:1px}
 .bd-total-val.bd-combined{color:#b8e840;font-size:20px}
-.bdt-approval{flex-basis:100%;margin-top:4px;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;letter-spacing:.05em;display:flex;align-items:center;gap:8px}
-.bdt-approval .apv-icon{font-size:14px;flex-shrink:0}
-.bdt-approval .apv-main{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
-.bdt-approval .apv-sub{font-size:10px;font-weight:500;opacity:.85;margin-top:1px}
-.bdt-approval.apv-ok{background:rgba(151,215,0,.12);border:1px solid rgba(151,215,0,.35);color:#97d700}
-.bdt-approval.apv-buffer-low{background:rgba(255,193,7,.12);border:1px solid rgba(255,193,7,.4);color:#ffc107}
-.bdt-approval.apv-buffer-med{background:rgba(255,152,0,.12);border:1px solid rgba(255,152,0,.4);color:#ff9800}
-.bdt-approval.apv-buffer-high{background:rgba(244,67,54,.12);border:1px solid rgba(244,67,54,.4);color:#f44336}
-.bdt-approval.apv-over{background:rgba(244,67,54,.18);border:1px solid rgba(244,67,54,.6);color:#f44336}
 .labor-row,.mat-row{display:flex;gap:8px;margin-bottom:6px;align-items:center;flex-wrap:wrap}
 .lr-trade{flex:none;width:120px;font-size:12px;color:var(--ts);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238B8B8B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") no-repeat right 8px center/12px 8px;color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:3px 28px 3px 8px;-webkit-appearance:none;appearance:none;height:24px;cursor:pointer}
@@ -1574,7 +1565,7 @@ function renderServicesDOM() {
           saveState();recalc();
         };
       }
-      if (tierSel){ tierSel.value= svc.tier||''; tierSel.classList.toggle('placeholder-active', !svc.tier); tierSel.onchange=()=>{svc.tier=tierSel.value;tierSel.classList.remove('placeholder-active');saveState();recalc();updateApprovalBadge(svc.idx);}; }
+      if (tierSel){ tierSel.value= svc.tier||''; tierSel.classList.toggle('placeholder-active', !svc.tier); tierSel.onchange=()=>{svc.tier=tierSel.value;tierSel.classList.remove('placeholder-active');saveState();recalc();}; }
       if (travSel){
         travSel.value = svc.travel;
         travSel.onchange = () => {
@@ -1669,7 +1660,6 @@ function buildServiceFields(svc, ordinal) {
         <div class="bd-total" id="bdt_travel_row_${svc.idx}" style="display:none"><div class="bd-total-lbl">Travel</div><div class="bd-total-val" id="bdt_travel_${svc.idx}">&mdash;</div></div>
         <div class="bd-total"><div class="bd-total-lbl">Materials</div><div class="bd-total-val" id="bdt_mat_${svc.idx}">&mdash;</div></div>
         <div class="bd-total"><div class="bd-total-lbl">Combined</div><div class="bd-total-val bd-combined" id="bdt_comb_${svc.idx}">&mdash;</div></div>
-        <div id="bdt_approval_${svc.idx}" class="bdt-approval" style="display:none"></div>
       </div>
     </div>`;
 }
@@ -2141,7 +2131,6 @@ function buildBreakdown(svc) {
     if (tvEl)    tvEl.innerHTML  = travelCost > 0 ? fmt(travelCost) : '—';
     if (mEl)     mEl.innerHTML   = matTotal > 0 ? fmt(matTotal) : '—';
     if (cEl)     cEl.innerHTML   = (laborWithTravel + matTotal) > 0 ? fmt(laborWithTravel + matTotal) : '—';
-    updateApprovalBadge(svc.idx);
     _updateSublineBadges();
   } finally {
     _rebuilding = _prevRebuilding;
@@ -2320,82 +2309,7 @@ function laborChanged(svcIdx, rowIdx, trade) {
   recalcBreakdown(svcIdx);
 }
 
-const URGENCY_BUFFERS = {low:{pct:0.10,cls:'apv-buffer-low',tier:'Agent — Auto-Approved',approval:''},medium:{pct:0.15,cls:'apv-buffer-med',tier:'Sr. Agent Approval Required',approval:'Sr. Agent'},high:{pct:0.20,cls:'apv-buffer-high',tier:'Sr. Manager Approval Required',approval:'Sr. Manager'}};
-
-function updateApprovalBadge(svcIdx) {
-  const el = document.getElementById('bdt_approval_' + svcIdx);
-  if (!el) return;
-  const svc = services.find(s => s.idx === svcIdx);
-  const s   = svc ? SERVICES.find(x => x.id === svc.svcId) : null;
-  if (!svc || !s) { el.style.display = 'none'; return; }
-  const city = getCity();
-  // Compute per-service benchmark med total
-  const qty = s.ub ? (parseFloat(svc.measurement) || 1) : 1;
-  const labScale = s.ub ? 1 : qty;
-  const svcScale = s.ub ? 1 : qty;
-  let benchLab = 0;
-  const pairs = [];
-  if (s.t1) pairs.push({trade:s.t1});
-  if (s.t2) pairs.push({trade:s.t2});
-  pairs.forEach((lp, i) => {
-    const hrsEl = document.getElementById('lhrs_' + svcIdx + '_' + i);
-    const wrkEl = document.getElementById('lwrk_' + svcIdx + '_' + i);
-    const hrs = hrsEl ? (parseFloat(hrsEl.value) || 0) : 0;
-    const workers = wrkEl ? (parseInt(wrkEl.value) || 1) : 1;
-    const r = LABOR_RATES[lp.trade] || {med:0};
-    benchLab += r.med * city.laborMult * hrs * workers * labScale;
-  });
-  const lr = document.getElementById('labor_rows_' + svcIdx);
-  if (lr) {
-    lr.querySelectorAll('.labor-row-dynamic').forEach(row => {
-      const tradeSel = row.querySelector('select');
-      const hrsEl   = row.querySelector('.lr-hrs');
-      const wrkEl   = row.querySelector('.lr-workers');
-      const trade = tradeSel ? tradeSel.value : '';
-      if (!trade) return;
-      const hrs = hrsEl ? (parseFloat(hrsEl.value) || 0) : 0;
-      const workers = wrkEl ? (parseInt(wrkEl.value) || 1) : 1;
-      const r = LABOR_RATES[trade] || {med:0};
-      benchLab += r.med * city.laborMult * hrs * workers;
-    });
-  }
-  let benchMat = 0;
-  const mr = document.getElementById('mat_rows_' + svcIdx);
-  if (mr) {
-    mr.querySelectorAll('.mat-row').forEach(row => {
-      const sel   = row.querySelector('.mat-item');
-      const qtyEl = row.querySelector('.mat-qty');
-      if (!sel || !sel.value) return;
-      const m = MATERIALS.find(x => x.id === sel.value);
-      if (!m) return;
-      const q = qtyEl ? (parseFloat(qtyEl.value) || 0) : 0;
-      benchMat += m.med * city.matMult * q * svcScale;
-    });
-  }
-  const benchTotal = benchLab + getMarketTravelCost(svc, s, city) + benchMat;
-  // Actual combined total from DOM
-  const cEl = document.getElementById('bdt_comb_' + svcIdx);
-  const combText = cEl ? cEl.textContent.replace(/[^0-9.]/g, '') : '';
-  const combTotal = combText ? parseFloat(combText) : 0;
-  if (benchTotal <= 0 || combTotal <= 0) { el.style.display = 'none'; return; }
-  const urgency = (svc.tier || '').toLowerCase();
-  const buf = URGENCY_BUFFERS[urgency];
-  el.className = 'bdt-approval';
-  el.style.display = '';
-  if (combTotal <= benchTotal) {
-    el.classList.add('apv-ok');
-    el.innerHTML = '<span class="apv-icon">✓</span><div><div class="apv-main">Within Benchmark</div><div class="apv-sub">Bid is at or below market benchmark — Agent approved</div></div>';
-  } else if (buf && combTotal <= benchTotal * (1 + buf.pct)) {
-    el.classList.add(buf.cls);
-    const pctOver = Math.round(((combTotal / benchTotal) - 1) * 100);
-    el.innerHTML = `<span class="apv-icon">⚠</span><div><div class="apv-main">Within ${urgency.charAt(0).toUpperCase()+urgency.slice(1)} Urgency Buffer (+${pctOver}%)</div><div class="apv-sub">${buf.tier}</div></div>`;
-  } else {
-    el.classList.add('apv-over');
-    const pctOver = Math.round(((combTotal / benchTotal) - 1) * 100);
-    const bufPct = buf ? Math.round(buf.pct * 100) : 0;
-    el.innerHTML = `<span class="apv-icon">✕</span><div><div class="apv-main">Exceeds Buffer (+${pctOver}% vs ${bufPct}% limit)</div><div class="apv-sub">${buf ? buf.tier : 'No urgency level set — set urgency to enable buffer'}</div></div>`;
-  }
-}
+const URGENCY_BUFFERS = {low:{pct:0.10,label:'Low'},medium:{pct:0.15,label:'Medium'},high:{pct:0.20,label:'High'}};
 
 function recalcBreakdown(svcIdx) {
   const city = getCity();
@@ -2472,7 +2386,6 @@ function recalcBreakdown(svcIdx) {
   if (tvEl2)    tvEl2.innerHTML  = travelCost > 0 ? fmt(travelCost) : '—';
   if (mEl)      mEl.innerHTML   = matTotal        > 0 ? fmt(matTotal)        : '—';
   if (cEl)      cEl.innerHTML   = (laborWithTravel + matTotal) > 0 ? fmt(laborWithTravel + matTotal) : '—';
-  updateApprovalBadge(svcIdx);
   _updateSublineBadges();
   recalcResults();
   saveState();
@@ -2940,25 +2853,44 @@ function recalcResults() {
     <div class="metric"><div class="m-lbl">Effort</div><div class="m-val ${diff<=0?'good':'bad'}">${diff<=0?'-':'+'}${fmt(Math.abs(diff))}</div><div class="m-sub">${diff<=0?'Under Proposal':'Over Proposal'}</div></div>`;
 
 
-  document.getElementById('apprResult').innerHTML=approvalHtml(lowestA,activeSvcs,proposalRef,proposalHigh);
+  document.getElementById('apprResult').innerHTML=approvalHtml(lowestA,activeSvcs,proposalRef,proposalHigh,combBenchMedHoisted);
   document.getElementById('resultsBox').style.display='block';
   buildPrintInvoice(city,activeSvcs,valid,lowestA,lowestBid,combBenchMedHoisted,proposalRef,proposalHigh,diff);
 }
 
-function approvalHtml(lowest,activeSvcs,totalMed,totalHigh) {
-  const sps=[...new Set(activeSvcs.map(s=>{const x=SERVICES.find(v=>v.id===s.svcId);return x?x.sp:null;}).filter(Boolean))];
-  if (sps.includes('Pest'))    return `<div class="appr-box sp"><div class="appr-title">Procurement-Managed Service</div><div class="appr-desc">Pest removal is coordinated by Procurement &mdash; loop them in before engaging any vendor.</div></div>`;
-  if (lowest>50000) return `<div class="appr-box er"><div class="appr-title">Escalation Required &mdash; José Soares</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) exceeds $50,000. José Soares must approve before proceeding.</div></div>`;
-  if (lowest<=totalMed) return `<div class="appr-box ok"><div class="appr-title">&#10003; Auto-Approved &mdash; Agent Can Proceed</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is at or below the proposal (${fmt(totalMed)}). No escalation needed.</div></div>`;
-  if (lowest<=totalHigh) return `<div class="appr-box wn"><div class="appr-title">&#9888; Approval Required &mdash; Senior Agent or Above</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is between the proposal mid (${fmt(totalMed)}) and high (${fmt(totalHigh)}) range.</div></div>`;
-  return `<div class="appr-box er"><div class="appr-title">&#9888; Escalation Required &mdash; Senior Manager</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) exceeds the proposal high estimate (${fmt(totalHigh)}). Senior Manager approval required.</div></div>`;
+function _urgencyBuffer(activeSvcs) {
+  // Returns the buffer config for the highest urgency set across all active services
+  const order = ['high','medium','low'];
+  for (const tier of order) {
+    if (activeSvcs.some(s => (s.tier||'').toLowerCase() === tier)) return {tier, ...URGENCY_BUFFERS[tier]};
+  }
+  return null;
 }
 
-function getApprovalStatus(lowest,activeSvcs,totalMed,totalHigh) {
+function approvalHtml(lowest,activeSvcs,totalMed,totalHigh,benchMed) {
+  const sps=[...new Set(activeSvcs.map(s=>{const x=SERVICES.find(v=>v.id===s.svcId);return x?x.sp:null;}).filter(Boolean))];
+  if (sps.includes('Pest')) return `<div class="appr-box sp"><div class="appr-title">Procurement-Managed Service</div><div class="appr-desc">Pest removal is coordinated by Procurement &mdash; loop them in before engaging any vendor.</div></div>`;
+  if (lowest>50000) return `<div class="appr-box er"><div class="appr-title">Escalation Required &mdash; José Soares</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) exceeds $50,000. José Soares must approve before proceeding.</div></div>`;
+  if (lowest<=totalMed) return `<div class="appr-box ok"><div class="appr-title">&#10003; Within Benchmark &mdash; Agent Auto-Approved</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is at or below the proposal benchmark (${fmt(totalMed)}). No escalation needed.</div></div>`;
+  const buf = benchMed > 0 ? _urgencyBuffer(activeSvcs) : null;
+  if (buf && lowest <= benchMed * (1 + buf.pct)) {
+    const pctOver = Math.round(((lowest / benchMed) - 1) * 100);
+    const bufPct = Math.round(buf.pct * 100);
+    const tierMap = {low:'Agent Auto-Approved',medium:'Sr. Agent Approval Required',high:'Sr. Manager Approval Required'};
+    const cls = buf.tier === 'high' ? 'er' : 'wn';
+    return `<div class="appr-box ${cls}"><div class="appr-title">&#9888; Within ${buf.label} Urgency Buffer &mdash; ${tierMap[buf.tier]}</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is +${pctOver}% above benchmark (${fmt(benchMed)}) — within the ${bufPct}% ${buf.label.toLowerCase()} urgency allowance.</div></div>`;
+  }
+  if (lowest<=totalHigh) return `<div class="appr-box wn"><div class="appr-title">&#9888; Exceeds Buffer &mdash; Sr. Agent Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) exceeds the urgency buffer${buf?' ('+Math.round(buf.pct*100)+'% for '+buf.label+' urgency)':''}. Escalate to Sr. Agent before proceeding.</div></div>`;
+  return `<div class="appr-box er"><div class="appr-title">&#9888; Exceeds Proposal Range &mdash; Sr. Manager Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) exceeds the proposal high estimate (${fmt(totalHigh)}). Sr. Manager approval required before proceeding.</div></div>`;
+}
+
+function getApprovalStatus(lowest,activeSvcs,totalMed,totalHigh,benchMed) {
   const sps=[...new Set(activeSvcs.map(s=>{const x=SERVICES.find(v=>v.id===s.svcId);return x?x.sp:null;}).filter(Boolean))];
   if (sps.length) return 'Special Approval';
   if (lowest>50000) return 'Senior Manager';
   if (lowest<=totalMed) return 'Auto-approved';
+  const buf = benchMed > 0 ? _urgencyBuffer(activeSvcs) : null;
+  if (buf && lowest <= benchMed * (1 + buf.pct)) return buf.tier === 'low' ? 'Auto-approved' : buf.tier === 'medium' ? 'Senior Agent' : 'Senior Manager';
   if (lowest<=totalHigh) return 'Senior Agent';
   return 'Senior Manager';
 }
@@ -3438,7 +3370,7 @@ function saveToLog() {
     diffLabel:diff2<=0?'Under Benchmark':'Over Benchmark',
     bidCount:valid.length,
     bids:valid.map(b=>({vendor:b.vendor||'Unnamed',amount:parseFloat(b.amount)})),
-    status:getApprovalStatus(lowestA,activeSvcs,logBenchMed,logBenchHigh)
+    status:getApprovalStatus(lowestA,activeSvcs,logBenchMed,logBenchHigh,combBenchMedHoisted)
   };
   logEntries.unshift(entry);
   localStorage.setItem('fsr_log','JSON:'+JSON.stringify(logEntries));
