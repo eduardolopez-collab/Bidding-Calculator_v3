@@ -317,6 +317,8 @@ table.log-tbl tr:hover td{background:var(--bh)}
   .bd-total:has(.bd-combined) .bd-total-lbl{margin-top:0;font-size:11px;color:#b8e840;letter-spacing:.08em}
   .bd-total:has(.bd-combined) .bd-total-val{font-size:20px;margin-left:auto}
   .lr-rate-badge,.mat-range{display:none !important}
+  .rng-full{display:none}
+  .rng-abv{display:inline}
   .lr-rate-override{width:120px}
   /* Metric cards: stack value + delta badge vertically */
   .metric{padding:10px 12px}
@@ -418,6 +420,8 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
 .lr-rate-badge,.mat-range{font-size:11px;color:var(--tm);flex:1 1 0;min-width:0;overflow:hidden;white-space:nowrap;display:flex;align-items:center;justify-content:center}
 .mat-cost-break{display:none}
 .mat-range{width:177px;height:13px}
+.rng-abv{display:none}
+.rng-full{display:inline}
 .lr-rate-override{width:165px;height:24px;min-width:90px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:4px 8px;-webkit-appearance:none;appearance:none;transition:border-color .15s,color .15s}
 .lr-rate-override:focus{outline:none;border-color:var(--in-b)}
 .lr-rate-override:not(:placeholder-shown){border-color:var(--in-b);color:var(--in-t)}
@@ -2030,7 +2034,7 @@ function buildBreakdown(svc) {
         const adjHigh = mat ? Math.round(mat.high * city.matMult * 100) / 100 : 0;
         const adjMedMat = mat ? Math.round(mat.med * city.matMult * 100) / 100 : 0;
         const matUnitAbv = mat ? unitAbv(mat.unit) : '';
-        const rangeText = mat ? `$${adjLow} — $${adjHigh} / ${matUnitAbv}` : '';
+        const rangeText = mat ? `<span class="rng-full">$${adjLow} — $${adjHigh} / ${mat.unit}</span><span class="rng-abv">$${adjLow} — $${adjHigh} / ${matUnitAbv}</span>` : '';
         const initMatCost = mp.cost !== '' ? parseFloat(mp.cost) : adjMedMat;
         const initMatTotal = initMatCost * (parseFloat(mp.qty) || 0);
         const uid = 'mrow_' + svc.idx + '_' + i;
@@ -2145,10 +2149,10 @@ function matChanged(svcIdx, rowIdx, matId) {
     const adjLow  = Math.round(mat.low  * city.matMult * 100) / 100;
     const adjHigh = Math.round(mat.high * city.matMult * 100) / 100;
     const adjMed  = Math.round(mat.med  * city.matMult * 100) / 100;
-    rangeEl.textContent = `$${adjLow} — $${adjHigh} / ${unitAbv(mat.unit)}`;
+    rangeEl.innerHTML = `<span class="rng-full">$${adjLow} — $${adjHigh} / ${mat.unit}</span><span class="rng-abv">$${adjLow} — $${adjHigh} / ${unitAbv(mat.unit)}</span>`;
     if (costEl) costEl.placeholder = `Benchmark: $${adjMed} / ${unitAbv(mat.unit)}`;
   } else if (rangeEl) {
-    rangeEl.textContent = '';
+    rangeEl.innerHTML = '';
     if (costEl) costEl.placeholder = 'Vendor $/unit';
   }
   // Collapse select to flat label
