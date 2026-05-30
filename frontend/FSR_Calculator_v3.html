@@ -2872,13 +2872,17 @@ function approvalHtml(lowest,activeSvcs,totalMed,totalHigh,benchMed) {
   if (sps.includes('Pest')) return `<div class="appr-box sp"><div class="appr-title">Procurement-Managed Service</div><div class="appr-desc">Pest removal is coordinated by Procurement &mdash; loop them in before engaging any vendor.</div></div>`;
   if (lowest>50000) return `<div class="appr-box er"><div class="appr-title">Escalation Required &mdash; José Soares</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) exceeds $50,000. José Soares must approve before proceeding.</div></div>`;
   const ref = benchMed > 0 ? benchMed : totalMed;
+  const buf = _urgencyBuffer(activeSvcs);
+  const bufPct = buf ? Math.round(buf.pct*100) : 10;
+  const bufLabel = buf ? buf.label : 'Low';
   function fmtPct(raw, threshold) { let dp=1; while(dp<=4 && parseFloat(raw.toFixed(dp))<=threshold) dp++; return raw.toFixed(dp); }
   const _raw = ref > 0 ? ((lowest/ref)-1)*100 : 0;
   if (lowest <= ref) return `<div class="appr-box ok"><div class="appr-title">&#10003; Within Benchmark &mdash; Agent Auto-Approved</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is at or below the benchmark (${fmt(ref)}). No escalation needed.</div></div>`;
-  if (lowest <= ref*1.10) return `<div class="appr-box ok"><div class="appr-title">&#10003; Within Benchmark + 10% Buffer &mdash; Agent Auto-Approved</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,0)}%</b> above benchmark — within the 10% allowance. No escalation needed.</div></div>`;
+  if (lowest <= ref*(1+buf.pct)) return `<div class="appr-box ok"><div class="appr-title">&#10003; Within Benchmark + ${bufPct}% Buffer &mdash; Agent Auto-Approved</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,0)}%</b> above benchmark — within the ${bufPct}% ${bufLabel} urgency allowance. No escalation needed.</div></div>`;
+  if (lowest <= ref*1.10) return `<div class="appr-box wn"><div class="appr-title">&#9888; Exceeds ${bufPct}% Buffer &mdash; Sr. Agent Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,bufPct)}%</b> above benchmark — exceeds the ${bufPct}% ${bufLabel} urgency buffer. Sr. Agent approval required before proceeding.</div></div>`;
   if (lowest <= ref*1.15) return `<div class="appr-box wn"><div class="appr-title">&#9888; Exceeds 10% Buffer &mdash; Sr. Agent Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,10)}%</b> above benchmark — exceeds the 10% buffer. Sr. Agent approval required before proceeding.</div></div>`;
   if (lowest <= ref*1.20) return `<div class="appr-box wn"><div class="appr-title">&#9888; Exceeds 15% Buffer &mdash; Sr. Agent or Above Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,15)}%</b> above benchmark — exceeds the 15% buffer. Sr. Agent or above approval required before proceeding.</div></div>`;
-  return `<div class="appr-box er"><div class="appr-title">&#9888; Exceeds 20% Buffer &mdash; Sr. Manager or Above Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${_raw.toFixed(1)}%</b> above benchmark — exceeds the 20% buffer. Sr. Manager or above approval required before proceeding.</div></div>`;
+  return `<div class="appr-box er"><div class="appr-title">&#9888; Exceeds 20% Buffer &mdash; Sr. Manager or Above Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,20)}%</b> above benchmark — exceeds the 20% buffer. Sr. Manager or above approval required before proceeding.</div></div>`;
 }
 
 function getApprovalStatus(lowest,activeSvcs,totalMed,totalHigh,benchMed) {
@@ -2886,7 +2890,8 @@ function getApprovalStatus(lowest,activeSvcs,totalMed,totalHigh,benchMed) {
   if (sps.length) return 'Special Approval';
   if (lowest>50000) return 'Senior Manager';
   const ref = benchMed > 0 ? benchMed : totalMed;
-  if (lowest<=ref*1.10) return 'Auto-approved';
+  const buf = _urgencyBuffer(activeSvcs);
+  if (buf && lowest<=ref*(1+buf.pct)) return 'Auto-approved';
   if (lowest<=ref*1.15) return 'Senior Agent';
   if (lowest<=ref*1.20) return 'Senior Agent';
   return 'Senior Manager';
