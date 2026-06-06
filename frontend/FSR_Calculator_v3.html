@@ -2595,10 +2595,11 @@ function recalcResults() {
         const r = LABOR_RATES[lp.trade] || {low:0,med:0,high:0};
         // Unit-based: hrs spinner already holds h×qty. Non-unit-based: scale by qty here.
         const labScale = s.ub ? 1 : qty;
-        laborBenchLow  += r.low  * city.laborMult * hrs * workers * labScale;
-        laborBenchMed  += r.med  * city.laborMult * hrs * workers * labScale;
-        laborBenchHigh += r.high * city.laborMult * hrs * workers * labScale;
-        // Proposal: same spinners, but effective rate (override or market)
+        // Benchmark uses market rate × hrs only — workers is a proposal variable, not a benchmark variable
+        laborBenchLow  += r.low  * city.laborMult * hrs * labScale;
+        laborBenchMed  += r.med  * city.laborMult * hrs * labScale;
+        laborBenchHigh += r.high * city.laborMult * hrs * labScale;
+        // Proposal: effective rate (override or market) × hrs × workers
         const effectiveRate = getEffectiveLaborRate(svc, lp.trade, city, i);
         laborProposalMed += effectiveRate * hrs * workers * labScale;
       });
@@ -2615,9 +2616,9 @@ function recalcResults() {
           const hrs     = hrsEl  ? (parseFloat(hrsEl.value)  || 0) : 0;
           const workers = wrkEl  ? (parseInt(wrkEl.value)    || 1) : 1;
           const r = LABOR_RATES[trade] || {low:0,med:0,high:0};
-          laborBenchLow  += r.low  * city.laborMult * hrs * workers;
-          laborBenchMed  += r.med  * city.laborMult * hrs * workers;
-          laborBenchHigh += r.high * city.laborMult * hrs * workers;
+          laborBenchLow  += r.low  * city.laborMult * hrs;
+          laborBenchMed  += r.med  * city.laborMult * hrs;
+          laborBenchHigh += r.high * city.laborMult * hrs;
           const overrideVal = rateEl && rateEl.value !== '' ? parseFloat(rateEl.value) : null;
           const effectiveRate = (overrideVal !== null && !isNaN(overrideVal) && overrideVal > 0)
             ? overrideVal : r.med * city.laborMult;
