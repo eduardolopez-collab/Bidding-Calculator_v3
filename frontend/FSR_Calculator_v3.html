@@ -1458,9 +1458,14 @@ function snapshotAllBreakdowns() {
     const lr = document.getElementById('labor_rows_' + svc.idx);
     if (lr) {
       // Snapshot static (service-defined) labor rows using known element IDs
+      // If the element is absent but the container was already built, record removal.
+      const builtFor = lr.dataset.builtFor;
       [0, 1].forEach(i => {
         const hrsEl = document.getElementById('lhrs_'  + svc.idx + '_' + i);
-        if (!hrsEl) return;
+        if (!hrsEl) {
+          if (builtFor === svc.svcId) snap['lhrs_removed_' + i] = true;
+          return;
+        }
         snap['lhrs_' + i] = hrsEl.value;
         const wEl = document.getElementById('lwrk_' + svc.idx + '_' + i);
         if (wEl) snap['lwrk_' + i] = parseInt(wEl.value) || 1;
@@ -1877,6 +1882,7 @@ function buildBreakdown(svc) {
       if (s.t1) laborPairs.push({trade: s.t1, hrs: s.h1 || 0});
       if (s.t2) laborPairs.push({trade: s.t2, hrs: s.h2 || 0});
       lr.innerHTML = laborPairs.map((lp, i) => {
+        if (snap['lhrs_removed_' + i]) return '';
         const rates = LABOR_RATES[lp.trade] || {low:0,med:0,high:0};
         const adjLow  = Math.round(rates.low  * city.laborMult);
         const adjMed  = Math.round(rates.med  * city.laborMult);
