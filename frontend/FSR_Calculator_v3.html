@@ -2675,8 +2675,10 @@ function recalcResults() {
     activeSvcs.forEach(svc => {
       const s = SERVICES.find(x => x.id === svc.svcId);
       if (!s) return;
+      const _sp = svc.bdSnap || {};
       [[s.t1, s.h1, 0],[s.t2, s.h2, 1]].forEach(([trade, defHrs, i]) => {
         if (!trade) return;
+        if (_sp['lhrs_removed_' + i]) return;
         const hrsEl = document.getElementById('lhrs_' + svc.idx + '_' + i);
         const wrkEl = document.getElementById('lwrk_' + svc.idx + '_' + i);
         const hrs = hrsEl ? (parseFloat(hrsEl.value) || 0) : (defHrs || 0);
