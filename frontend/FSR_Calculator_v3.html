@@ -2973,8 +2973,10 @@ function buildPrintInvoice(city,activeSvcs,validBids,lowestA,lowestBid,totalRef,
 
     // Labor lines — body text spec: 10px Roboto 400, lh 130%
     let laborTotal = 0;
+    const _bdSnap = svc.bdSnap || {};
     [[s.t1,s.h1,0],[s.t2,s.h2,1]].forEach(([trade,defHrs,li]) => {
       if (!trade) return;
+      if (_bdSnap['lhrs_removed_' + li]) return;
       const hrsEl = document.getElementById('lhrs_' + svc.idx + '_' + li);
       const hrs = hrsEl ? (parseFloat(hrsEl.value) || 0) : (defHrs || 0);
       const adjRate = getEffectiveLaborRate(svc, trade, city, li);
