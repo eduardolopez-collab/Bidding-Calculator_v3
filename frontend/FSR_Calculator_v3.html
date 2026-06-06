@@ -1867,8 +1867,11 @@ function buildBreakdown(svc) {
   try {
     // Rebuild when: rows don't exist yet, OR the service changed since last build.
     // Tracks last-built svcId on the element so switching services always re-renders.
-    const alreadyBuilt = (lr.querySelector('.lr-hrs') || mr.querySelector('.mat-row'))
-                         && lr.dataset.builtFor === svc.svcId;
+    const _snap = svc.bdSnap || {};
+    const alreadyBuilt = lr.dataset.builtFor === svc.svcId
+                         && (lr.querySelector('.lr-hrs') || mr.querySelector('.mat-row')
+                             || lr.querySelector('.labor-row-dynamic')
+                             || _snap['lhrs_removed_0'] || _snap['lhrs_removed_1']);
     if (!alreadyBuilt) {
       // If service changed, discard the old snap so stale labor/material data
       // from the previous service doesn't bleed into the new one.
