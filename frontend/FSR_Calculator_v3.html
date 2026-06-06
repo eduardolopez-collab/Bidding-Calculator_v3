@@ -2877,12 +2877,17 @@ function approvalHtml(lowest,activeSvcs,totalMed,totalHigh,benchMed) {
   const bufLabel = buf ? buf.label : 'Low';
   function fmtPct(raw, threshold) { let dp=1; while(dp<=4 && parseFloat(raw.toFixed(dp))<=threshold) dp++; return raw.toFixed(dp); }
   const _raw = ref > 0 ? ((lowest/ref)-1)*100 : 0;
+  // Green: at or below benchmark
   if (lowest <= ref) return `<div class="appr-box ok"><div class="appr-title">&#10003; Within Benchmark &mdash; Agent Auto-Approved</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is at or below the benchmark (${fmt(ref)}). No escalation needed.</div></div>`;
+  // Green: within urgency buffer (Low ≤10%, Medium ≤15%, High ≤20%)
   if (lowest <= ref*(1+buf.pct)) return `<div class="appr-box ok"><div class="appr-title">&#10003; Within Benchmark + ${bufPct}% Buffer &mdash; Agent Auto-Approved</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,0)}%</b> above benchmark — within the ${bufPct}% ${bufLabel} urgency allowance. No escalation needed.</div></div>`;
-  if (lowest <= ref*1.10) return `<div class="appr-box wn"><div class="appr-title">&#9888; Exceeds ${bufPct}% Buffer &mdash; Sr. Agent Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,bufPct)}%</b> above benchmark — exceeds the ${bufPct}% ${bufLabel} urgency buffer. Sr. Agent approval required before proceeding.</div></div>`;
-  if (lowest <= ref*1.15) return `<div class="appr-box wn"><div class="appr-title">&#9888; Exceeds 10% Buffer &mdash; Sr. Agent Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,10)}%</b> above benchmark — exceeds the 10% buffer. Sr. Agent approval required before proceeding.</div></div>`;
-  if (lowest <= ref*1.20) return `<div class="appr-box wn"><div class="appr-title">&#9888; Exceeds 15% Buffer &mdash; Sr. Agent or Above Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,15)}%</b> above benchmark — exceeds the 15% buffer. Sr. Agent or above approval required before proceeding.</div></div>`;
-  return `<div class="appr-box er"><div class="appr-title">&#9888; Exceeds 20% Buffer &mdash; Sr. Manager or Above Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,20)}%</b> above benchmark — exceeds the 20% buffer. Sr. Manager or above approval required before proceeding.</div></div>`;
+  // Escalation tiers — applied relative to the urgency buffer ceiling, not hardcoded thresholds
+  // First tier: buffer ceiling up to buffer+5% (Sr. Agent)
+  if (lowest <= ref*(1+buf.pct+0.05)) return `<div class="appr-box wn"><div class="appr-title">&#9888; Exceeds ${bufPct}% Buffer &mdash; Sr. Agent Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,bufPct)}%</b> above benchmark — exceeds the ${bufPct}% ${bufLabel} urgency buffer. Sr. Agent approval required before proceeding.</div></div>`;
+  // Second tier: buffer+5% up to buffer+10% (Sr. Agent or Above)
+  if (lowest <= ref*(1+buf.pct+0.10)) return `<div class="appr-box wn"><div class="appr-title">&#9888; Exceeds ${bufPct+5}% Buffer &mdash; Sr. Agent or Above Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,bufPct+5)}%</b> above benchmark — exceeds the ${bufPct+5}% threshold. Sr. Agent or above approval required before proceeding.</div></div>`;
+  // Third tier: anything above buffer+10% (Sr. Manager or Above)
+  return `<div class="appr-box er"><div class="appr-title">&#9888; Exceeds ${bufPct+10}% Buffer &mdash; Sr. Manager or Above Approval Required</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) is <b>${fmtPct(_raw,bufPct+10)}%</b> above benchmark — exceeds the ${bufPct+10}% threshold. Sr. Manager or above approval required before proceeding.</div></div>`;
 }
 
 function getApprovalStatus(lowest,activeSvcs,totalMed,totalHigh,benchMed) {
@@ -2891,9 +2896,9 @@ function getApprovalStatus(lowest,activeSvcs,totalMed,totalHigh,benchMed) {
   if (lowest>50000) return 'Senior Manager';
   const ref = benchMed > 0 ? benchMed : totalMed;
   const buf = _urgencyBuffer(activeSvcs);
-  if (buf && lowest<=ref*(1+buf.pct)) return 'Auto-approved';
-  if (lowest<=ref*1.15) return 'Senior Agent';
-  if (lowest<=ref*1.20) return 'Senior Agent';
+  if (lowest<=ref*(1+(buf?buf.pct:0.10))) return 'Auto-approved';
+  if (lowest<=ref*(1+(buf?buf.pct:0.10)+0.05)) return 'Senior Agent';
+  if (lowest<=ref*(1+(buf?buf.pct:0.10)+0.10)) return 'Senior Agent';
   return 'Senior Manager';
 }
 
