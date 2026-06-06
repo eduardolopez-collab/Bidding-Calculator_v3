@@ -2859,10 +2859,10 @@ function recalcResults() {
 }
 
 function _urgencyBuffer(activeSvcs) {
-  // Returns the buffer config for the highest urgency set across all active services
+  // Returns the buffer config for the highest urgency set across services that have a service selected
   const order = ['high','medium','low'];
   for (const tier of order) {
-    if (activeSvcs.some(s => (s.tier||'').toLowerCase() === tier)) return {tier, ...URGENCY_BUFFERS[tier]};
+    if (activeSvcs.some(s => s.svcId && (s.tier||'').toLowerCase() === tier)) return {tier, ...URGENCY_BUFFERS[tier]};
   }
   return null;
 }
@@ -2872,9 +2872,9 @@ function approvalHtml(lowest,activeSvcs,totalMed,totalHigh,benchMed) {
   if (sps.includes('Pest')) return `<div class="appr-box sp"><div class="appr-title">Procurement-Managed Service</div><div class="appr-desc">Pest removal is coordinated by Procurement &mdash; loop them in before engaging any vendor.</div></div>`;
   if (lowest>50000) return `<div class="appr-box er"><div class="appr-title">Escalation Required &mdash; José Soares</div><div class="appr-desc">Lowest bid (${fmt(lowest)}) exceeds $50,000. José Soares must approve before proceeding.</div></div>`;
   const ref = benchMed > 0 ? benchMed : totalMed;
-  const buf = _urgencyBuffer(activeSvcs);
-  const bufPct = buf ? Math.round(buf.pct*100) : 10;
-  const bufLabel = buf ? buf.label : 'Low';
+  const buf = _urgencyBuffer(activeSvcs) || {pct:0.10,label:'Low'};
+  const bufPct = Math.round(buf.pct*100);
+  const bufLabel = buf.label;
   function fmtPct(raw, threshold) { let dp=1; while(dp<=4 && parseFloat(raw.toFixed(dp))<=threshold) dp++; return raw.toFixed(dp); }
   const _raw = ref > 0 ? ((lowest/ref)-1)*100 : 0;
   // Green: at or below benchmark
