@@ -2816,8 +2816,16 @@ function recalcResults() {
     const tr=svc.travel==='yes';
     const travel=tr?(s.travel||0):0;
     let labLow=0, labMed=0, labHigh=0;
-    if(s.t1){const r=LABOR_RATES[s.t1]||{low:0,med:0,high:0};labLow+=r.low*(s.h1||0)*city.laborMult;labMed+=r.med*(s.h1||0)*city.laborMult;labHigh+=r.high*(s.h1||0)*city.laborMult;}
-    if(s.t2){const r=LABOR_RATES[s.t2]||{low:0,med:0,high:0};labLow+=r.low*(s.h2||0)*city.laborMult;labMed+=r.med*(s.h2||0)*city.laborMult;labHigh+=r.high*(s.h2||0)*city.laborMult;}
+    const _bdSp=svc.bdSnap||{};
+    [[s.t1,s.h1,0],[s.t2,s.h2,1]].forEach(([trade,defHrs,i])=>{
+      if(!trade||_bdSp['lhrs_removed_'+i]) return;
+      const r=LABOR_RATES[trade]||{low:0,med:0,high:0};
+      const hrsEl=document.getElementById('lhrs_'+svc.idx+'_'+i);
+      const wrkEl=document.getElementById('lwrk_'+svc.idx+'_'+i);
+      const hrs=hrsEl?(parseFloat(hrsEl.value)||0):(defHrs||0);
+      const wrk=wrkEl?(parseInt(wrkEl.value)||1):1;
+      labLow+=r.low*hrs*wrk*city.laborMult; labMed+=r.med*hrs*wrk*city.laborMult; labHigh+=r.high*hrs*wrk*city.laborMult;
+    });
     // Default materials × city mult × qty
     let matLow=0, matMed=0, matHigh=0;
     if(s.m1){const m=MATERIALS.find(x=>x.id===s.m1);if(m){matLow+=m.low*(s.q1||0)*city.matMult;matMed+=m.med*(s.q1||0)*city.matMult;matHigh+=m.high*(s.q1||0)*city.matMult;}}
@@ -3359,8 +3367,16 @@ function saveToLog() {
     const tr=svc.travel==='yes';
     const travel=tr?(s.travel||0):0;
     let labLow2=0,labMed2=0,labHigh2=0;
-    if(s.t1){const r=LABOR_RATES[s.t1]||{low:0,med:0,high:0};labLow2+=r.low*(s.h1||0)*city.laborMult;labMed2+=r.med*(s.h1||0)*city.laborMult;labHigh2+=r.high*(s.h1||0)*city.laborMult;}
-    if(s.t2){const r=LABOR_RATES[s.t2]||{low:0,med:0,high:0};labLow2+=r.low*(s.h2||0)*city.laborMult;labMed2+=r.med*(s.h2||0)*city.laborMult;labHigh2+=r.high*(s.h2||0)*city.laborMult;}
+    const _bdSp2=svc.bdSnap||{};
+    [[s.t1,s.h1,0],[s.t2,s.h2,1]].forEach(([trade,defHrs,i])=>{
+      if(!trade||_bdSp2['lhrs_removed_'+i]) return;
+      const r=LABOR_RATES[trade]||{low:0,med:0,high:0};
+      const hrsEl=document.getElementById('lhrs_'+svc.idx+'_'+i);
+      const wrkEl=document.getElementById('lwrk_'+svc.idx+'_'+i);
+      const hrs=hrsEl?(parseFloat(hrsEl.value)||0):(defHrs||0);
+      const wrk=wrkEl?(parseInt(wrkEl.value)||1):1;
+      labLow2+=r.low*hrs*wrk*city.laborMult; labMed2+=r.med*hrs*wrk*city.laborMult; labHigh2+=r.high*hrs*wrk*city.laborMult;
+    });
     let matLow2=0,matMed2=0,matHigh2=0;
     if(s.m1){const m=MATERIALS.find(x=>x.id===s.m1);if(m){matLow2+=m.low*(s.q1||0)*city.matMult;matMed2+=m.med*(s.q1||0)*city.matMult;matHigh2+=m.high*(s.q1||0)*city.matMult;}}
     if(s.m2){const m=MATERIALS.find(x=>x.id===s.m2);if(m){matLow2+=m.low*(s.q2||0)*city.matMult;matMed2+=m.med*(s.q2||0)*city.matMult;matHigh2+=m.high*(s.q2||0)*city.matMult;}}
