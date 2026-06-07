@@ -1888,14 +1888,15 @@ function buildBreakdown(svc) {
         if (snap['lhrs_removed_' + i]) return '';
         const rates = LABOR_RATES[lp.trade] || {low:0,med:0,high:0};
         const adjLow  = Math.round(rates.low  * city.laborMult);
-        const adjMed  = Math.round(rates.med  * city.laborMult);
+        const adjMedExact = rates.med * city.laborMult;
+        const adjMed  = Math.round(adjMedExact);
         const adjHigh = Math.round(rates.high * city.laborMult);
         // Unit-based: hrs/unit × qty scales with measurement.
         // Per-visit/per-unit: default to service benchmark hrs so proposal starts at benchmark.
         const hrsAdjusted = s.ub ? parseFloat((lp.hrs * qty).toFixed(4)) : (lp.hrs || 0);
         const workersDefault = snap['lwrk_' + i] !== undefined ? snap['lwrk_' + i] : 1;
         const savedRate = snap['lrate_' + i] || '';
-        const effectiveRate = savedRate !== '' ? parseFloat(savedRate) : adjMed;
+        const effectiveRate = savedRate !== '' ? parseFloat(savedRate) : adjMedExact;
         const totalMed = effectiveRate * hrsAdjusted * workersDefault;
         const uid  = 'lhrs_'  + svc.idx + '_' + i;
         const wuid = 'lwrk_'  + svc.idx + '_' + i;
