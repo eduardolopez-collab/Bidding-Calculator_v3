@@ -1893,7 +1893,9 @@ function buildBreakdown(svc) {
         const adjHigh = Math.round(rates.high * city.laborMult);
         // Unit-based: hrs/unit × qty scales with measurement.
         // Per-visit/per-unit: default to service benchmark hrs so proposal starts at benchmark.
-        const hrsAdjusted = s.ub ? parseFloat((lp.hrs * qty).toFixed(4)) : (lp.hrs || 0);
+        const hrsDefault = s.ub ? parseFloat((lp.hrs * qty).toFixed(4)) : (lp.hrs || 0);
+        const savedHrs = (!serviceChanged && snap['lhrs_' + i] !== undefined && snap['lhrs_' + i] !== '') ? parseFloat(snap['lhrs_' + i]) : hrsDefault;
+        const hrsAdjusted = savedHrs;
         const workersDefault = snap['lwrk_' + i] !== undefined ? snap['lwrk_' + i] : 1;
         const savedRate = snap['lrate_' + i] || '';
         const effectiveRate = savedRate !== '' ? parseFloat(savedRate) : adjMedExact;
