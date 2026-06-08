@@ -2967,6 +2967,7 @@ function buildPrintInvoice(city,activeSvcs,validBids,lowestA,lowestBid,totalRef,
   activeSvcs.forEach((svc, i) => {
     const s = SERVICES.find(x => x.id === svc.svcId);
     if (!s) return;
+    const tr = svc.travel === 'yes';
     const travelAmt = getTravelCost(svc, s, city);
 
     // Service header row — Flix Grey bg, green category label, Nunito subline weight
