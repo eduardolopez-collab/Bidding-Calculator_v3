@@ -2543,7 +2543,7 @@ function recalc() {
 }
 
 // Module-level: latest live-DOM combined benchmarks, written by recalcResults, read by submitFSR
-let _combBenchMedLive=0, _combBenchHighLive=0;
+let _combBenchMedLive=0, _combBenchHighLive=0, _combBenchMedHoisted=0;
 
 // Hide subline badges (.lr-rate-badge, .mat-range) entirely if even 1px is clipped.
 // Called after layout settles via requestAnimationFrame.
@@ -2662,7 +2662,7 @@ function recalcResults() {
     const combBenchMed  = laborBenchMedWithTravel         + matBenchMed;
     const combBenchHigh = (laborBenchHigh + travelBench) + matBenchHigh;
     combBenchLowHoisted  = combBenchLow;
-    combBenchMedHoisted  = combBenchMed;
+    combBenchMedHoisted  = combBenchMed; _combBenchMedHoisted = combBenchMed;
     combBenchHighHoisted = combBenchHigh;
     combProposalMedHoisted = (laborProposalMed + travelProposal) + matProposalMed;
     _combBenchMedLive    = combProposalMedHoisted;
@@ -3394,7 +3394,7 @@ function saveToLog() {
     diffLabel:diff2<=0?'Under Benchmark':'Over Benchmark',
     bidCount:valid.length,
     bids:valid.map(b=>({vendor:b.vendor||'Unnamed',amount:parseFloat(b.amount)})),
-    status:getApprovalStatus(lowestA,activeSvcs,logBenchMed,logBenchHigh,combBenchMedHoisted)
+    status:getApprovalStatus(lowestA,activeSvcs,logBenchMed,logBenchHigh,_combBenchMedHoisted)
   };
   logEntries.unshift(entry);
   localStorage.setItem('fsr_log','JSON:'+JSON.stringify(logEntries));
