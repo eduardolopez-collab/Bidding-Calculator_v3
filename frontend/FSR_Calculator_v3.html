@@ -2189,7 +2189,8 @@ function matChanged(svcIdx, rowIdx, matId) {
 function addMatRow(svcIdx) {
   const mr = document.getElementById('mat_rows_' + svcIdx);
   if (!mr) return;
-  const rowIdx = mr.querySelectorAll('.mat-row').length;
+  const existingIdxs = [...mr.querySelectorAll('.mat-row')].map(r => parseInt(r.id.split('_').pop()) || 0);
+  const rowIdx = existingIdxs.length ? Math.max(...existingIdxs) + 1 : 0;
   const uid    = 'mrow_' + svcIdx + '_' + rowIdx;
   const svc    = services.find(s => s.idx === svcIdx);
   const s      = svc ? SERVICES.find(x => x.id === svc.svcId) : null;
