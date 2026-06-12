@@ -2564,6 +2564,11 @@ function importVendorSubmission(input) {
     if (emptyFirst) {
       bids[0].vendor = company;
       bids[0].amount = String(amount);
+      // Card already exists in DOM — update inputs directly
+      const vEl = document.getElementById('bv_' + bids[0].id);
+      const aEl = document.getElementById('ba_' + bids[0].id);
+      if (vEl) vEl.value = company;
+      if (aEl) aEl.value = String(amount);
     } else {
       bidCount++;
       bids.push({id: bidCount, vendor: company, amount: String(amount)});
