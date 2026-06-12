@@ -2570,7 +2570,9 @@ function importVendorSubmission(input) {
       if (vEl) vEl.value = company;
       if (aEl) aEl.value = String(amount);
     } else {
-      bidCount++;
+      // Always use max existing id + 1 to avoid gaps from toggleService calls
+      const nextId = Math.max(...bids.map(b => b.id), bidCount) + 1;
+      bidCount = nextId;
       bids.push({id: bidCount, vendor: company, amount: String(amount)});
     }
     renderBids();
