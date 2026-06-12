@@ -1264,7 +1264,8 @@ function restoreState() {
         travel:         s.travel         || 'yes',
         travelOverride: s.travelOverride != null ? s.travelOverride : '',
         measurement:    s.measurement    || '',
-        bdSnap: s.bdSnap || {}
+        bdSnap:     s.bdSnap    || {},
+        collapsed:  s.collapsed || false
       }));
       svcCount = Math.max(svcCount, ...services.map(s=>s.idx));
       renderServicesDOM();
