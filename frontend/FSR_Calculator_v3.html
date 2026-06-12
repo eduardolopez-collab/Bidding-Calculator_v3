@@ -217,6 +217,9 @@ body{background:var(--bp);color:var(--tp);min-height:100vh;transition:background
 .btn-add:hover{background:var(--fg-dim)}
 .btn-add .chev{width:18px;height:18px;border-radius:50%;background:var(--fg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .btn-add .chev svg{width:10px;height:10px}
+.btn-import{border-color:var(--bm);color:var(--tm);margin-top:4px}
+.btn-import:hover{background:var(--bi)}
+.chev-import{background:var(--bm)!important}
 .btn-save{width:100%;padding:11px;background:var(--fg);border:none;border-radius:24px;color:#353535;font-size:14px;font-weight:700;font-family:'Roboto',sans-serif;cursor:pointer;margin-top:8px;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-save:hover{background:var(--fg-dk)}
 .btn-save .cp{width:22px;height:22px;border-radius:50%;background:#353535;display:flex;align-items:center;justify-content:center}
@@ -551,6 +554,11 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
         <div class="chev"><svg viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="#353535" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         Add Vendor Bid
       </button>
+      <button class="btn-add btn-import" onclick="document.getElementById('importFileInput').click()">
+        <div class="chev chev-import"><svg viewBox="0 0 10 10" fill="none"><path d="M5 1v6M2 5l3 3 3-3" stroke="#353535" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        Import Vendor Submission
+      </button>
+      <input type="file" id="importFileInput" accept=".json,application/json" style="display:none" onchange="importVendorSubmission(this)">
     </div>
 
     <!-- Results -->
@@ -2530,6 +2538,46 @@ function removeBid(id) {
   renderBids();
   saveState();
   recalcResults();
+}
+function importVendorSubmission(input) {
+  const file = input.files[0];
+  input.value = ''; // reset so same file can be re-imported
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    let data;
+    try { data = JSON.parse(e.target.result); }
+    catch { showToast('Invalid file — could not parse JSON.', 't-er', 4000); return; }
+    if (!data._form_version || !data.vendor || !data.totals) {
+      showToast('File does not appear to be a valid FSR Vendor Submission.', 't-er', 4000);
+      return;
+    }
+    const company = (data.vendor.company || '').trim();
+    const amount  = data.totals.grand_total;
+    if (!company || !amount || isNaN(amount) || amount <= 0) {
+      showToast('Submission is missing vendor name or bid total.', 't-er', 4000);
+      return;
+    }
+    // Check for duplicate company name
+    const existing = bids.find(b => b.vendor.trim().toLowerCase() === company.toLowerCase());
+    if (existing) {
+      if (!confirm(`A bid from "${company}" already exists. Replace it with the imported amount ($${amount.toFixed(2)})?`)) return;
+      existing.amount = String(amount);
+      renderBids();
+      saveState();
+      recalcResults();
+      showToast(`Updated bid for ${company} — $${amount.toLocaleString('en-US',{minimumFractionDigits:2})}.`, 't-ok', 4000);
+      return;
+    }
+    // Add as new bid
+    bidCount++;
+    bids.push({id: bidCount, vendor: company, amount: String(amount)});
+    renderBids();
+    saveState();
+    recalcResults();
+    showToast(`Imported: ${company} — $${amount.toLocaleString('en-US',{minimumFractionDigits:2})}.`, 't-ok', 4000);
+  };
+  reader.readAsText(file);
 }
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
