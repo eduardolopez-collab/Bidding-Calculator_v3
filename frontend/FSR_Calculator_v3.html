@@ -2655,6 +2655,19 @@ function importVendorSubmission(input) {
     const existingMatSelected = mr ? [...mr.querySelectorAll('.mat-row')].filter(r => { const s = r.querySelector('.mat-item'); return s && s.value; }).length : 0;
     const breakdownEmpty = existingDynamic === 0 && existingMatSelected === 0;
 
+    // Remove all default labor + material rows when import has its own data
+    if (hasLabor || hasMat) {
+      // Remove default labor rows and flag them removed in bdSnap
+      if (lr) {
+        lr.querySelectorAll('.labor-row').forEach((row, i) => { row.remove(); });
+        if (!svc.bdSnap) svc.bdSnap = {};
+        svc.bdSnap['lhrs_removed_0'] = true;
+        svc.bdSnap['lhrs_removed_1'] = true;
+      }
+      // Remove all existing mat rows (default and blank)
+      if (mr) mr.querySelectorAll('.mat-row').forEach(row => row.remove());
+    }
+
     if (!breakdownEmpty) {
       if (!confirm(`Service ${svc.idx} already has breakdown rows. Add vendor rows alongside existing ones?`)) {
         saveState(); recalcResults();
