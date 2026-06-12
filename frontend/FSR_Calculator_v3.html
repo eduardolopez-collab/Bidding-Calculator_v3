@@ -566,12 +566,8 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
         <div class="chev"><svg viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="#353535" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         Add Vendor Bid
       </button>
-      <button class="btn-add btn-import" onclick="document.getElementById('importFileInput').click()">
-        <div class="chev chev-import"><svg viewBox="0 0 10 10" fill="none"><path d="M5 1v6M2 5l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        Import Vendor Submission
-      </button>
-      <input type="file" id="importFileInput" accept=".json,application/json" style="display:none" onchange="importVendorSubmission(this)">
     </div>
+    <input type="file" id="importFileInput" accept=".json,application/json" style="display:none" onchange="importVendorSubmission(this)">
 
     <!-- Results -->
     <div id="resultsBox" style="display:none">
@@ -1551,11 +1547,15 @@ function renderServicesDOM() {
       if (!isFirst) {
         const svcDef = SERVICES.find(x => x.id === svc.svcId);
         if (!svc.on) {
-          // Inactive — show add button only, no toggle
+          // Inactive — show add button + import button stacked
           section.innerHTML = `
             <button class="btn-add" onclick="toggleService(${svc.idx})">
               <div class="chev"><svg viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="#353535" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               Add A ${ordinal} Proposal To This Request
+            </button>
+            <button class="btn-add btn-import" onclick="document.getElementById('importFileInput').click()">
+              <div class="chev chev-import"><svg viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 7L8 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              Import Vendor Submission
             </button>`;
         } else {
           // Active — header with chevron + Remove button, no toggle track
