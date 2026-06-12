@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlixBus FSR — Vendor Proposal Form</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Roboto',Arial,sans-serif;background:#f4f4f4;color:#222;font-size:14px}
+a{color:#97D700}
+
+/* ── Layout ── */
+.page{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+.header{background:#1a1a1a;color:#fff;padding:20px 28px;border-radius:10px;margin-bottom:24px;display:flex;align-items:center;gap:20px}
+.header-logo{font-size:28px;font-weight:900;color:#97D700;letter-spacing:-.5px;font-family:Arial,sans-serif}
+.header-title{font-size:15px;font-weight:600;color:#fff;line-height:1.3}
+.header-sub{font-size:11px;color:#888;margin-top:2px}
+
+.section{background:#fff;border:1px solid #e0e0e0;border-radius:8px;margin-bottom:18px;overflow:hidden}
+.section-hd{background:#f7f7f7;border-bottom:1px solid #e0e0e0;padding:10px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#555;display:flex;align-items:center;gap:8px}
+.section-hd .num{background:#97D700;color:#1a1a1a;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.section-body{padding:16px}
+
+/* ── Fields ── */
+.field-row{display:grid;gap:12px;margin-bottom:12px}
+.field-row.cols2{grid-template-columns:1fr 1fr}
+.field-row.cols3{grid-template-columns:1fr 1fr 1fr}
+.field-row.cols4{grid-template-columns:1fr 1fr 1fr 1fr}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.04em}
+.field input,.field select,.field textarea{width:100%;border:1px solid #ccc;border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;background:#fff;color:#222;transition:border-color .15s;-webkit-appearance:none;appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#97D700;box-shadow:0 0 0 2px rgba(151,215,0,.15)}
+.field textarea{resize:vertical;min-height:64px}
+.field .hint{font-size:10px;color:#888;margin-top:2px}
+.required-star{color:#e53935}
+
+/* ── Labor rows ── */
+.labor-table{width:100%;border-collapse:collapse;margin-bottom:8px;font-size:12px}
+.labor-table th{background:#f2f2f2;padding:6px 8px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#666;border-bottom:1px solid #ddd}
+.labor-table td{padding:6px 4px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+.labor-table tr:last-child td{border-bottom:none}
+.labor-table input,.labor-table select{width:100%;border:1px solid #ccc;border-radius:4px;padding:5px 6px;font-size:12px;font-family:inherit;background:#fff}
+.labor-table input:focus,.labor-table select:focus{outline:none;border-color:#97D700}
+.labor-table .row-total{font-weight:700;color:#222;text-align:right;padding-right:6px;min-width:72px}
+.labor-table .del-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;padding:2px 6px;border-radius:4px;line-height:1}
+.labor-table .del-btn:hover{color:#e53935;background:#ffeaea}
+.add-row-btn{margin-top:4px;padding:5px 14px;font-size:11px;font-weight:600;color:#97D700;background:transparent;border:1px dashed #97D700;border-radius:6px;cursor:pointer;transition:background .15s}
+.add-row-btn:hover{background:rgba(151,215,0,.08)}
+
+/* ── Travel ── */
+.travel-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.radio-group{display:flex;gap:12px}
+.radio-group label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;cursor:pointer}
+.radio-group input[type=radio]{accent-color:#97D700;width:15px;height:15px}
+
+/* ── Totals ── */
+.totals-box{background:#f9f9f9;border:1px solid #e0e0e0;border-radius:8px;padding:14px 18px;margin-top:4px}
+.totals-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;font-size:13px}
+.totals-row.grand{border-top:2px solid #97D700;margin-top:8px;padding-top:10px;font-size:16px;font-weight:800;color:#1a1a1a}
+.totals-row .lbl{color:#666}
+.totals-row .val{font-weight:700;color:#222}
+.totals-row.grand .val{color:#97D700}
+
+/* ── Other / notes ── */
+.other-tag{display:inline-block;background:#fff3cd;color:#7a4f00;border:1px solid #e6a817;border-radius:4px;font-size:10px;font-weight:700;padding:2px 7px;margin-left:6px;vertical-align:middle;text-transform:uppercase;letter-spacing:.04em}
+
+/* ── Actions ── */
+.actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+.btn{padding:10px 24px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:background .15s,color .15s;font-family:inherit}
+.btn-primary{background:#97D700;color:#1a1a1a}
+.btn-primary:hover{background:#82bb00}
+.btn-secondary{background:#1a1a1a;color:#fff}
+.btn-secondary:hover{background:#333}
+.btn-outline{background:transparent;color:#555;border:1px solid #ccc}
+.btn-outline:hover{background:#f0f0f0}
+
+/* ── Validation ── */
+.field input.err,.field select.err,.field textarea.err{border-color:#e53935;background:#fff5f5}
+.err-banner{background:#fde8ea;border:1px solid #dc3545;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#8b1a24;display:none}
+.err-banner.show{display:block}
+
+/* ── Print ── */
+@media print{
+  body{background:#fff}
+  .page{padding:0;max-width:none}
+  .actions,.add-row-btn,.del-btn,.no-print{display:none!important}
+  .header{border-radius:0;margin-bottom:16px}
+  .section{border-radius:0;margin-bottom:12px;page-break-inside:avoid}
+}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .field-row.cols2,.field-row.cols3,.field-row.cols4{grid-template-columns:1fr}
+  .labor-table{font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-logo">Flix</div>
+    <div>
+      <div class="header-title">Facility Services — Vendor Proposal Form</div>
+      <div class="header-sub">Complete all sections. Download JSON + PDF and email to your FlixBus contact.</div>
+    </div>
+  </div>
+
+  <div class="err-banner" id="errBanner"></div>
+
+  <!-- 1 · Vendor Information -->
+  <div class="section">
+    <div class="section-hd"><span class="num">1</span> Vendor Information</div>
+    <div class="section-body">
+      <div class="field-row cols2">
+        <div class="field"><label>Company Name <span class="required-star">*</span></label><input type="text" id="v_company" placeholder="ABC Facility Services LLC"></div>
+        <div class="field"><label>Primary Contact <span class="required-star">*</span></label><input type="text" id="v_contact" placeholder="John Smith"></div>
+      </div>
+      <div class="field-row cols3">
+        <div class="field"><label>Phone <span class="required-star">*</span></label><input type="tel" id="v_phone" placeholder="(555) 000-0000"></div>
+        <div class="field"><label>Email <span class="required-star">*</span></label><input type="email" id="v_email" placeholder="john@abcservices.com"></div>
+        <div class="field"><label>License #</label><input type="text" id="v_license" placeholder="Optional"></div>
+      </div>
+      <div class="field-row cols3">
+        <div class="field"><label>Insurance Provider</label><input type="text" id="v_ins_provider" placeholder="State Farm, etc."></div>
+        <div class="field"><label>Policy #</label><input type="text" id="v_ins_policy" placeholder="Optional"></div>
+        <div class="field"><label>Insurance Expiry</label><input type="date" id="v_ins_exp"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Quote Valid Until <span class="required-star">*</span></label><input type="date" id="v_valid_until" style="max-width:220px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 · Scope of Work -->
+  <div class="section">
+    <div class="section-hd"><span class="num">2</span> Scope of Work</div>
+    <div class="section-body">
+      <div class="field-row cols2">
+        <div class="field">
+          <label>Service Category <span class="required-star">*</span></label>
+          <select id="svc_cat" onchange="onCatChange()">
+            <option value="">— Select Category —</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Service Subtype <span class="required-star">*</span></label>
+          <select id="svc_sub" onchange="onSubChange()">
+            <option value="">— Select Category First —</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row cols2">
+        <div class="field">
+          <label>Facility / Location <span class="required-star">*</span></label>
+          <input type="text" id="svc_location" placeholder="e.g. Pittsburgh Bus Terminal — 11th Ave">
+        </div>
+        <div class="field">
+          <label>Requested Start Date</label>
+          <input type="date" id="svc_start_date">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Scope Description <span class="required-star">*</span></label>
+          <textarea id="svc_desc" placeholder="Describe the work to be performed, area dimensions, special conditions, access requirements, etc."></textarea>
+        </div>
+      </div>
+      <!-- Other service -->
+      <div id="other_svc_wrap" style="display:none">
+        <div class="field-row">
+          <div class="field">
+            <label>If your service is not listed, describe it here <span class="other-tag">Other</span></label>
+            <input type="text" id="svc_other_desc" placeholder="e.g. Elevator cable inspection and lubrication">
+            <span class="hint">This helps us expand our service catalog. Thank you.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 · Labor -->
+  <div class="section">
+    <div class="section-hd"><span class="num">3</span> Labor</div>
+    <div class="section-body">
+      <table class="labor-table" id="laborTable">
+        <thead>
+          <tr>
+            <th style="width:28%">Trade / Role</th>
+            <th style="width:12%">Workers</th>
+            <th style="width:14%">Hours</th>
+            <th style="width:18%">Rate / Hr ($)</th>
+            <th style="width:16%">Row Total</th>
+            <th style="width:12%">Notes</th>
+            <th style="width:28px"></th>
+          </tr>
+        </thead>
+        <tbody id="laborBody"></tbody>
+      </table>
+      <button type="button" class="add-row-btn" onclick="addLaborRow()">+ Add Labor Row</button>
+    </div>
+  </div>
+
+  <!-- 4 · Materials -->
+  <div class="section">
+    <div class="section-hd"><span class="num">4</span> Materials</div>
+    <div class="section-body">
+      <table class="labor-table" id="matTable">
+        <thead>
+          <tr>
+            <th style="width:34%">Material / Item</th>
+            <th style="width:14%">Unit</th>
+            <th style="width:12%">Qty</th>
+            <th style="width:16%">Unit Cost ($)</th>
+            <th style="width:16%">Row Total</th>
+            <th style="width:28px"></th>
+          </tr>
+        </thead>
+        <tbody id="matBody"></tbody>
+      </table>
+      <button type="button" class="add-row-btn" onclick="addMatRow()">+ Add Material Row</button>
+    </div>
+  </div>
+
+  <!-- 5 · Travel & Mobilization -->
+  <div class="section">
+    <div class="section-hd"><span class="num">5</span> Travel &amp; Mobilization</div>
+    <div class="section-body">
+      <div class="travel-row">
+        <div class="radio-group">
+          <label><input type="radio" name="travel" value="yes" onchange="onTravelChange()"> Yes — Travel cost applies</label>
+          <label><input type="radio" name="travel" value="no" onchange="onTravelChange()" checked> No — Included in rates</label>
+        </div>
+        <div id="travel_amt_wrap" style="display:none">
+          <div class="field" style="min-width:200px">
+            <label>Travel / Mobilization Cost ($) <span class="required-star">*</span></label>
+            <input type="number" id="travel_amt" min="0" step="0.01" placeholder="0.00" oninput="recalc()">
+          </div>
+        </div>
+      </div>
+      <div class="field-row" style="margin-top:12px">
+        <div class="field">
+          <label>Travel Notes</label>
+          <input type="text" id="travel_notes" placeholder="e.g. Mileage from Pittsburgh depot — 45 min drive">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 · Additional Notes -->
+  <div class="section">
+    <div class="section-hd"><span class="num">6</span> Additional Notes &amp; Exclusions</div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field">
+          <label>Notes, Assumptions &amp; Exclusions</label>
+          <textarea id="notes" placeholder="List anything not included in this proposal, assumptions made, permit requirements, warranty terms, etc."></textarea>
+        </div>
+      </div>
+      <div class="field-row cols2">
+        <div class="field">
+          <label>Payment Terms</label>
+          <select id="payment_terms">
+            <option value="">— Select —</option>
+            <option>Net 30</option>
+            <option>Net 15</option>
+            <option>50% deposit / 50% on completion</option>
+            <option>100% on completion</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Estimated Duration</label>
+          <input type="text" id="duration" placeholder="e.g. 2 days, 1 week">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7 · Bid Summary -->
+  <div class="section">
+    <div class="section-hd"><span class="num">7</span> Bid Summary</div>
+    <div class="section-body">
+      <div class="totals-box">
+        <div class="totals-row"><span class="lbl">Labor Total</span><span class="val" id="tot_labor">$0.00</span></div>
+        <div class="totals-row"><span class="lbl">Materials Total</span><span class="val" id="tot_mat">$0.00</span></div>
+        <div class="totals-row" id="tot_travel_row" style="display:none"><span class="lbl">Travel / Mobilization</span><span class="val" id="tot_travel">$0.00</span></div>
+        <div class="totals-row grand"><span class="lbl">Total Bid</span><span class="val" id="tot_grand">$0.00</span></div>
+      </div>
+      <div class="field-row" style="margin-top:12px">
+        <div class="field">
+          <label>Vendor Signature / Acknowledgement</label>
+          <input type="text" id="v_sig" placeholder="Type full name to acknowledge this proposal is accurate and binding for the validity period above">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions no-print">
+    <button type="button" class="btn btn-primary" onclick="submitForm()">&#8595; Download JSON + Print PDF</button>
+    <button type="button" class="btn btn-secondary" onclick="window.print()">&#128438; Print / Save PDF only</button>
+    <button type="button" class="btn btn-outline" onclick="clearForm()">&#10005; Clear Form</button>
+  </div>
+
+  <p style="margin-top:16px;font-size:11px;color:#999;text-align:center" class="no-print">
+    Return the downloaded <strong>.json</strong> file and this PDF to your FlixBus Facilities contact via email.
+  </p>
+
+</div><!-- /page -->
+
+<script>
+// ── Catalog data (names only — no rates or prices) ─────────────────────────
+const SERVICES = [
+{id:"SVC-001",cat:"Access Points",sub:"Front Entrance Gate, Repair"},
+{id:"SVC-002",cat:"Access Points",sub:"Front Entrance Gate, Replacement"},
+{id:"SVC-003",cat:"Access Points",sub:"Rear / Service Gate, Repair"},
+{id:"SVC-004",cat:"Access Points",sub:"Rear / Service Gate, Replacement"},
+{id:"SVC-005",cat:"Access Points",sub:"Front Entrance Door, Repair"},
+{id:"SVC-006",cat:"Access Points",sub:"Front Entrance Door, Replacement"},
+{id:"SVC-007",cat:"Access Points",sub:"Rear / Service Door, Repair"},
+{id:"SVC-008",cat:"Access Points",sub:"Rear / Service Door, Replacement"},
+{id:"SVC-009",cat:"Access Points",sub:"Bus Bay Gate / Barrier Arm, Repair"},
+{id:"SVC-010",cat:"Access Points",sub:"Bus Bay Gate / Barrier Arm, Replace"},
+{id:"SVC-011",cat:"Access Points",sub:"Sliding / Rolling Gate, Repair"},
+{id:"SVC-012",cat:"Access Points",sub:"Sliding / Rolling Gate, Replace"},
+{id:"SVC-013",cat:"Access Points",sub:"Overhead Garage Door, Repair"},
+{id:"SVC-014",cat:"Access Points",sub:"Overhead Garage Door, Replace"},
+{id:"SVC-015",cat:"Access Points",sub:"Interior Door, Repair"},
+{id:"SVC-016",cat:"Access Points",sub:"Interior Door, Replacement"},
+{id:"SVC-017",cat:"Access Points",sub:"Exterior Security Door, Repair"},
+{id:"SVC-018",cat:"Access Points",sub:"Exterior Security Door, Replace"},
+{id:"SVC-019",cat:"Access Points",sub:"ADA Automatic Door Opener, Repair"},
+{id:"SVC-020",cat:"Access Points",sub:"ADA Automatic Door Opener, Replace"},
+{id:"SVC-021",cat:"Access Points",sub:"Lock Re-key (Standard)"},
+{id:"SVC-022",cat:"Access Points",sub:"Lock Re-key (Master Key System)"},
+{id:"SVC-023",cat:"Access Points",sub:"Lock Replacement, Standard"},
+{id:"SVC-024",cat:"Access Points",sub:"Lock Replacement, Electronic / Keypad"},
+{id:"SVC-025",cat:"Access Points",sub:"Access Code Change / Reprogram"},
+{id:"SVC-026",cat:"Access Points",sub:"Emergency Exit Bar (Crash Bar), Repair"},
+{id:"SVC-027",cat:"Access Points",sub:"Emergency Exit Bar (Crash Bar), Replace"},
+{id:"SVC-028",cat:"Access Points",sub:"Bollard Repair / Replace"},
+{id:"SVC-029",cat:"Access Points",sub:"Parking Garage Entry Gate System, Repair"},
+{id:"SVC-030",cat:"Access Points",sub:"Parking Garage Entry Gate System, Replace"},
+{id:"SVC-031",cat:"Ceiling",sub:"Ceiling Tile Replacement, Drop"},
+{id:"SVC-032",cat:"Ceiling",sub:"Ceiling Tile Replacement, Decorative"},
+{id:"SVC-033",cat:"Ceiling",sub:"Drywall Ceiling Patch"},
+{id:"SVC-034",cat:"Ceiling",sub:"Ceiling Grid Repair / Replace"},
+{id:"SVC-035",cat:"Ceiling",sub:"Water Damage Repair"},
+{id:"SVC-036",cat:"Ceiling",sub:"Exposed Ceiling Painting"},
+{id:"SVC-037",cat:"Electrical",sub:"Outlet Install / Replace"},
+{id:"SVC-038",cat:"Electrical",sub:"Circuit Breaker Replace"},
+{id:"SVC-039",cat:"Electrical",sub:"Panel Upgrade / Replacement"},
+{id:"SVC-040",cat:"Electrical",sub:"Dedicated Circuit Install"},
+{id:"SVC-041",cat:"Electrical",sub:"Troubleshooting / Diagnostic"},
+{id:"SVC-042",cat:"Electrical",sub:"Emergency / After-Hours Call"},
+{id:"SVC-043",cat:"Electrical",sub:"Conduit Run, New"},
+{id:"SVC-044",cat:"Electrical",sub:"EV Charger Install, Level 2"},
+{id:"SVC-045",cat:"Electrical",sub:"Generator PM / Inspection"},
+{id:"SVC-046",cat:"Electrical",sub:"Bus Bay Electrical, Outlet / Connection"},
+{id:"SVC-047",cat:"Electrical",sub:"Parking Garage Electrical Repair"},
+{id:"SVC-048",cat:"Exterior Painting",sub:"Exterior Wall, Standard"},
+{id:"SVC-049",cat:"Exterior Painting",sub:"Exterior Wall, Masonry/Concrete"},
+{id:"SVC-050",cat:"Exterior Painting",sub:"Metal Surface (Railing, Bollard)"},
+{id:"SVC-051",cat:"Exterior Painting",sub:"Trim / Fascia / Soffit"},
+{id:"SVC-052",cat:"Exterior Painting",sub:"Curb / Parking Striping"},
+{id:"SVC-053",cat:"Exterior Painting",sub:"Canopy / Overhang, Bus Station"},
+{id:"SVC-054",cat:"Fire Systems",sub:"Fire Extinguisher Inspection"},
+{id:"SVC-055",cat:"Fire Systems",sub:"Fire Extinguisher Recharge"},
+{id:"SVC-056",cat:"Fire Systems",sub:"Sprinkler Head Replacement"},
+{id:"SVC-057",cat:"Fire Systems",sub:"Sprinkler System Inspection"},
+{id:"SVC-058",cat:"Fire Systems",sub:"Fire Alarm Panel Repair"},
+{id:"SVC-059",cat:"Fire Systems",sub:"Smoke Detector Replace"},
+{id:"SVC-060",cat:"Fire Systems",sub:"Emergency Light / Exit Sign Replace"},
+{id:"SVC-061",cat:"Fire Systems",sub:"Fire Alarm Monitoring, Annual"},
+{id:"SVC-062",cat:"Fire Systems",sub:"Garage Exhaust / CO Detection, Repair"},
+{id:"SVC-063",cat:"Fire Systems",sub:"Garage Exhaust / CO Detection, Replace"},
+{id:"SVC-064",cat:"Graffiti Removal",sub:"Chemical Removal, Smooth Surface"},
+{id:"SVC-065",cat:"Graffiti Removal",sub:"Chemical Removal, Porous Surface"},
+{id:"SVC-066",cat:"Graffiti Removal",sub:"Paint-Over / Cover"},
+{id:"SVC-067",cat:"Graffiti Removal",sub:"Anti-Graffiti Coating Application"},
+{id:"SVC-068",cat:"Graffiti Removal",sub:"Pressure Wash Removal"},
+{id:"SVC-069",cat:"HVAC",sub:"HVAC Service Call"},
+{id:"SVC-070",cat:"HVAC",sub:"PM / Tune-Up, Rooftop Unit"},
+{id:"SVC-071",cat:"HVAC",sub:"PM / Tune-Up, Split System"},
+{id:"SVC-072",cat:"HVAC",sub:"Refrigerant Recharge"},
+{id:"SVC-073",cat:"HVAC",sub:"Thermostat Install / Replace"},
+{id:"SVC-074",cat:"HVAC",sub:"Ductwork Repair / Seal"},
+{id:"SVC-075",cat:"HVAC",sub:"Compressor Replacement"},
+{id:"SVC-076",cat:"HVAC",sub:"Rooftop Unit Replacement"},
+{id:"SVC-077",cat:"HVAC",sub:"Exhaust Fan Repair / Replace"},
+{id:"SVC-078",cat:"HVAC",sub:"Boiler Repair"},
+{id:"SVC-079",cat:"HVAC",sub:"Boiler Replacement"},
+{id:"SVC-080",cat:"HVAC",sub:"BMS / Controls Repair"},
+{id:"SVC-081",cat:"HVAC",sub:"Garage Ventilation Fan, Repair"},
+{id:"SVC-082",cat:"HVAC",sub:"Garage Ventilation Fan, Replace"},
+{id:"SVC-083",cat:"Interior Painting",sub:"Interior Wall, Standard"},
+{id:"SVC-084",cat:"Interior Painting",sub:"Interior Wall, High Ceiling (>12 ft)"},
+{id:"SVC-085",cat:"Interior Painting",sub:"Trim / Doors / Frames"},
+{id:"SVC-086",cat:"Interior Painting",sub:"Restroom / High-Moisture Area"},
+{id:"SVC-087",cat:"Interior Painting",sub:"Accent / Feature Wall"},
+{id:"SVC-088",cat:"Interior Painting",sub:"Stairwell Painting"},
+{id:"SVC-089",cat:"Interior Painting",sub:"Garage Interior, Epoxy Wall Coating"},
+{id:"SVC-090",cat:"Interior Flooring",sub:"VCT Tile Replacement"},
+{id:"SVC-091",cat:"Interior Flooring",sub:"LVP / LVT Install"},
+{id:"SVC-092",cat:"Interior Flooring",sub:"Carpet Tile Replacement"},
+{id:"SVC-093",cat:"Interior Flooring",sub:"Ceramic / Porcelain Tile"},
+{id:"SVC-094",cat:"Interior Flooring",sub:"Epoxy Floor Coating"},
+{id:"SVC-095",cat:"Interior Flooring",sub:"Floor Stripping and Waxing"},
+{id:"SVC-096",cat:"Interior Flooring",sub:"Concrete Repair / Patch"},
+{id:"SVC-097",cat:"Interior Flooring",sub:"Rubber Flooring Install"},
+{id:"SVC-098",cat:"Interior Flooring",sub:"Base / Cove Molding"},
+{id:"SVC-099",cat:"Interior Flooring",sub:"Garage Floor Sealant / Coating"},
+{id:"SVC-100",cat:"Janitorial",sub:"Daily Cleaning, Lobby / Waiting"},
+{id:"SVC-101",cat:"Janitorial",sub:"Daily Cleaning, Restrooms"},
+{id:"SVC-102",cat:"Janitorial",sub:"Daily Cleaning, Bus Bay / Platform"},
+{id:"SVC-103",cat:"Janitorial",sub:"Deep Clean, Full Facility"},
+{id:"SVC-104",cat:"Janitorial",sub:"Window Cleaning, Interior"},
+{id:"SVC-105",cat:"Janitorial",sub:"Window Cleaning, Exterior (Ground)"},
+{id:"SVC-106",cat:"Janitorial",sub:"Window Cleaning, Exterior (High)"},
+{id:"SVC-107",cat:"Janitorial",sub:"Carpet Extraction / Shampoo"},
+{id:"SVC-108",cat:"Janitorial",sub:"Hard Floor Burnishing"},
+{id:"SVC-109",cat:"Janitorial",sub:"Post-Construction Cleanup"},
+{id:"SVC-110",cat:"Janitorial",sub:"Biohazard / Bodily Fluid Cleanup"},
+{id:"SVC-111",cat:"Janitorial",sub:"Parking Garage Sweeping / Scrub"},
+{id:"SVC-112",cat:"Landscaping",sub:"Lawn Mowing, Standard"},
+{id:"SVC-113",cat:"Landscaping",sub:"Lawn Mowing, Large Area"},
+{id:"SVC-114",cat:"Landscaping",sub:"Shrub / Hedge Trimming"},
+{id:"SVC-115",cat:"Landscaping",sub:"Tree Trimming, Small (<15 ft)"},
+{id:"SVC-116",cat:"Landscaping",sub:"Tree Trimming, Large (>15 ft)"},
+{id:"SVC-117",cat:"Landscaping",sub:"Tree Removal"},
+{id:"SVC-118",cat:"Landscaping",sub:"Mulch Install"},
+{id:"SVC-119",cat:"Landscaping",sub:"Irrigation Repair"},
+{id:"SVC-120",cat:"Landscaping",sub:"Irrigation System Install"},
+{id:"SVC-121",cat:"Landscaping",sub:"Seasonal Flower Bed Install"},
+{id:"SVC-122",cat:"Landscaping",sub:"Sod Install"},
+{id:"SVC-123",cat:"Landscaping",sub:"Snow Removal, Lot"},
+{id:"SVC-124",cat:"Landscaping",sub:"Snow Removal, Sidewalk"},
+{id:"SVC-125",cat:"Lighting",sub:"Bulb / Lamp Replacement, Standard"},
+{id:"SVC-126",cat:"Lighting",sub:"Bulb / Lamp Replacement, High Bay"},
+{id:"SVC-127",cat:"Lighting",sub:"Fixture Replacement, Interior"},
+{id:"SVC-128",cat:"Lighting",sub:"Fixture Replacement, Exterior"},
+{id:"SVC-129",cat:"Lighting",sub:"Parking Lot / Garage Light Repair"},
+{id:"SVC-130",cat:"Lighting",sub:"Parking Lot / Garage Light, Full Replace"},
+{id:"SVC-131",cat:"Lighting",sub:"Emergency Lighting Test / Repair"},
+{id:"SVC-132",cat:"Lighting",sub:"Retrofit to LED, Per Fixture"},
+{id:"SVC-133",cat:"Lighting",sub:"Lighting Control / Sensor Install"},
+{id:"SVC-134",cat:"Lighting",sub:"Bus Bay / Canopy Lighting, Repair"},
+{id:"SVC-135",cat:"Lighting",sub:"Bus Bay / Canopy Lighting, Replace"},
+{id:"SVC-136",cat:"Lobby Seating",sub:"Bench Repair, Minor"},
+{id:"SVC-137",cat:"Lobby Seating",sub:"Bench Repair, Major / Weld"},
+{id:"SVC-138",cat:"Lobby Seating",sub:"Bench Replacement, Standard"},
+{id:"SVC-139",cat:"Lobby Seating",sub:"Bench Replacement, ADA"},
+{id:"SVC-140",cat:"Lobby Seating",sub:"Chair Replacement, Ganged"},
+{id:"SVC-141",cat:"Lobby Seating",sub:"Upholstery / Cushion Replace"},
+{id:"SVC-142",cat:"Pavement",sub:"Pothole Repair, Cold Patch"},
+{id:"SVC-143",cat:"Pavement",sub:"Pothole Repair, Hot Patch"},
+{id:"SVC-144",cat:"Pavement",sub:"Asphalt Overlay"},
+{id:"SVC-145",cat:"Pavement",sub:"Asphalt Seal Coat"},
+{id:"SVC-146",cat:"Pavement",sub:"Crack Sealing"},
+{id:"SVC-147",cat:"Pavement",sub:"Concrete Sidewalk Repair"},
+{id:"SVC-148",cat:"Pavement",sub:"Concrete Sidewalk, New"},
+{id:"SVC-149",cat:"Pavement",sub:"ADA Ramp / Detectable Warning"},
+{id:"SVC-150",cat:"Pavement",sub:"Parking Lot Striping"},
+{id:"SVC-151",cat:"Pavement",sub:"Speed Bump Install"},
+{id:"SVC-152",cat:"Pavement",sub:"Bollard Install / Replace"},
+{id:"SVC-153",cat:"Pavement",sub:"Bus Bay Concrete Apron, Repair"},
+{id:"SVC-154",cat:"Pavement",sub:"Parking Garage Deck Repair"},
+{id:"SVC-155",cat:"Pavement",sub:"Parking Garage Deck Waterproofing"},
+{id:"SVC-156",cat:"Pest Removal",sub:"General Pest, Interior (Monthly)"},
+{id:"SVC-157",cat:"Pest Removal",sub:"General Pest, Exterior Perimeter"},
+{id:"SVC-158",cat:"Pest Removal",sub:"Rodent Control, Traps and Bait"},
+{id:"SVC-159",cat:"Pest Removal",sub:"Rodent Exclusion"},
+{id:"SVC-160",cat:"Pest Removal",sub:"Bird Deterrent Install"},
+{id:"SVC-161",cat:"Pest Removal",sub:"Termite Treatment"},
+{id:"SVC-162",cat:"Pest Removal",sub:"Bed Bug Treatment"},
+{id:"SVC-163",cat:"Pest Removal",sub:"Bee / Wasp Nest Removal"},
+{id:"SVC-164",cat:"Plumbing",sub:"Leak Repair, Minor"},
+{id:"SVC-165",cat:"Plumbing",sub:"Leak Repair, Major / In-Wall"},
+{id:"SVC-166",cat:"Plumbing",sub:"Drain Cleaning, Snake"},
+{id:"SVC-167",cat:"Plumbing",sub:"Drain Cleaning, Hydro-Jet"},
+{id:"SVC-168",cat:"Plumbing",sub:"Toilet Repair"},
+{id:"SVC-169",cat:"Plumbing",sub:"Toilet Replacement, Standard"},
+{id:"SVC-170",cat:"Plumbing",sub:"Toilet Replacement, ADA"},
+{id:"SVC-171",cat:"Plumbing",sub:"Faucet Replacement"},
+{id:"SVC-172",cat:"Plumbing",sub:"Water Heater Repair"},
+{id:"SVC-173",cat:"Plumbing",sub:"Water Heater Replacement"},
+{id:"SVC-174",cat:"Plumbing",sub:"Pipe Replacement, Copper"},
+{id:"SVC-175",cat:"Plumbing",sub:"Pipe Replacement, PVC/CPVC"},
+{id:"SVC-176",cat:"Plumbing",sub:"Sewer Line Repair"},
+{id:"SVC-177",cat:"Plumbing",sub:"Backflow Preventer Test / Repair"},
+{id:"SVC-178",cat:"Plumbing",sub:"Grease Trap Cleaning"},
+{id:"SVC-179",cat:"Plumbing",sub:"Floor Drain Repair / Replace"},
+{id:"SVC-180",cat:"Plumbing",sub:"Trench Drain Cleaning / Repair"},
+{id:"SVC-181",cat:"Pressure Washing",sub:"Sidewalk / Walkway"},
+{id:"SVC-182",cat:"Pressure Washing",sub:"Building Exterior, Low-Rise"},
+{id:"SVC-183",cat:"Pressure Washing",sub:"Building Exterior, High-Rise"},
+{id:"SVC-184",cat:"Pressure Washing",sub:"Parking Structure / Garage"},
+{id:"SVC-185",cat:"Pressure Washing",sub:"Dumpster Pad / Loading Dock"},
+{id:"SVC-186",cat:"Pressure Washing",sub:"Canopy / Awning"},
+{id:"SVC-187",cat:"Pressure Washing",sub:"Bus Bay / Platform Wash"},
+{id:"SVC-188",cat:"Restroom Renovation",sub:"Partition Repair"},
+{id:"SVC-189",cat:"Restroom Renovation",sub:"Partition Replacement, Full Stall"},
+{id:"SVC-190",cat:"Restroom Renovation",sub:"Countertop / Vanity Replace"},
+{id:"SVC-191",cat:"Restroom Renovation",sub:"Mirror Replacement"},
+{id:"SVC-192",cat:"Restroom Renovation",sub:"Accessory Install (Dispenser, etc.)"},
+{id:"SVC-193",cat:"Restroom Renovation",sub:"Full Restroom Renovation"},
+{id:"SVC-194",cat:"Restroom Renovation",sub:"Floor Tile Replacement"},
+{id:"SVC-195",cat:"Restroom Renovation",sub:"Hand Dryer Install"},
+{id:"SVC-196",cat:"Roof",sub:"Leak Repair, Patch"},
+{id:"SVC-197",cat:"Roof",sub:"Leak Repair, Flashing"},
+{id:"SVC-198",cat:"Roof",sub:"Roof Coating, Reflective"},
+{id:"SVC-199",cat:"Roof",sub:"Single-Ply Membrane Repair"},
+{id:"SVC-200",cat:"Roof",sub:"Built-Up Roof Repair"},
+{id:"SVC-201",cat:"Roof",sub:"Roof Drain Repair / Replace"},
+{id:"SVC-202",cat:"Roof",sub:"Gutter / Downspout Repair"},
+{id:"SVC-203",cat:"Roof",sub:"Gutter / Downspout Replace"},
+{id:"SVC-204",cat:"Roof",sub:"Skylight Repair / Replace"},
+{id:"SVC-205",cat:"Roof",sub:"Roof Inspection"},
+{id:"SVC-206",cat:"Ticket Counter Refresh",sub:"Counter Surface Resurface"},
+{id:"SVC-207",cat:"Ticket Counter Refresh",sub:"Counter Replacement, Full"},
+{id:"SVC-208",cat:"Ticket Counter Refresh",sub:"Queuing System Install"},
+{id:"SVC-209",cat:"Ticket Counter Refresh",sub:"ADA Counter Modification"},
+{id:"SVC-210",cat:"Ticket Counter Refresh",sub:"Electrical / Data at Counter"},
+{id:"SVC-211",cat:"Ticket Counter Refresh",sub:"Sneeze Guard / Barrier Install"},
+{id:"SVC-212",cat:"Wall Repair",sub:"Drywall Patch, Small (<2 sq ft)"},
+{id:"SVC-213",cat:"Wall Repair",sub:"Drywall Patch, Large (2 to 16 sq ft)"},
+{id:"SVC-214",cat:"Wall Repair",sub:"Drywall, Full Sheet Hang"},
+{id:"SVC-215",cat:"Wall Repair",sub:"CMU / Block Wall Repair"},
+{id:"SVC-216",cat:"Wall Repair",sub:"FRP / Wall Panel Install"},
+{id:"SVC-217",cat:"Wall Repair",sub:"Corner Guard / Wall Protection"},
+{id:"SVC-218",cat:"Wall Repair",sub:"Tile Wall Repair"},
+{id:"SVC-219",cat:"Wall Repair",sub:"Wallpaper Removal and Paint"},
+{id:"SVC-220",cat:"Wall Repair",sub:"Parking Garage Concrete Wall Repair"},
+{id:"SVC-221",cat:"Other",sub:"General Handyman, Minor Tasks"},
+{id:"SVC-222",cat:"Other",sub:"General Handyman, Skilled Tasks"},
+{id:"SVC-223",cat:"Other",sub:"Welding Repair, Light"},
+{id:"SVC-224",cat:"Other",sub:"Welding Repair, Structural"},
+{id:"SVC-225",cat:"Other",sub:"Dumpster / Compactor Repair"},
+{id:"SVC-OTHER",cat:"Other",sub:"Not Listed — See Description Below"}
+];
+
+const TRADES = [
+  "Plumber","Electrician","HVAC Tech","Painter","Carpenter",
+  "Handyman","Laborer","Roofer","Landscaper","Janitorial",
+  "Pest Tech","Fire/Life Safety","Low-Voltage Tech","Pavement Crew","Welder",
+  "Other — Not Listed"
+];
+
+const MATERIALS = [
+{id:"M01",item:"LED Lamp | Standard (A19/PAR)",unit:"Each"},
+{id:"M02",item:"LED Lamp | High Output / HID Replace",unit:"Each"},
+{id:"M03",item:"LED Tube (T8/T5 Retrofit)",unit:"Each"},
+{id:"M04",item:"LED Troffer Fixture 2x2",unit:"Each"},
+{id:"M05",item:"LED Troffer Fixture 2x4",unit:"Each"},
+{id:"M06",item:"LED Wall Pack Fixture",unit:"Each"},
+{id:"M07",item:"LED Flood Light Fixture",unit:"Each"},
+{id:"M08",item:"LED High Bay Fixture",unit:"Each"},
+{id:"M09",item:"LED Parking Lot / Pole Fixture",unit:"Each"},
+{id:"M10",item:"LED Strip / Under-Cabinet",unit:"Per Ft"},
+{id:"M11",item:"Exit Sign / Emergency Light",unit:"Each"},
+{id:"M12",item:"Ballast / Driver",unit:"Each"},
+{id:"M13",item:"Occupancy / Daylight Sensor",unit:"Each"},
+{id:"M14",item:"Photocell",unit:"Each"},
+{id:"M15",item:"Duplex Outlet | Standard",unit:"Each"},
+{id:"M16",item:"GFCI Outlet",unit:"Each"},
+{id:"M17",item:"USB / Smart Outlet",unit:"Each"},
+{id:"M18",item:"Light Switch / Dimmer",unit:"Each"},
+{id:"M19",item:"Wall Plate / Cover",unit:"Each"},
+{id:"M20",item:"Circuit Breaker | Single Pole",unit:"Each"},
+{id:"M21",item:"Circuit Breaker | Double Pole",unit:"Each"},
+{id:"M22",item:"GFCI / AFCI Breaker",unit:"Each"},
+{id:"M23",item:"Electrical Panel | Subpanel",unit:"Each"},
+{id:"M24",item:"Electrical Panel | Main",unit:"Each"},
+{id:"M25",item:"Junction Box",unit:"Each"},
+{id:"M26",item:'Conduit EMT (1/2" or 3/4")',unit:"Per Ft"},
+{id:"M27",item:"Conduit PVC (electrical)",unit:"Per Ft"},
+{id:"M28",item:"THHN Wire (12/14 AWG)",unit:"Per Ft"},
+{id:"M29",item:"Wire | Heavy Gauge (6/8/10 AWG)",unit:"Per Ft"},
+{id:"M30",item:"Conduit + Wire Bundle (pulled)",unit:"Per Ft"},
+{id:"M31",item:"Wire Nuts / Connectors (bag)",unit:"Per Job"},
+{id:"M32",item:'PVC Pipe + Fittings (1")',unit:"Per Ft"},
+{id:"M33",item:'PVC Pipe | Heavy (2"+)',unit:"Per Ft"},
+{id:"M34",item:'Copper Pipe + Fittings (1/2-3/4")',unit:"Per Ft"},
+{id:"M35",item:'Copper Pipe | Heavy (1"+)',unit:"Per Ft"},
+{id:"M36",item:"PEX Pipe + Fittings",unit:"Per Ft"},
+{id:"M37",item:"Cast Iron / ABS Drain Pipe",unit:"Per Ft"},
+{id:"M38",item:"Supply Line (flex, per pair)",unit:"Each"},
+{id:"M39",item:"Toilet | Commercial",unit:"Each"},
+{id:"M40",item:"Toilet | ADA Commercial",unit:"Each"},
+{id:"M41",item:"Urinal",unit:"Each"},
+{id:"M42",item:"Faucet | Commercial Lavatory",unit:"Each"},
+{id:"M43",item:"Faucet | Sensor / Touchless",unit:"Each"},
+{id:"M44",item:"Kitchen / Break Room Faucet",unit:"Each"},
+{id:"M45",item:"Flush Valve (Sloan or equiv.)",unit:"Each"},
+{id:"M46",item:"Water Heater | Tank (commercial)",unit:"Each"},
+{id:"M47",item:"Water Heater | Tankless",unit:"Each"},
+{id:"M48",item:"Sink | Lavatory",unit:"Each"},
+{id:"M49",item:"Sink | Mop / Utility",unit:"Each"},
+{id:"M50",item:"Backflow Preventer",unit:"Each"},
+{id:"M51",item:"Floor Drain / Strainer",unit:"Each"},
+{id:"M52",item:"Hand / Hair Dryer",unit:"Each"},
+{id:"M53",item:"Thermostat | Programmable",unit:"Each"},
+{id:"M54",item:"Thermostat | Smart / BMS",unit:"Each"},
+{id:"M55",item:"Air Filter | Pleated Commercial",unit:"Each"},
+{id:"M56",item:"Air Filter | HEPA / High-MERV",unit:"Each"},
+{id:"M57",item:"Belt | V-Belt / Motor",unit:"Each"},
+{id:"M58",item:"HVAC Motor | Fan / Blower",unit:"Each"},
+{id:"M59",item:"Compressor | HVAC",unit:"Each"},
+{id:"M60",item:"Refrigerant (R-410A)",unit:"Per Lb"},
+{id:"M61",item:"Refrigerant (R-32 / Other)",unit:"Per Lb"},
+{id:"M62",item:"Duct Sealant / Mastic",unit:"Per Job"},
+{id:"M63",item:"Flex Duct (insulated)",unit:"Per Ft"},
+{id:"M64",item:"Sheet Metal Duct",unit:"Per Sq Ft"},
+{id:"M65",item:"Condensate Pump",unit:"Each"},
+{id:"M66",item:"Exhaust Fan",unit:"Each"},
+{id:"M67",item:"Ceiling Tile | 2x2 or 2x4 (standard)",unit:"Each"},
+{id:"M68",item:"Ceiling Tile | Decorative / Tegular",unit:"Each"},
+{id:"M69",item:"Ceiling Grid / T-Bar",unit:"Per Ft"},
+{id:"M70",item:'Drywall Sheet (4x8, 1/2")',unit:"Sheet"},
+{id:"M71",item:"Drywall Sheet | Fire/Moisture",unit:"Sheet"},
+{id:"M72",item:"Drywall Mud / Tape (per sheet)",unit:"Per Sheet"},
+{id:"M73",item:"Wall Insulation (batt/roll)",unit:"Per Sq Ft"},
+{id:"M74",item:"Wood Stud / Framing",unit:"Each"},
+{id:"M75",item:"Metal Stud (framing)",unit:"Each"},
+{id:"M76",item:"Plywood / OSB Sheet",unit:"Sheet"},
+{id:"M77",item:"Trim / Molding (MDF or wood)",unit:"Per Ft"},
+{id:"M78",item:"Base / Cove Molding",unit:"Per Ft"},
+{id:"M79",item:"Paint | Interior Latex",unit:"Per Gal"},
+{id:"M80",item:"Paint | Exterior",unit:"Per Gal"},
+{id:"M81",item:"Paint | Specialty (Epoxy, DTM, Elast.)",unit:"Per Gal"},
+{id:"M82",item:"Primer",unit:"Per Gal"},
+{id:"M83",item:"Stain / Sealer (wood)",unit:"Per Gal"},
+{id:"M84",item:"Concrete / Floor Sealer",unit:"Per Gal"},
+{id:"M85",item:"VCT Tile",unit:"Per Sq Ft"},
+{id:"M86",item:"LVP / LVT",unit:"Per Sq Ft"},
+{id:"M87",item:"Ceramic / Porcelain Tile",unit:"Per Sq Ft"},
+{id:"M88",item:"Carpet Tile",unit:"Per Sq Ft"},
+{id:"M89",item:"Carpet | Broadloom",unit:"Per Sq Ft"},
+{id:"M90",item:"Rubber / Recycled Flooring",unit:"Per Sq Ft"},
+{id:"M91",item:"Floor Adhesive",unit:"Per Gal"},
+{id:"M92",item:"Grout / Thinset",unit:"Per Bag"},
+{id:"M93",item:"Floor Wax / Finish",unit:"Per Gal"},
+{id:"M94",item:"Door Hardware | Lockset (Grade 1)",unit:"Each"},
+{id:"M95",item:"Door Closer",unit:"Each"},
+{id:"M96",item:"Panic Bar / Crash Bar",unit:"Each"},
+{id:"M97",item:"Hinge (commercial, pair)",unit:"Each"},
+{id:"M98",item:"Weather Stripping / Door Seal",unit:"Per Ft"},
+{id:"M99",item:"Door | Interior (hollow-core)",unit:"Each"},
+{id:"M100",item:"Door | Exterior (steel/commercial)",unit:"Each"},
+{id:"M101",item:"Door Frame",unit:"Each"},
+{id:"M102",item:"Electric Strike / Magnetic Lock",unit:"Each"},
+{id:"M103",item:"Key / Re-key (cylinder)",unit:"Each"},
+{id:"M104",item:"Asphalt | Hot Mix",unit:"Per Ton"},
+{id:"M105",item:"Asphalt | Cold Patch",unit:"Per Bag"},
+{id:"M106",item:"Concrete | Ready Mix",unit:"Per Cu Yd"},
+{id:"M107",item:"Concrete | Bag Mix",unit:"Per Bag"},
+{id:"M108",item:"Asphalt Sealcoat",unit:"Per Gal"},
+{id:"M109",item:"Crack Filler (hot or cold)",unit:"Per Gal"},
+{id:"M110",item:"Line-Striping Paint",unit:"Per Gal"},
+{id:"M111",item:"Rebar / Wire Mesh",unit:"Per Ft"},
+{id:"M112",item:"Bollard | Steel",unit:"Each"},
+{id:"M113",item:"Speed Bump / Hump",unit:"Each"},
+{id:"M114",item:"Wheel Stop",unit:"Each"},
+{id:"M115",item:"Roof Membrane | TPO/EPDM (60 mil)",unit:"Per Sq Ft"},
+{id:"M116",item:"Roof Coating (elastomeric)",unit:"Per Gal"},
+{id:"M117",item:"Flashing | Sheet Metal",unit:"Per Sq Ft"},
+{id:"M118",item:"Gutter | Aluminum",unit:"Per Ft"},
+{id:"M119",item:"Downspout",unit:"Per Ft"},
+{id:"M120",item:"Roof Drain",unit:"Each"},
+{id:"M121",item:"Skylight",unit:"Each"},
+{id:"M122",item:"Roofing Cement / Mastic",unit:"Per Gal"},
+{id:"M123",item:"Camera | Indoor IP",unit:"Each"},
+{id:"M124",item:"Camera | Outdoor / Vandal",unit:"Each"},
+{id:"M125",item:"Camera | PTZ",unit:"Each"},
+{id:"M126",item:"NVR / DVR",unit:"Each"},
+{id:"M127",item:"Hard Drive / Storage (per TB)",unit:"Each"},
+{id:"M128",item:"Card Reader / Access Keypad",unit:"Each"},
+{id:"M129",item:"Magnetic Lock / Strike",unit:"Each"},
+{id:"M130",item:"Cat6 Cable",unit:"Per Ft"},
+{id:"M131",item:"Cat6A / Fiber Cable",unit:"Per Ft"},
+{id:"M132",item:"Coax Cable (RG6)",unit:"Per Ft"},
+{id:"M133",item:"Cable Connector / Terminator",unit:"Each"},
+{id:"M134",item:"Network Switch (PoE)",unit:"Each"},
+{id:"M135",item:"Intercom / Call Station",unit:"Each"},
+{id:"M136",item:"Fire Extinguisher (ABC)",unit:"Each"},
+{id:"M137",item:"Smoke Detector",unit:"Each"},
+{id:"M138",item:"Heat / CO Detector",unit:"Each"},
+{id:"M139",item:"Sprinkler Head",unit:"Each"},
+{id:"M140",item:"Fire Alarm Pull Station",unit:"Each"},
+{id:"M141",item:"Fire Alarm Horn/Strobe",unit:"Each"},
+{id:"M142",item:"Emergency Egress Sign",unit:"Each"},
+{id:"M143",item:"Vinyl Lettering / Decal",unit:"Per Sq Ft"},
+{id:"M144",item:"ADA / Braille Sign",unit:"Each"},
+{id:"M145",item:"Interior Sign (standard)",unit:"Each"},
+{id:"M146",item:"Exterior Sign | Non-Illuminated",unit:"Each"},
+{id:"M147",item:"Exterior Sign | Illuminated",unit:"Each"},
+{id:"M148",item:"Digital Display / Monitor",unit:"Each"},
+{id:"M149",item:"Sign Post / Pole",unit:"Each"},
+{id:"M150",item:"Mulch | Bulk",unit:"Per Cu Yd"},
+{id:"M151",item:"Sod",unit:"Per Sq Ft"},
+{id:"M152",item:"Topsoil",unit:"Per Cu Yd"},
+{id:"M153",item:"Plants / Shrubs (small)",unit:"Each"},
+{id:"M154",item:"Plants / Shrubs (large)",unit:"Each"},
+{id:"M155",item:"Tree (installed small)",unit:"Each"},
+{id:"M156",item:"Fertilizer / Herbicide",unit:"Per Bag"},
+{id:"M157",item:"Ice Melt / De-icer",unit:"Per Bag"},
+{id:"M158",item:"Irrigation Head / Component",unit:"Each"},
+{id:"M159",item:"Pest Chemical / Bait (job)",unit:"Per Job"},
+{id:"M160",item:"Rodent Trap / Bait Station",unit:"Each"},
+{id:"M161",item:"Bird Spike / Netting",unit:"Per Ft"},
+{id:"M162",item:"Glass Pane | Standard",unit:"Per Sq Ft"},
+{id:"M163",item:"Tempered / Safety Glass",unit:"Per Sq Ft"},
+{id:"M164",item:"Window | Commercial Unit",unit:"Each"},
+{id:"M165",item:"Window Film / Tint",unit:"Per Sq Ft"},
+{id:"M166",item:"Sneeze Guard / Barrier",unit:"Each"},
+{id:"M167",item:"Partition | Toilet Stall (full)",unit:"Each"},
+{id:"M168",item:"Grab Bar (ADA)",unit:"Each"},
+{id:"M169",item:"Soap / Paper / Sanitizer Dispenser",unit:"Each"},
+{id:"M170",item:"Mirror (commercial)",unit:"Each"},
+{id:"M171",item:"Baby Changing Station",unit:"Each"},
+{id:"M172",item:"Bench | Standard (indoor)",unit:"Each"},
+{id:"M173",item:"Bench | Exterior / Heavy Duty",unit:"Each"},
+{id:"M174",item:"Chair | Lobby / Waiting",unit:"Each"},
+{id:"M175",item:"Cushion / Upholstery",unit:"Each"},
+{id:"M176",item:"Counter / Countertop Material",unit:"Per Sq Ft"},
+{id:"M177",item:"Caulk / Sealant | Silicone",unit:"Tube"},
+{id:"M178",item:"Caulk / Sealant | Polyurethane",unit:"Tube"},
+{id:"M179",item:"Adhesive | Construction",unit:"Tube"},
+{id:"M180",item:"Tape | Duct / Electrical / Painters",unit:"Roll"},
+{id:"M181",item:"Fasteners / Anchors (bag)",unit:"Per Job"},
+{id:"M182",item:"Screws / Nails (box)",unit:"Per Box"},
+{id:"M183",item:"Rags / Wipes / PPE",unit:"Per Job"},
+{id:"M184",item:"Cleaning Chemicals",unit:"Per Gal"},
+{id:"M185",item:"Disposable Supplies (janitorial)",unit:"Per Job"},
+{id:"M186",item:"Misc. Hardware / Small Parts",unit:"Per Job"},
+{id:"M187",item:"Dumpster Rental / Disposal",unit:"Per Haul"},
+{id:"M188",item:"Scaffolding / Lift Rental (daily)",unit:"Per Day"},
+{id:"M189",item:"Permit / Inspection Fee",unit:"Per Job"},
+{id:"M190",item:"Freight / Delivery Charge",unit:"Per Job"},
+{id:"M-OTHER",item:"Other — Not Listed (describe in Notes)",unit:""}
+];
+
+// ── Init ───────────────────────────────────────────────────────────────────
+(function init() {
+  // Populate category dropdown
+  const cats = [...new Set(SERVICES.map(s => s.cat))].sort();
+  const catSel = document.getElementById('svc_cat');
+  cats.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    catSel.appendChild(o);
+  });
+  addLaborRow();
+  addMatRow();
+})();
+
+function onCatChange() {
+  const cat = document.getElementById('svc_cat').value;
+  const subSel = document.getElementById('svc_sub');
+  subSel.innerHTML = '<option value="">— Select Subtype —</option>';
+  const subs = SERVICES.filter(s => s.cat === cat);
+  subs.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s.id; o.textContent = s.sub;
+    subSel.appendChild(o);
+  });
+  onSubChange();
+}
+
+function onSubChange() {
+  const val = document.getElementById('svc_sub').value;
+  document.getElementById('other_svc_wrap').style.display =
+    (val === 'SVC-OTHER' || document.getElementById('svc_cat').value === 'Other') ? '' : 'none';
+}
+
+function onTravelChange() {
+  const yes = document.querySelector('input[name=travel][value=yes]').checked;
+  document.getElementById('travel_amt_wrap').style.display = yes ? '' : 'none';
+  if (!yes) document.getElementById('travel_amt').value = '';
+  recalc();
+}
+
+// ── Labor rows ─────────────────────────────────────────────────────────────
+let laborCount = 0;
+function addLaborRow() {
+  const tbody = document.getElementById('laborBody');
+  const i = laborCount++;
+  const tradeOpts = TRADES.map(t => `<option value="${t}">${t}</option>`).join('');
+  const tr = document.createElement('tr');
+  tr.id = 'lr_' + i;
+  tr.innerHTML = `
+    <td><select id="lt_${i}" onchange="onTradeChange(${i})"><option value="">— Select Trade —</option>${tradeOpts}</select>
+      <div id="lt_other_${i}" style="display:none;margin-top:4px"><input type="text" id="lt_other_text_${i}" placeholder="Describe trade / role"></div>
+    </td>
+    <td><input type="number" id="lw_${i}" min="1" step="1" value="1" oninput="recalc()"></td>
+    <td><input type="number" id="lh_${i}" min="0" step="0.25" placeholder="0.00" oninput="recalc()"></td>
+    <td><input type="number" id="lr2_${i}" min="0" step="0.01" placeholder="0.00" oninput="recalc()"></td>
+    <td class="row-total" id="ltot_${i}">—</td>
+    <td><input type="text" id="ln_${i}" placeholder="Optional"></td>
+    <td><button type="button" class="del-btn" onclick="delRow('lr_${i}');recalc()" title="Remove">&#x2715;</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function onTradeChange(i) {
+  const val = document.getElementById('lt_' + i).value;
+  document.getElementById('lt_other_' + i).style.display =
+    val === 'Other — Not Listed' ? '' : 'none';
+}
+
+// ── Material rows ──────────────────────────────────────────────────────────
+let matCount = 0;
+function addMatRow() {
+  const tbody = document.getElementById('matBody');
+  const i = matCount++;
+  const matOpts = MATERIALS.map(m => `<option value="${m.id}" data-unit="${m.unit}">${m.item}</option>`).join('');
+  const tr = document.createElement('tr');
+  tr.id = 'mr_' + i;
+  tr.innerHTML = `
+    <td><select id="ms_${i}" onchange="onMatChange(${i})"><option value="">— Select Material —</option>${matOpts}</select>
+      <div id="ms_other_${i}" style="display:none;margin-top:4px"><input type="text" id="ms_other_text_${i}" placeholder="Describe material / item"><span class="hint" style="display:block;margin-top:2px">Helps us expand our catalog. Thank you.</span></div>
+    </td>
+    <td><input type="text" id="mu_${i}" placeholder="Unit" style="max-width:80px" oninput="recalc()"></td>
+    <td><input type="number" id="mq_${i}" min="0" step="1" value="1" oninput="recalc()"></td>
+    <td><input type="number" id="mc_${i}" min="0" step="0.01" placeholder="0.00" oninput="recalc()"></td>
+    <td class="row-total" id="mtot_${i}">—</td>
+    <td><button type="button" class="del-btn" onclick="delRow('mr_${i}');recalc()" title="Remove">&#x2715;</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function onMatChange(i) {
+  const sel = document.getElementById('ms_' + i);
+  const opt = sel.options[sel.selectedIndex];
+  const unit = opt ? opt.dataset.unit || '' : '';
+  document.getElementById('mu_' + i).value = unit;
+  const isOther = sel.value === 'M-OTHER';
+  document.getElementById('ms_other_' + i).style.display = isOther ? '' : 'none';
+  recalc();
+}
+
+function delRow(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+// ── Recalc totals ──────────────────────────────────────────────────────────
+function fmt(n) {
+  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function recalc() {
+  // Labor
+  let laborTotal = 0;
+  document.querySelectorAll('#laborBody tr').forEach(tr => {
+    const id = tr.id.replace('lr_','');
+    const w = parseFloat(document.getElementById('lw_'+id)?.value)||0;
+    const h = parseFloat(document.getElementById('lh_'+id)?.value)||0;
+    const r = parseFloat(document.getElementById('lr2_'+id)?.value)||0;
+    const tot = w * h * r;
+    laborTotal += tot;
+    const totEl = document.getElementById('ltot_'+id);
+    if (totEl) totEl.textContent = tot > 0 ? fmt(tot) : '—';
+  });
+
+  // Materials
+  let matTotal = 0;
+  document.querySelectorAll('#matBody tr').forEach(tr => {
+    const id = tr.id.replace('mr_','');
+    const q = parseFloat(document.getElementById('mq_'+id)?.value)||0;
+    const c = parseFloat(document.getElementById('mc_'+id)?.value)||0;
+    const tot = q * c;
+    matTotal += tot;
+    const totEl = document.getElementById('mtot_'+id);
+    if (totEl) totEl.textContent = tot > 0 ? fmt(tot) : '—';
+  });
+
+  // Travel
+  const hasTravelYes = document.querySelector('input[name=travel][value=yes]')?.checked;
+  const travel = hasTravelYes ? (parseFloat(document.getElementById('travel_amt')?.value)||0) : 0;
+  const travelRow = document.getElementById('tot_travel_row');
+  if (travelRow) travelRow.style.display = travel > 0 ? '' : 'none';
+  const travelEl = document.getElementById('tot_travel');
+  if (travelEl) travelEl.textContent = fmt(travel);
+
+  const grand = laborTotal + matTotal + travel;
+  document.getElementById('tot_labor').textContent = fmt(laborTotal);
+  document.getElementById('tot_mat').textContent = fmt(matTotal);
+  document.getElementById('tot_grand').textContent = fmt(grand);
+}
+
+// ── Validation ─────────────────────────────────────────────────────────────
+function validate() {
+  const errs = [];
+  const req = [
+    ['v_company','Company Name'],['v_contact','Primary Contact'],
+    ['v_phone','Phone'],['v_email','Email'],
+    ['v_valid_until','Quote Valid Until'],
+    ['svc_cat','Service Category'],['svc_sub','Service Subtype'],
+    ['svc_location','Facility / Location'],['svc_desc','Scope Description']
+  ];
+  req.forEach(([id, lbl]) => {
+    const el = document.getElementById(id);
+    if (!el || !el.value.trim()) { if(el) el.classList.add('err'); errs.push(lbl); }
+    else el.classList.remove('err');
+  });
+
+  // At least one labor row with trade + hours + rate
+  const lRows = document.querySelectorAll('#laborBody tr');
+  let hasValidLabor = false;
+  lRows.forEach(tr => {
+    const id = tr.id.replace('lr_','');
+    const t = document.getElementById('lt_'+id)?.value;
+    const h = parseFloat(document.getElementById('lh_'+id)?.value)||0;
+    const r = parseFloat(document.getElementById('lr2_'+id)?.value)||0;
+    if (t && h > 0 && r > 0) hasValidLabor = true;
+  });
+  if (!hasValidLabor && lRows.length > 0) errs.push('At least one complete Labor row (trade, hours, rate)');
+
+  // Travel amount if travel = yes
+  const hasTravelYes = document.querySelector('input[name=travel][value=yes]')?.checked;
+  if (hasTravelYes) {
+    const amt = parseFloat(document.getElementById('travel_amt')?.value)||0;
+    if (amt <= 0) { document.getElementById('travel_amt').classList.add('err'); errs.push('Travel / Mobilization amount'); }
+    else document.getElementById('travel_amt').classList.remove('err');
+  }
+
+  // Signature
+  const sig = document.getElementById('v_sig');
+  if (!sig.value.trim()) { sig.classList.add('err'); errs.push('Vendor signature / acknowledgement'); }
+  else sig.classList.remove('err');
+
+  const banner = document.getElementById('errBanner');
+  if (errs.length > 0) {
+    banner.innerHTML = '<strong>Please complete the following required fields:</strong><ul style="margin:6px 0 0 18px">' + errs.map(e=>`<li>${e}</li>`).join('') + '</ul>';
+    banner.classList.add('show');
+    banner.scrollIntoView({behavior:'smooth', block:'start'});
+    return false;
+  }
+  banner.classList.remove('show');
+  return true;
+}
+
+// ── Build submission object ────────────────────────────────────────────────
+function buildSubmission() {
+  const catEl = document.getElementById('svc_cat');
+  const subEl = document.getElementById('svc_sub');
+  const subId = subEl.value;
+  const subText = subEl.options[subEl.selectedIndex]?.text || '';
+
+  const labor = [];
+  document.querySelectorAll('#laborBody tr').forEach(tr => {
+    const id = tr.id.replace('lr_','');
+    const trade = document.getElementById('lt_'+id)?.value || '';
+    const tradeOther = document.getElementById('lt_other_text_'+id)?.value || '';
+    const workers = parseFloat(document.getElementById('lw_'+id)?.value)||0;
+    const hours = parseFloat(document.getElementById('lh_'+id)?.value)||0;
+    const rate = parseFloat(document.getElementById('lr2_'+id)?.value)||0;
+    const notes = document.getElementById('ln_'+id)?.value || '';
+    if (!trade) return;
+    labor.push({
+      trade: trade === 'Other — Not Listed' ? (tradeOther || 'Other') : trade,
+      trade_unlisted: trade === 'Other — Not Listed' ? tradeOther : '',
+      workers, hours, rate_per_hr: rate,
+      row_total: parseFloat((workers * hours * rate).toFixed(2)),
+      notes
+    });
+  });
+
+  const materials = [];
+  document.querySelectorAll('#matBody tr').forEach(tr => {
+    const id = tr.id.replace('mr_','');
+    const sel = document.getElementById('ms_'+id);
+    const matId = sel?.value || '';
+    if (!matId) return;
+    const matItem = matId === 'M-OTHER'
+      ? (document.getElementById('ms_other_text_'+id)?.value || 'Other')
+      : (sel.options[sel.selectedIndex]?.text || '');
+    const unit = document.getElementById('mu_'+id)?.value || '';
+    const qty = parseFloat(document.getElementById('mq_'+id)?.value)||0;
+    const cost = parseFloat(document.getElementById('mc_'+id)?.value)||0;
+    materials.push({
+      material_id: matId === 'M-OTHER' ? 'UNLISTED' : matId,
+      item: matItem,
+      item_unlisted: matId === 'M-OTHER' ? (document.getElementById('ms_other_text_'+id)?.value||'') : '',
+      unit, qty, unit_cost: cost,
+      row_total: parseFloat((qty * cost).toFixed(2))
+    });
+  });
+
+  const hasTravelYes = document.querySelector('input[name=travel][value=yes]')?.checked;
+  const travelAmt = hasTravelYes ? (parseFloat(document.getElementById('travel_amt')?.value)||0) : 0;
+
+  const totLabor = labor.reduce((s,r)=>s+r.row_total,0);
+  const totMat = materials.reduce((s,r)=>s+r.row_total,0);
+  const grand = totLabor + totMat + travelAmt;
+
+  return {
+    _form_version: '1.0',
+    _generated: new Date().toISOString(),
+    vendor: {
+      company: document.getElementById('v_company').value,
+      contact: document.getElementById('v_contact').value,
+      phone: document.getElementById('v_phone').value,
+      email: document.getElementById('v_email').value,
+      license: document.getElementById('v_license').value,
+      insurance_provider: document.getElementById('v_ins_provider').value,
+      insurance_policy: document.getElementById('v_ins_policy').value,
+      insurance_expiry: document.getElementById('v_ins_exp').value,
+      quote_valid_until: document.getElementById('v_valid_until').value,
+      signature: document.getElementById('v_sig').value
+    },
+    scope: {
+      category: catEl.value,
+      subtype_id: subId,
+      subtype: subText,
+      subtype_unlisted: document.getElementById('svc_other_desc')?.value || '',
+      location: document.getElementById('svc_location').value,
+      requested_start: document.getElementById('svc_start_date').value,
+      description: document.getElementById('svc_desc').value
+    },
+    labor,
+    materials,
+    travel: {
+      included: hasTravelYes,
+      amount: travelAmt,
+      notes: document.getElementById('travel_notes').value
+    },
+    additional: {
+      notes: document.getElementById('notes').value,
+      payment_terms: document.getElementById('payment_terms').value,
+      estimated_duration: document.getElementById('duration').value
+    },
+    totals: {
+      labor: parseFloat(totLabor.toFixed(2)),
+      materials: parseFloat(totMat.toFixed(2)),
+      travel: parseFloat(travelAmt.toFixed(2)),
+      grand_total: parseFloat(grand.toFixed(2))
+    }
+  };
+}
+
+// ── Submit: download JSON then print ──────────────────────────────────────
+function submitForm() {
+  if (!validate()) return;
+  recalc();
+  const data = buildSubmission();
+  const company = (data.vendor.company || 'vendor').replace(/[^a-z0-9]/gi,'_').toLowerCase();
+  const cat = (data.scope.category || 'scope').replace(/[^a-z0-9]/gi,'_').toLowerCase();
+  const filename = `FSR_Proposal_${company}_${cat}.json`;
+
+  // Download JSON
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  // Then print
+  setTimeout(() => window.print(), 400);
+}
+
+function clearForm() {
+  if (!confirm('Clear all form data? This cannot be undone.')) return;
+  document.querySelectorAll('input:not([type=radio]),select,textarea').forEach(el => { el.value = ''; el.classList.remove('err'); });
+  document.querySelector('input[name=travel][value=no]').checked = true;
+  document.getElementById('travel_amt_wrap').style.display = 'none';
+  document.getElementById('other_svc_wrap').style.display = 'none';
+  document.getElementById('laborBody').innerHTML = '';
+  document.getElementById('matBody').innerHTML = '';
+  laborCount = 0; matCount = 0;
+  document.getElementById('errBanner').classList.remove('show');
+  addLaborRow(); addMatRow();
+  recalc();
+}
+</script>
+</body>
+</html>
