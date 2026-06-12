@@ -317,6 +317,8 @@ a{color:#97D700}
 </div><!-- /page -->
 
 <script>
+let laborCount = 0;
+let matCount = 0;
 // ── Catalog data (names only — no rates or prices) ─────────────────────────
 const SERVICES = [
 {id:"SVC-001",cat:"Access Points",sub:"Front Entrance Gate, Repair"},
@@ -789,7 +791,6 @@ function onTravelChange() {
 }
 
 // ── Labor rows ─────────────────────────────────────────────────────────────
-let laborCount = 0;
 function spinStep(id, delta, min, step) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -847,7 +848,6 @@ function onTradeChange(i) {
 }
 
 // ── Material rows ──────────────────────────────────────────────────────────
-let matCount = 0;
 function addMatRow() {
   const container = document.getElementById('matBody');
   const i = matCount++;
