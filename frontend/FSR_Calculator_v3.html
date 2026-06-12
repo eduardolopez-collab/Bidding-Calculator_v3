@@ -2213,9 +2213,11 @@ function buildBreakdown(svc) {
     // Always update rate badges and tally the footer totals (Labor / Materials / Combined).
     // Inlined here (not via recalcBreakdown) so saveState is never triggered mid-build.
     let laborTotal = 0;
-    lr.querySelectorAll('.lr-hrs').forEach((el, i) => {
-      const lp = [{trade: s.t1}, {trade: s.t2}][i];
-      if (!lp || !lp.trade) return;
+    // Tally static default rows by known ID (immune to dynamic row index shift)
+    [{trade: s.t1, i: 0}, {trade: s.t2, i: 1}].forEach(lp => {
+      if (!lp.trade) return;
+      const el = document.getElementById('lhrs_' + svc.idx + '_' + lp.i);
+      if (!el) return; // row was removed
       const rates = LABOR_RATES[lp.trade] || {low:0,med:0,high:0};
       const adjLow  = Math.round(rates.low  * city.laborMult);
       const adjMedExact = rates.med * city.laborMult;
@@ -2224,12 +2226,30 @@ function buildBreakdown(svc) {
       const badge = laborRow && laborRow.querySelector('.lr-rate-badge');
       if (badge) badge.textContent = `$${adjLow} — $${adjHigh} / Hr`;
       const hrs = parseFloat(el.value) || 0;
-      const wEl = document.getElementById('lwrk_' + svc.idx + '_' + i);
+      const wEl = document.getElementById('lwrk_' + svc.idx + '_' + lp.i);
       const workers = wEl ? (parseInt(wEl.value) || 1) : 1;
-      const effectiveRate = getEffectiveLaborRate(svc, lp.trade, city, i);
+      const effectiveRate = getEffectiveLaborRate(svc, lp.trade, city, lp.i);
       const rowTotal = effectiveRate * hrs * workers;
-      const totEl = document.getElementById('ltot_' + svc.idx + '_' + i);
+      const totEl = document.getElementById('ltot_' + svc.idx + '_' + lp.i);
       if (totEl) totEl.innerHTML = fmt(rowTotal);
+      laborTotal += rowTotal;
+    });
+    // Tally dynamic laborer rows
+    lr.querySelectorAll('.labor-row-dynamic').forEach(row => {
+      const tradeSel = row.querySelector('select');
+      const hrsEl   = row.querySelector('.lr-hrs');
+      const wrkEl   = row.querySelector('.lr-workers');
+      const rateEl  = row.querySelector('.lr-rate-override');
+      const totEl   = row.querySelector('.lr-total-badge');
+      const trade = tradeSel ? tradeSel.value : '';
+      if (!trade) return;
+      const hrs     = hrsEl  ? (parseFloat(hrsEl.value)  || 0) : 0;
+      const workers = wrkEl  ? (parseInt(wrkEl.value)    || 1) : 1;
+      const r = LABOR_RATES[trade] || {med:0};
+      const overrideVal = rateEl && rateEl.value !== '' ? parseFloat(rateEl.value) : null;
+      const effectiveRate = (overrideVal !== null && !isNaN(overrideVal) && overrideVal > 0) ? overrideVal : r.med * city.laborMult;
+      const rowTotal = effectiveRate * hrs * workers;
+      if (totEl) totEl.innerHTML = rowTotal > 0 ? fmt(rowTotal) : '—';
       laborTotal += rowTotal;
     });
     const travelCost = getTravelCost(svc, s, city);
