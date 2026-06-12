@@ -1724,6 +1724,7 @@ function rebuildSvcSelect(svc) {
     svc.svcId=svcSel.value;
     svcSel.classList.remove('placeholder-active');
     updateUnitInfo(svc);
+    updateSvcHeader(svc);
     saveState();recalc();
   };
   updateUnitInfo(svc);
