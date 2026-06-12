@@ -2209,9 +2209,13 @@ function buildBreakdown(svc) {
     });
     // Always update rate badges and tally the footer totals (Labor / Materials / Combined).
     // Inlined here (not via recalcBreakdown) so saveState is never triggered mid-build.
+    // Only iterate static default rows (.labor-row not .labor-row-dynamic) and derive
+    // trade index from the element ID to avoid mismatch when dynamic rows are present.
     let laborTotal = 0;
-    lr.querySelectorAll('.lr-hrs').forEach((el, i) => {
-      const lp = [{trade: s.t1}, {trade: s.t2}][i];
+    lr.querySelectorAll('.labor-row:not(.labor-row-dynamic) .lr-hrs').forEach(el => {
+      const tradeIdx = parseInt(el.id.split('_').pop());
+      const trades = [{trade: s.t1}, {trade: s.t2}];
+      const lp = trades[tradeIdx];
       if (!lp || !lp.trade) return;
       const rates = LABOR_RATES[lp.trade] || {low:0,med:0,high:0};
       const adjLow  = Math.round(rates.low  * city.laborMult);
@@ -2221,11 +2225,11 @@ function buildBreakdown(svc) {
       const badge = laborRow && laborRow.querySelector('.lr-rate-badge');
       if (badge) badge.textContent = `$${adjLow} — $${adjHigh} / Hr`;
       const hrs = parseFloat(el.value) || 0;
-      const wEl = document.getElementById('lwrk_' + svc.idx + '_' + i);
+      const wEl = document.getElementById('lwrk_' + svc.idx + '_' + tradeIdx);
       const workers = wEl ? (parseInt(wEl.value) || 1) : 1;
-      const effectiveRate = getEffectiveLaborRate(svc, lp.trade, city, i);
+      const effectiveRate = getEffectiveLaborRate(svc, lp.trade, city, tradeIdx);
       const rowTotal = effectiveRate * hrs * workers;
-      const totEl = document.getElementById('ltot_' + svc.idx + '_' + i);
+      const totEl = document.getElementById('ltot_' + svc.idx + '_' + tradeIdx);
       if (totEl) totEl.innerHTML = fmt(rowTotal);
       laborTotal += rowTotal;
     });
