@@ -1487,7 +1487,9 @@ function snapshotAllBreakdowns() {
         const wEl = document.getElementById('lwrk_' + svc.idx + '_' + i);
         if (wEl) snap['lwrk_' + i] = parseInt(wEl.value) || 1;
         const rEl = document.getElementById('lrate_' + svc.idx + '_' + i);
-        if (rEl) snap['lrate_' + i] = rEl.value;
+        // Only save rate if non-empty — don't overwrite a saved override with a transient empty value
+        if (rEl && rEl.value !== '') snap['lrate_' + i] = rEl.value;
+        else if (svc.bdSnap && svc.bdSnap['lrate_' + i]) snap['lrate_' + i] = svc.bdSnap['lrate_' + i];
       });
       lr.querySelectorAll('.labor-row-dynamic').forEach((row, i) => {
         const tradeSel = row.querySelector('select');
