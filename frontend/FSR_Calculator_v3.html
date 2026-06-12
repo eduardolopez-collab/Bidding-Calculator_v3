@@ -2608,6 +2608,8 @@ function importVendorSubmission(input) {
     // ── Step 3: populate labor rows (only if breakdown is empty) ──────────
     const hasLabor = data.labor && data.labor.length > 0;
     const hasMat   = data.materials && data.materials.length > 0;
+    // Ensure breakdown is rendered before appending rows
+    buildBreakdown(svc);
     const lr = document.getElementById('labor_rows_' + svc.idx);
     const mr = document.getElementById('mat_rows_'   + svc.idx);
     const existingDynamic = lr ? lr.querySelectorAll('.labor-row-dynamic').length : 0;
