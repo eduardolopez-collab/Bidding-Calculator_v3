@@ -2559,9 +2559,15 @@ function importVendorSubmission(input) {
       return;
     }
 
-    // ── Step 1: always add as a new bid ──────────────────────────────────
-    bidCount++;
-    bids.push({id: bidCount, vendor: company, amount: String(amount)});
+    // ── Step 1: fill empty Bid #1 if untouched, otherwise add new ────────
+    const emptyFirst = bids.length === 1 && !bids[0].vendor && !bids[0].amount;
+    if (emptyFirst) {
+      bids[0].vendor = company;
+      bids[0].amount = String(amount);
+    } else {
+      bidCount++;
+      bids.push({id: bidCount, vendor: company, amount: String(amount)});
+    }
     renderBids();
 
     // ── Step 2: pick target service (include off-slots so vendor can open a new one) ──
