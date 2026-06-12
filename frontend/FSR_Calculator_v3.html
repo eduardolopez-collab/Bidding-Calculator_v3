@@ -3234,18 +3234,18 @@ function recalcResults() {
   const diff = _selAmt - combBenchMedHoisted;
   const bidLbl = _isLowest ? 'Lowest Bid' : 'Selected Bid';
 
-  // Bid selector embedded in the bid card
+  // Bid selector — stacked pills column to the right inside the card
   const bidSelectorInCard = valid.length > 1
-    ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">${valid.map((b,i)=>{
+    ? `<div style="display:flex;flex-direction:column;gap:3px;margin-left:auto;padding-left:8px;flex-shrink:0">${valid.map((b,i)=>{
         const sel = b.id===_selectedBidId;
-        return `<button onclick="selectBid(${b.id})" style="padding:2px 8px;font-size:10px;font-weight:${sel?700:500};border-radius:20px;border:1px solid ${sel?'var(--in-b)':'var(--bm)'};background:${sel?'var(--in-bg)':'transparent'};color:${sel?'var(--in-t)':'var(--tm)'};cursor:pointer;white-space:nowrap">Bid #${i+1}</button>`;
+        return `<button onclick="selectBid(${b.id})" style="padding:2px 7px;font-size:9px;font-weight:${sel?700:500};border-radius:20px;border:1px solid ${sel?'var(--in-b)':'var(--bm)'};background:${sel?'var(--in-bg)':'transparent'};color:${sel?'var(--in-t)':'var(--tm)'};cursor:pointer;white-space:nowrap;text-align:center">Bid #${i+1}</button>`;
       }).join('')}</div>`
     : '';
 
   document.getElementById('metricGrid').innerHTML=`
     <div class="metric"><div class="m-lbl">Benchmark</div><div class="m-val">${fmt(combBenchMedHoisted)}</div><div class="m-sub">${city.city||'No city'} &middot; ${city.laborMult.toFixed(2)}x &middot; labor + materials${travelBench>0?' + travel':''}</div></div>
     <div class="metric"><div class="m-lbl">Proposal</div><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><div class="m-val" style="color:var(--tp)">${fmt(combProposalMedHoisted)}</div>${(()=>{const pd=combProposalMedHoisted-combBenchMedHoisted;return pd===0?'':`<span style="font-size:12px;font-weight:600;color:${pd>0?'var(--er-t)':'#b8e840'}">${pd>0?'+':'−'}${fmt(Math.abs(pd))} vs. Benchmark</span>`;})()}</div><div class="m-sub">${fmt(laborProposalMed + travelProposal)} labor${travelProposal>0?' + travel':''} &middot; ${fmt(matProposalMed)} materials</div></div>
-    <div class="metric"><div class="m-lbl">${bidLbl}</div><div class="m-val" style="color:${_selAmt<=combBenchMedHoisted?'#b8e840':'var(--tp)'}">${fmt(_selAmt)}</div><div class="m-sub">${_selBidData.vendor||'Unnamed Vendor'}</div>${bidSelectorInCard}</div>
+    <div class="metric" style="display:flex;flex-direction:row;align-items:center"><div style="flex:1;min-width:0"><div class="m-lbl">${bidLbl}</div><div class="m-val" style="color:${_selAmt<=combBenchMedHoisted?'#b8e840':'var(--tp)'}">${fmt(_selAmt)}</div><div class="m-sub">${_selBidData.vendor||'Unnamed Vendor'}</div></div>${bidSelectorInCard}</div>
     <div class="metric"><div class="m-lbl">Effort</div><div class="m-val ${diff<=0?'good':'bad'}">${diff<=0?'−':'+'}${fmt(Math.abs(diff))}</div><div class="m-sub">${diff<=0?'Under Benchmark':'Over Benchmark'}</div></div>`;
 
   document.getElementById('apprResult').innerHTML=approvalHtml(_selAmt,activeSvcs,proposalRef,proposalHigh,combBenchMedHoisted);
