@@ -34,16 +34,30 @@ a{color:#97D700}
 .field .hint{font-size:10px;color:#888;margin-top:2px}
 .required-star{color:#e53935}
 
-/* ── Labor rows ── */
-.labor-table{width:100%;border-collapse:collapse;margin-bottom:8px;font-size:12px}
-.labor-table th{background:#f2f2f2;padding:6px 8px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#666;border-bottom:1px solid #ddd}
-.labor-table td{padding:6px 4px;border-bottom:1px solid #f0f0f0;vertical-align:top}
-.labor-table tr:last-child td{border-bottom:none}
-.labor-table input,.labor-table select{width:100%;border:1px solid #ccc;border-radius:4px;padding:5px 6px;font-size:12px;font-family:inherit;background:#fff}
-.labor-table input:focus,.labor-table select:focus{outline:none;border-color:#97D700}
-.labor-table .row-total{font-weight:700;color:#222;text-align:right;padding-right:6px;min-width:72px}
-.labor-table .del-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;padding:2px 6px;border-radius:4px;line-height:1}
-.labor-table .del-btn:hover{color:#e53935;background:#ffeaea}
+/* ── Row cards ── */
+.vrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.vrow:last-child{border-bottom:none}
+.vrow-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#888;white-space:nowrap}
+.vrow select,.vrow input[type=text],.vrow input[type=number]{border:1px solid #ccc;border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit;background:#fff;color:#222;-webkit-appearance:none;appearance:none;height:30px}
+.vrow select:focus,.vrow input:focus{outline:none;border-color:#97D700}
+.vrow-trade{flex:1;min-width:160px}
+.vrow-item{flex:1;min-width:180px}
+.spin-wrap{display:flex;align-items:stretch;border:1px solid #ccc;border-radius:6px;overflow:hidden;height:30px}
+.spin-wrap input{border:none;border-radius:0;padding:4px 6px;font-size:12px;text-align:center;width:56px;-moz-appearance:textfield}
+.spin-wrap input::-webkit-inner-spin-button,.spin-wrap input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.spin-wrap input:focus{outline:none;background:#f9ffe6}
+.spin-btns{display:flex;flex-direction:column;width:20px;flex-shrink:0}
+.spin-btn{flex:1;background:#f5f5f5;border:none;border-left:1px solid #ccc;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:background .1s}
+.spin-btn:first-child{border-bottom:1px solid #ccc}
+.spin-btn:hover{background:#e8e8e8}
+.spin-btn svg{width:7px;height:5px}
+.vrow-unit{width:72px}
+.vrow-total{font-size:12px;font-weight:700;color:#222;min-width:72px;text-align:right;white-space:nowrap}
+.vrow-notes{flex:1;min-width:100px}
+.del-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;padding:2px 6px;border-radius:4px;line-height:1;flex-shrink:0}
+.del-btn:hover{color:#e53935;background:#ffeaea}
+.row-header{display:flex;gap:8px;padding:4px 0 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#aaa;flex-wrap:wrap}
+.rows-container{margin-bottom:4px}
 .add-row-btn{margin-top:4px;padding:5px 14px;font-size:11px;font-weight:600;color:#97D700;background:transparent;border:1px dashed #97D700;border-radius:6px;cursor:pointer;transition:background .15s}
 .add-row-btn:hover{background:rgba(151,215,0,.08)}
 
@@ -184,20 +198,16 @@ a{color:#97D700}
   <div class="section">
     <div class="section-hd"><span class="num">3</span> Labor</div>
     <div class="section-body">
-      <table class="labor-table" id="laborTable">
-        <thead>
-          <tr>
-            <th style="width:28%">Trade / Role</th>
-            <th style="width:12%">Workers</th>
-            <th style="width:14%">Hours</th>
-            <th style="width:18%">Rate / Hr ($)</th>
-            <th style="width:16%">Row Total</th>
-            <th style="width:12%">Notes</th>
-            <th style="width:28px"></th>
-          </tr>
-        </thead>
-        <tbody id="laborBody"></tbody>
-      </table>
+      <div class="row-header">
+        <span style="flex:1;min-width:160px">Trade / Role</span>
+        <span style="width:90px;text-align:center">Workers</span>
+        <span style="width:90px;text-align:center">Hours</span>
+        <span style="width:100px;text-align:center">Rate / Hr ($)</span>
+        <span style="min-width:72px;text-align:right">Total</span>
+        <span style="flex:1;min-width:100px">Notes</span>
+        <span style="width:28px"></span>
+      </div>
+      <div class="rows-container" id="laborBody"></div>
       <button type="button" class="add-row-btn" onclick="addLaborRow()">+ Add Labor Row</button>
     </div>
   </div>
@@ -206,19 +216,15 @@ a{color:#97D700}
   <div class="section">
     <div class="section-hd"><span class="num">4</span> Materials</div>
     <div class="section-body">
-      <table class="labor-table" id="matTable">
-        <thead>
-          <tr>
-            <th style="width:34%">Material / Item</th>
-            <th style="width:14%">Unit</th>
-            <th style="width:12%">Qty</th>
-            <th style="width:16%">Unit Cost ($)</th>
-            <th style="width:16%">Row Total</th>
-            <th style="width:28px"></th>
-          </tr>
-        </thead>
-        <tbody id="matBody"></tbody>
-      </table>
+      <div class="row-header">
+        <span style="flex:1;min-width:180px">Material / Item</span>
+        <span style="width:72px;text-align:center">Unit</span>
+        <span style="width:90px;text-align:center">Qty</span>
+        <span style="width:100px;text-align:center">Unit Cost ($)</span>
+        <span style="min-width:72px;text-align:right">Total</span>
+        <span style="width:28px"></span>
+      </div>
+      <div class="rows-container" id="matBody"></div>
       <button type="button" class="add-row-btn" onclick="addMatRow()">+ Add Material Row</button>
     </div>
   </div>
@@ -784,23 +790,54 @@ function onTravelChange() {
 
 // ── Labor rows ─────────────────────────────────────────────────────────────
 let laborCount = 0;
+function spinStep(id, delta, min, step) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const cur = parseFloat(el.value) || 0;
+  el.value = Math.max(min, parseFloat((cur + delta * step).toFixed(4)));
+  recalc();
+}
+
 function addLaborRow() {
-  const tbody = document.getElementById('laborBody');
+  const container = document.getElementById('laborBody');
   const i = laborCount++;
   const tradeOpts = TRADES.map(t => `<option value="${t}">${t}</option>`).join('');
-  const tr = document.createElement('tr');
-  tr.id = 'lr_' + i;
-  tr.innerHTML = `
-    <td><select id="lt_${i}" onchange="onTradeChange(${i})"><option value="">— Select Trade —</option>${tradeOpts}</select>
-      <div id="lt_other_${i}" style="display:none;margin-top:4px"><input type="text" id="lt_other_text_${i}" placeholder="Describe trade / role"></div>
-    </td>
-    <td><input type="number" id="lw_${i}" min="1" step="1" value="1" oninput="recalc()"></td>
-    <td><input type="number" id="lh_${i}" min="0" step="0.25" placeholder="0.00" oninput="recalc()"></td>
-    <td><input type="number" id="lr2_${i}" min="0" step="0.01" placeholder="0.00" oninput="recalc()"></td>
-    <td class="row-total" id="ltot_${i}">—</td>
-    <td><input type="text" id="ln_${i}" placeholder="Optional"></td>
-    <td><button type="button" class="del-btn" onclick="delRow('lr_${i}');recalc()" title="Remove">&#x2715;</button></td>`;
-  tbody.appendChild(tr);
+  const div = document.createElement('div');
+  div.className = 'vrow';
+  div.id = 'lr_' + i;
+  div.innerHTML = `
+    <div class="vrow-trade">
+      <select id="lt_${i}" onchange="onTradeChange(${i})"><option value="">— Select Trade —</option>${tradeOpts}</select>
+      <div id="lt_other_${i}" style="display:none;margin-top:4px"><input type="text" id="lt_other_text_${i}" placeholder="Describe trade / role" style="width:100%;border:1px solid #ccc;border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit"></div>
+    </div>
+    <span class="vrow-lbl">Workers</span>
+    <div class="spin-wrap">
+      <input type="number" id="lw_${i}" min="1" step="1" value="1" oninput="recalc()">
+      <div class="spin-btns">
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lw_${i}',1,1,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lw_${i}',-1,1,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    <span class="vrow-lbl">Hrs</span>
+    <div class="spin-wrap">
+      <input type="number" id="lh_${i}" min="0" step="0.25" value="0" oninput="recalc()">
+      <div class="spin-btns">
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lh_${i}',1,0,0.25)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lh_${i}',-1,0,0.25)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    <span class="vrow-lbl">$/Hr</span>
+    <div class="spin-wrap">
+      <input type="number" id="lr2_${i}" min="0" step="1" value="0" oninput="recalc()">
+      <div class="spin-btns">
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lr2_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lr2_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    <span class="vrow-total" id="ltot_${i}">—</span>
+    <input type="text" id="ln_${i}" class="vrow-notes" placeholder="Notes (optional)" style="border:1px solid #ccc;border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;height:30px">
+    <button type="button" class="del-btn" onclick="delRow('lr_${i}');recalc()" title="Remove">&#x2715;</button>`;
+  container.appendChild(div);
 }
 
 function onTradeChange(i) {
@@ -812,21 +849,40 @@ function onTradeChange(i) {
 // ── Material rows ──────────────────────────────────────────────────────────
 let matCount = 0;
 function addMatRow() {
-  const tbody = document.getElementById('matBody');
+  const container = document.getElementById('matBody');
   const i = matCount++;
   const matOpts = MATERIALS.map(m => `<option value="${m.id}" data-unit="${m.unit}">${m.item}</option>`).join('');
-  const tr = document.createElement('tr');
-  tr.id = 'mr_' + i;
-  tr.innerHTML = `
-    <td><select id="ms_${i}" onchange="onMatChange(${i})"><option value="">— Select Material —</option>${matOpts}</select>
-      <div id="ms_other_${i}" style="display:none;margin-top:4px"><input type="text" id="ms_other_text_${i}" placeholder="Describe material / item"><span class="hint" style="display:block;margin-top:2px">Helps us expand our catalog. Thank you.</span></div>
-    </td>
-    <td><input type="text" id="mu_${i}" placeholder="Unit" style="max-width:80px" oninput="recalc()"></td>
-    <td><input type="number" id="mq_${i}" min="0" step="1" value="1" oninput="recalc()"></td>
-    <td><input type="number" id="mc_${i}" min="0" step="0.01" placeholder="0.00" oninput="recalc()"></td>
-    <td class="row-total" id="mtot_${i}">—</td>
-    <td><button type="button" class="del-btn" onclick="delRow('mr_${i}');recalc()" title="Remove">&#x2715;</button></td>`;
-  tbody.appendChild(tr);
+  const div = document.createElement('div');
+  div.className = 'vrow';
+  div.id = 'mr_' + i;
+  div.innerHTML = `
+    <div class="vrow-item">
+      <select id="ms_${i}" onchange="onMatChange(${i})"><option value="">— Select Material —</option>${matOpts}</select>
+      <div id="ms_other_${i}" style="display:none;margin-top:4px">
+        <input type="text" id="ms_other_text_${i}" placeholder="Describe item" style="width:100%;border:1px solid #ccc;border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit">
+        <span class="hint" style="display:block;margin-top:2px">Helps us expand our catalog — thank you.</span>
+      </div>
+    </div>
+    <input type="text" id="mu_${i}" class="vrow-unit" placeholder="Unit" readonly style="border:1px solid #ccc;border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;height:30px;background:#f9f9f9;color:#888">
+    <span class="vrow-lbl">Qty</span>
+    <div class="spin-wrap">
+      <input type="number" id="mq_${i}" min="0" step="1" value="1" oninput="recalc()">
+      <div class="spin-btns">
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mq_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mq_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    <span class="vrow-lbl">$/Unit</span>
+    <div class="spin-wrap">
+      <input type="number" id="mc_${i}" min="0" step="1" value="0" oninput="recalc()">
+      <div class="spin-btns">
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mc_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mc_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    <span class="vrow-total" id="mtot_${i}">—</span>
+    <button type="button" class="del-btn" onclick="delRow('mr_${i}');recalc()" title="Remove">&#x2715;</button>`;
+  container.appendChild(div);
 }
 
 function onMatChange(i) {
@@ -852,8 +908,8 @@ function fmt(n) {
 function recalc() {
   // Labor
   let laborTotal = 0;
-  document.querySelectorAll('#laborBody tr').forEach(tr => {
-    const id = tr.id.replace('lr_','');
+  document.querySelectorAll('#laborBody .vrow').forEach(row => {
+    const id = row.id.replace('lr_','');
     const w = parseFloat(document.getElementById('lw_'+id)?.value)||0;
     const h = parseFloat(document.getElementById('lh_'+id)?.value)||0;
     const r = parseFloat(document.getElementById('lr2_'+id)?.value)||0;
@@ -865,8 +921,8 @@ function recalc() {
 
   // Materials
   let matTotal = 0;
-  document.querySelectorAll('#matBody tr').forEach(tr => {
-    const id = tr.id.replace('mr_','');
+  document.querySelectorAll('#matBody .vrow').forEach(row => {
+    const id = row.id.replace('mr_','');
     const q = parseFloat(document.getElementById('mq_'+id)?.value)||0;
     const c = parseFloat(document.getElementById('mc_'+id)?.value)||0;
     const tot = q * c;
@@ -906,7 +962,7 @@ function validate() {
   });
 
   // At least one labor row with trade + hours + rate
-  const lRows = document.querySelectorAll('#laborBody tr');
+  const lRows = document.querySelectorAll('#laborBody .vrow');
   let hasValidLabor = false;
   lRows.forEach(tr => {
     const id = tr.id.replace('lr_','');
@@ -949,7 +1005,7 @@ function buildSubmission() {
   const subText = subEl.options[subEl.selectedIndex]?.text || '';
 
   const labor = [];
-  document.querySelectorAll('#laborBody tr').forEach(tr => {
+  document.querySelectorAll('#laborBody .vrow').forEach(tr => {
     const id = tr.id.replace('lr_','');
     const trade = document.getElementById('lt_'+id)?.value || '';
     const tradeOther = document.getElementById('lt_other_text_'+id)?.value || '';
@@ -968,7 +1024,7 @@ function buildSubmission() {
   });
 
   const materials = [];
-  document.querySelectorAll('#matBody tr').forEach(tr => {
+  document.querySelectorAll('#matBody .vrow').forEach(tr => {
     const id = tr.id.replace('mr_','');
     const sel = document.getElementById('ms_'+id);
     const matId = sel?.value || '';
