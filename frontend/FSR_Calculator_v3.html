@@ -558,6 +558,15 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
     <!-- Dynamic services container -->
     <div id="servicesContainer"></div>
 
+    <!-- Import sits below proposals, above bids -->
+    <div class="section" style="padding:12px 16px">
+      <button class="btn-add btn-import" onclick="document.getElementById('importFileInput').click()">
+        <div class="chev chev-import"><svg viewBox="0 0 10 10" fill="none"><path d="M5 1v6M2 5l3 3 3-3" stroke="#353535" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        Import Vendor Submission
+      </button>
+      <input type="file" id="importFileInput" accept=".json,application/json" style="display:none" onchange="importVendorSubmission(this)">
+    </div>
+
     <!-- Vendor bids -->
     <div class="section">
       <div class="section-label">Vendor Bids</div>
@@ -566,11 +575,6 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
         <div class="chev"><svg viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="#353535" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         Add Vendor Bid
       </button>
-      <button class="btn-add btn-import" onclick="document.getElementById('importFileInput').click()">
-        <div class="chev chev-import"><svg viewBox="0 0 10 10" fill="none"><path d="M5 1v6M2 5l3 3 3-3" stroke="#353535" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        Import Vendor Submission
-      </button>
-      <input type="file" id="importFileInput" accept=".json,application/json" style="display:none" onchange="importVendorSubmission(this)">
     </div>
 
     <!-- Results -->
