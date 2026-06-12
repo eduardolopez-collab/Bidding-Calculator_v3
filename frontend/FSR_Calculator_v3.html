@@ -1747,7 +1747,7 @@ function toggleService(idx) {
   } else {
     // â”€â”€ Turning OFF â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // Always reset this slot's data to blank.
-    svc.catVal = ''; svc.svcId = ''; svc.qty = 0; svc.tier = ''; svc.travel = 'yes';
+    svc.catVal = ''; svc.svcId = ''; svc.qty = 0; svc.tier = ''; svc.travel = 'yes'; svc.travelOverride = ''; svc.bdSnap = {}; svc.collapsed = false;
 
     if (svcIndex === 1) {
       // â”€â”€ Static "Service 2" slot (index 1) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
