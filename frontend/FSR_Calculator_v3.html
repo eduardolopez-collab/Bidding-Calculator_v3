@@ -2576,39 +2576,45 @@ function importVendorSubmission(input) {
     renderBids();
 
     // ── Step 2: pick target service ───────────────────────────────────────
-    const activeSvcs = services.filter((s,i) => i===0 || (s.on && s.svcId));
-    if (!activeSvcs.length) {
-      saveState(); recalcResults();
-      showToast(`Imported bid for ${company}. No active service to populate breakdown.`, 't-ok', 4000);
-      return;
-    }
-
-    // Try to auto-match by subtype ID
+    // Build slot list: all slots except the last blank toggle, plus "new slot"
     const submittedSubId = data.scope && data.scope.subtype_id;
-    let targetSvc = submittedSubId ? activeSvcs.find(s => s.svcId === submittedSubId) : null;
+    const allSlots = services.length > 1 ? services.slice(0, services.length - 1) : services.slice(0, 1);
 
-    // Ask which service to populate
-    let svcChoiceMsg = `Import breakdown (labor + materials) into which service?\n\n`;
-    activeSvcs.forEach((s, i) => {
+    let svcChoiceMsg = `Import breakdown into which service slot?\n\n`;
+    allSlots.forEach((s, i) => {
       const svcDef = SERVICES.find(x => x.id === s.svcId);
-      const label = svcDef ? `${svcDef.cat} — ${svcDef.sub}` : `Service ${s.idx}`;
-      const matched = s === targetSvc ? ' ✓ (matches vendor scope)' : '';
+      const label  = svcDef ? `${svcDef.cat} — ${svcDef.sub}` : '(empty)';
+      const matched = s.svcId === submittedSubId ? ' ✓' : '';
       svcChoiceMsg += `${i+1}. Service ${s.idx}: ${label}${matched}\n`;
     });
-    svcChoiceMsg += `\nEnter 1${activeSvcs.length > 1 ? `–${activeSvcs.length}` : ''}, or Cancel to import bid only.`;
+    svcChoiceMsg += `${allSlots.length+1}. Open a new service slot\n`;
+    svcChoiceMsg += `\nEnter 1–${allSlots.length+1}, or Cancel to skip breakdown.`;
+
     const choice = prompt(svcChoiceMsg);
     if (choice === null) {
       saveState(); recalcResults();
       showToast(`Imported bid for ${company} — breakdown skipped.`, 't-ok', 4000);
       return;
     }
-    const choiceIdx = parseInt(choice) - 1;
-    if (isNaN(choiceIdx) || choiceIdx < 0 || choiceIdx >= activeSvcs.length) {
+    const choiceNum = parseInt(choice);
+    if (isNaN(choiceNum) || choiceNum < 1 || choiceNum > allSlots.length + 1) {
       saveState(); recalcResults();
       showToast(`Invalid choice — bid imported, breakdown skipped.`, 't-ok', 4000);
       return;
     }
-    const svc = activeSvcs[choiceIdx];
+
+    let targetIdx; // svc.idx to populate — resolved after any toggleService call
+    if (choiceNum === allSlots.length + 1) {
+      // Toggle on the last blank slot (calls renderServicesDOM internally)
+      const lastSlot = services[services.length - 1];
+      toggleService(lastSlot.idx);
+      // After toggle, the newly-on slot is now services[services.length - 2]
+      targetIdx = services[services.length - 2].idx;
+    } else {
+      targetIdx = allSlots[choiceNum - 1].idx;
+    }
+    // Re-fetch svc from services array after any DOM rebuild
+    const svc = services.find(s => s.idx === targetIdx);
 
     // ── Step 2b: autofill header fields ──────────────────────────────────
     // City — match vendor location against city select options
