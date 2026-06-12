@@ -2671,79 +2671,69 @@ function importVendorSubmission(input) {
     const lr = document.getElementById('labor_rows_' + svc.idx);
     const mr = document.getElementById('mat_rows_'   + svc.idx);
 
-    // Check for user-entered rows BEFORE removing defaults
-    const existingDynamic     = lr ? lr.querySelectorAll('.labor-row-dynamic').length : 0;
-    const existingMatSelected = mr ? [...mr.querySelectorAll('.mat-row')].filter(r => { const sel = r.querySelector('.mat-item'); return sel && sel.value; }).length : 0;
-    const hasUserData = existingDynamic > 0 || existingMatSelected > 0;
-
-    // If user already has hand-entered rows, ask before overwriting
-    if (hasUserData && (hasLabor || hasMat)) {
-      if (!confirm(`Service ${svc.idx} already has breakdown rows. Add vendor rows alongside existing ones?`)) {
-        saveState(); recalcResults();
-        showToast(`Bid imported — breakdown unchanged.`, 't-ok', 4000);
-        return;
-      }
-    }
-
-    // Always remove service defaults when import has its own data
-    if (hasLabor || hasMat) {
-      if (lr) {
-        lr.querySelectorAll('.labor-row').forEach(row => row.remove());
-        if (!svc.bdSnap) svc.bdSnap = {};
-        svc.bdSnap['lhrs_removed_0'] = true;
-        svc.bdSnap['lhrs_removed_1'] = true;
-      }
-      if (mr) mr.querySelectorAll('.mat-row').forEach(row => row.remove());
-    }
-
-    // Populate labor
-    if (hasLabor && lr) {
-      data.labor.forEach(row => {
-        const trade = row.trade || '';
-        // Find best matching trade in LABOR_RATES
-        const matchedTrade = Object.keys(LABOR_RATES).find(t => t.toLowerCase() === trade.toLowerCase()) || '';
-        addLaborRow(svc.idx);
-        const dynamic = lr.querySelectorAll('.labor-row-dynamic');
-        const newIdx  = dynamic.length - 1;
-        const tSel  = document.getElementById('dltrade_' + svc.idx + '_' + newIdx);
-        const wEl   = document.getElementById('dlwrk_'   + svc.idx + '_' + newIdx);
-        const hEl   = document.getElementById('dlhrs_'   + svc.idx + '_' + newIdx);
-        const rEl   = document.getElementById('dlrate_'  + svc.idx + '_' + newIdx);
-        if (tSel && matchedTrade) { tSel.value = matchedTrade; laborChanged(svc.idx, newIdx, matchedTrade); }
-        if (wEl)  wEl.value  = row.workers   || 1;
-        if (hEl)  hEl.value  = row.hours     || 0;
-        if (rEl && row.rate_per_hr) rEl.value = row.rate_per_hr;
-        // Collapse select to label if trade matched
-        if (matchedTrade) {
-          const lblEl = document.getElementById('dllabel_' + svc.idx + '_' + newIdx);
-          if (tSel && lblEl) { tSel.style.display='none'; lblEl.style.display='inline'; lblEl.textContent=matchedTrade; }
+    // Guard against mid-import buildBreakdown calls wiping rows we're adding
+    const _prevRebuilding = _rebuilding;
+    _rebuilding = true;
+    try {
+      // Remove service defaults
+      if (hasLabor || hasMat) {
+        if (lr) {
+          lr.querySelectorAll('.labor-row').forEach(row => row.remove());
+          if (!svc.bdSnap) svc.bdSnap = {};
+          svc.bdSnap['lhrs_removed_0'] = true;
+          svc.bdSnap['lhrs_removed_1'] = true;
         }
-      });
-    }
+        if (mr) mr.querySelectorAll('.mat-row').forEach(row => row.remove());
+      }
 
-    // Populate materials
-    if (hasMat && mr) {
-      data.materials.forEach(row => {
-        const matId = row.material_id && row.material_id !== 'UNLISTED' ? row.material_id : null;
-        addMatRow(svc.idx);
-        const allRows = mr.querySelectorAll('.mat-row');
-        const newRow  = allRows[allRows.length - 1];
-        const newIdx  = newRow ? parseInt(newRow.id.split('_').pop()) : 0;
-        const selEl   = document.getElementById('msel_el_' + svc.idx + '_' + newIdx);
-        const costEl  = document.getElementById('mcost_'   + svc.idx + '_' + newIdx);
-        const qtyEl   = document.getElementById('mqty_'    + svc.idx + '_' + newIdx);
-        if (selEl && matId) {
-          // Rebuild options with full catalog so cross-category materials can be selected
-          if (!selEl.querySelector(`option[value="${matId}"]`)) {
-            selEl.innerHTML = '<option value="">— Select materials —</option>' +
-              MATERIALS.map(m => `<option value="${m.id}">${esc(m.item)}</option>`).join('');
+      // Populate labor
+      if (hasLabor && lr) {
+        data.labor.forEach(row => {
+          const trade = row.trade || '';
+          const matchedTrade = Object.keys(LABOR_RATES).find(t => t.toLowerCase() === trade.toLowerCase()) || '';
+          addLaborRow(svc.idx);
+          const dynamic = lr.querySelectorAll('.labor-row-dynamic');
+          const newIdx  = dynamic.length - 1;
+          const tSel  = document.getElementById('dltrade_' + svc.idx + '_' + newIdx);
+          const wEl   = document.getElementById('dlwrk_'   + svc.idx + '_' + newIdx);
+          const hEl   = document.getElementById('dlhrs_'   + svc.idx + '_' + newIdx);
+          const rEl   = document.getElementById('dlrate_'  + svc.idx + '_' + newIdx);
+          if (tSel && matchedTrade) { tSel.value = matchedTrade; laborChanged(svc.idx, newIdx, matchedTrade); }
+          if (wEl)  wEl.value  = row.workers   || 1;
+          if (hEl)  hEl.value  = row.hours     || 0;
+          if (rEl && row.rate_per_hr) rEl.value = row.rate_per_hr;
+          if (matchedTrade) {
+            const lblEl = document.getElementById('dllabel_' + svc.idx + '_' + newIdx);
+            if (tSel && lblEl) { tSel.style.display='none'; lblEl.style.display='inline'; lblEl.textContent=matchedTrade; }
           }
-          selEl.value = matId;
-          matChanged(svc.idx, newIdx, matId);
-        }
-        if (qtyEl && row.qty)       qtyEl.value  = row.qty;
-        if (costEl && row.unit_cost) costEl.value = row.unit_cost;
-      });
+        });
+      }
+
+      // Populate materials
+      if (hasMat && mr) {
+        data.materials.forEach(row => {
+          const matId = row.material_id && row.material_id !== 'UNLISTED' ? row.material_id : null;
+          addMatRow(svc.idx);
+          const allRows = mr.querySelectorAll('.mat-row');
+          const newRow  = allRows[allRows.length - 1];
+          const newIdx  = newRow ? parseInt(newRow.id.split('_').pop()) : 0;
+          const selEl   = document.getElementById('msel_el_' + svc.idx + '_' + newIdx);
+          const costEl  = document.getElementById('mcost_'   + svc.idx + '_' + newIdx);
+          const qtyEl   = document.getElementById('mqty_'    + svc.idx + '_' + newIdx);
+          if (selEl && matId) {
+            if (!selEl.querySelector(`option[value="${matId}"]`)) {
+              selEl.innerHTML = '<option value="">— Select materials —</option>' +
+                MATERIALS.map(m => `<option value="${m.id}">${esc(m.item)}</option>`).join('');
+            }
+            selEl.value = matId;
+            matChanged(svc.idx, newIdx, matId);
+          }
+          if (qtyEl && row.qty)       qtyEl.value  = row.qty;
+          if (costEl && row.unit_cost) costEl.value = row.unit_cost;
+        });
+      }
+    } finally {
+      _rebuilding = _prevRebuilding;
     }
 
     // Populate travel override if vendor included travel
