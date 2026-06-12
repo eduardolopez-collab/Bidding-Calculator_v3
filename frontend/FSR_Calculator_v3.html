@@ -1596,6 +1596,7 @@ function renderServicesDOM() {
         svcSel.onchange = ()=>{
           svc.svcId=svcSel.value;
           svcSel.classList.remove('placeholder-active');
+          updateSvcHeader(svc);
           saveState();recalc();
         };
       }
@@ -1756,6 +1757,22 @@ function toggleService(idx) {
   renderServicesDOM();
   saveState();
   recalc();
+}
+
+function updateSvcHeader(svc) {
+  const section = document.querySelector(`.section[data-svc-idx="${svc.idx}"]`);
+  if (!section) return;
+  const svcDef = SERVICES.find(x => x.id === svc.svcId);
+  const sub = svcDef ? ` <span style="font-size:11px;font-weight:500;color:var(--tm);text-transform:none;letter-spacing:0">(${svcDef.cat} — ${svcDef.sub})</span>` : '';
+  const labelEl = section.querySelector('.section-label');
+  if (!labelEl) return;
+  const isFirst = services.indexOf(svc) === 0;
+  const ordinal = ORD[services.indexOf(svc)] || (services.indexOf(svc)+1)+'th';
+  if (isFirst) {
+    labelEl.innerHTML = `1st Proposal${sub}`;
+  } else {
+    labelEl.innerHTML = svc.on ? `${ordinal} Proposal${sub}` : `Add A ${ordinal} Proposal To This Request`;
+  }
 }
 
 function collapseService(idx) {
