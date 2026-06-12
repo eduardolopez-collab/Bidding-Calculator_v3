@@ -1544,15 +1544,14 @@ function renderServicesDOM() {
 
       if (!isFirst) {
         const svcDef = SERVICES.find(x => x.id === svc.svcId);
-        const svcSummary = svc.on && svcDef ? `${svcDef.cat} — ${svcDef.sub}` : '';
         section.innerHTML = `
-          <div class="svc-tog-row" onclick="toggleService(${svc.idx})" style="justify-content:space-between">
+          <div class="svc-tog-row" onclick="${svc.on && svc.collapsed ? `collapseService(${svc.idx})` : `toggleService(${svc.idx})`}" style="justify-content:space-between">
             <div style="display:flex;align-items:center;gap:10px">
-              <div class="svc-tog-track${svc.on?' on':''}" id="tog_${svc.idx}"><div class="svc-tog-thumb"></div></div>
-              <span class="svc-tog-label">${svc.on && svcDef ? svcDef.cat+' — '+svcDef.sub : 'Add A '+ordinal+' Service To This Request'}</span>
+              <div class="svc-tog-track${svc.on?' on':''}" id="tog_${svc.idx}" style="${svc.on && svc.collapsed ? 'display:none' : ''}" onclick="event.stopPropagation();toggleService(${svc.idx})"><div class="svc-tog-thumb"></div></div>
+              <span class="svc-tog-label">${svc.on ? `<span style="font-size:10px;color:var(--tm);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-right:4px">${ordinal} Proposal</span>${svcDef ? svcDef.cat+' — '+svcDef.sub : ''}` : 'Add A '+ordinal+' Service To This Request'}</span>
             </div>
             ${svc.on ? `<button type="button" onclick="event.stopPropagation();collapseService(${svc.idx})" style="background:none;border:none;cursor:pointer;padding:2px 4px;color:var(--tm);flex-shrink:0" title="${svc.collapsed?'Expand':'Collapse'} service">
-              <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none" style="width:12px;height:12px;transition:transform .2s${svc.collapsed?'':';transform:rotate(90deg)'}"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none" style="width:12px;height:12px"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>` : ''}
           </div>
           <div class="svc-fields svc-collapse-body${svc.collapsed?' collapsed':''}" id="svcf_${svc.idx}" style="${svc.on?'':'display:none'}">
@@ -1563,9 +1562,9 @@ function renderServicesDOM() {
         const svcDef = SERVICES.find(x => x.id === svc.svcId);
         section.innerHTML = `
           <div style="display:flex;align-items:center;justify-content:space-between">
-            <span class="section-label" style="margin-bottom:0">${svcDef ? svcDef.cat+' — '+svcDef.sub : 'Service 1'}</span>
+            <span class="section-label" style="margin-bottom:0">1st Proposal${svcDef ? ' <span style="font-size:11px;font-weight:500;color:var(--tm);">('+svcDef.cat+' — '+svcDef.sub+')</span>' : ''}</span>
             <button type="button" onclick="collapseService(${svc.idx})" style="background:none;border:none;cursor:pointer;padding:2px 4px;color:var(--tm);flex-shrink:0" title="${svc.collapsed?'Expand':'Collapse'} service">
-              <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none" style="width:12px;height:12px;transition:transform .2s${svc.collapsed?'':';transform:rotate(-90deg)'}"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none" style="width:12px;height:12px"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
           <div class="svc-collapse-body${svc.collapsed?' collapsed':''}" id="svcf_${svc.idx}">
