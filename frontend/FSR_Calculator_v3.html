@@ -194,6 +194,12 @@ body{background:var(--bp);color:var(--tp);min-height:100vh;transition:background
 
 /* SERVICE TOGGLE */
 .svc-tog-row{display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:0}
+.svc-collapse-hdr{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;padding:2px 0}
+.svc-collapse-hdr:hover .svc-chev{color:var(--fg)}
+.svc-chev{width:16px;height:16px;display:flex;align-items:center;justify-content:center;color:var(--tm);transition:transform .2s;flex-shrink:0}
+.svc-chev.open{transform:rotate(90deg)}
+.svc-collapse-summary{font-size:11px;color:var(--tm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.svc-collapse-body.collapsed{display:none}
 .svc-tog-track{width:32px;height:19px;background:var(--bi);border:1px solid var(--bm);border-radius:10px;position:relative;transition:background .2s;flex-shrink:0}
 .svc-tog-track.on{background:var(--fg);border-color:var(--fg)}
 .svc-tog-thumb{position:absolute;top:2px;left:2px;width:13px;height:13px;background:#fff;border-radius:50%;transition:transform .2s}
@@ -1201,7 +1207,7 @@ function saveState() {
     priority: document.getElementById('priority').value,
     date: document.getElementById('reqDate').value,
     desc: document.getElementById('reqDesc').value,
-    services: services.map(s=>({idx:s.idx,on:s.on,catVal:s.catVal,svcId:s.svcId,qty:s.qty,tier:s.tier,travel:s.travel,travelOverride:s.travelOverride||'',measurement:s.measurement||'',bdSnap:s.bdSnap||{}})),
+    services: services.map(s=>({idx:s.idx,on:s.on,catVal:s.catVal,svcId:s.svcId,qty:s.qty,tier:s.tier,travel:s.travel,travelOverride:s.travelOverride||'',measurement:s.measurement||'',bdSnap:s.bdSnap||{},collapsed:s.collapsed||false})),
     bids: bids,
     bidCount: bidCount,
     svcCount: svcCount,
@@ -1264,9 +1270,9 @@ function restoreState() {
       // No services saved — render the default two slots but don't touch other fields
       services = [];
       svcCount = 1;
-      services.push({idx:1, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}});
+      services.push({idx:1, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}, collapsed:false});
       svcCount = 2;
-      services.push({idx:2, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}});
+      services.push({idx:2, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}, collapsed:false});
       renderServicesDOM();
     }
   } catch(e) {
@@ -1355,9 +1361,9 @@ function confirmClear() {
   // Reset services &mdash; Service 1 + static Service 2 slot only
   services = [];
   svcCount = 1;
-  services.push({idx:1, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}}); // Service 1
+  services.push({idx:1, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}, collapsed:false}); // Service 1
   svcCount = 2;
-  services.push({idx:2, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}}); // Static "Add 2nd" toggle
+  services.push({idx:2, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}, collapsed:false}); // Static "Add 2nd" toggle
   renderServicesDOM();
   // Reset bids to one empty bid
   bids = []; bidCount = 0;
@@ -1453,7 +1459,8 @@ function addServiceSlot(restored) {
     travel:         restored ? restored.travel         : 'yes',
     travelOverride: restored ? (restored.travelOverride || '') : '',
     measurement:    restored ? (restored.measurement    || '') : '',
-    bdSnap:         restored ? (restored.bdSnap || {})  : {}
+    bdSnap:         restored ? (restored.bdSnap || {})  : {},
+    collapsed:      restored ? (restored.collapsed || false) : false
   };
   services.push(svc);
   renderServicesDOM();
@@ -1536,19 +1543,32 @@ function renderServicesDOM() {
       section.dataset.svcIdx = svc.idx;
 
       if (!isFirst) {
+        const svcDef = SERVICES.find(x => x.id === svc.svcId);
+        const svcSummary = svc.on && svcDef ? `${svcDef.cat} — ${svcDef.sub}` : '';
         section.innerHTML = `
-          <div class="svc-tog-row" onclick="toggleService(${svc.idx})">
-            <div class="svc-tog-track${svc.on?' on':''}" id="tog_${svc.idx}"><div class="svc-tog-thumb"></div></div>
-            <span class="svc-tog-label">Add A ${ordinal} Service To This Request</span>
+          <div class="svc-tog-row" onclick="toggleService(${svc.idx})" style="justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="svc-tog-track${svc.on?' on':''}" id="tog_${svc.idx}"><div class="svc-tog-thumb"></div></div>
+              <span class="svc-tog-label">${svc.on && svcDef ? svcDef.cat+' — '+svcDef.sub : 'Add A '+ordinal+' Service To This Request'}</span>
+            </div>
+            ${svc.on ? `<button type="button" onclick="event.stopPropagation();collapseService(${svc.idx})" style="background:none;border:none;cursor:pointer;padding:2px 4px;color:var(--tm);flex-shrink:0" title="${svc.collapsed?'Expand':'Collapse'} service">
+              <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none" style="width:12px;height:12px;transition:transform .2s${svc.collapsed?'':';transform:rotate(90deg)'}"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>` : ''}
           </div>
-          <div class="svc-fields" id="svcf_${svc.idx}" style="display:${svc.on?'block':'none'}">
+          <div class="svc-fields svc-collapse-body${svc.collapsed?' collapsed':''}" id="svcf_${svc.idx}" style="${svc.on?'':'display:none'}">
             <div class="divider"></div>
             ${buildServiceFields(svc, ordinal)}
           </div>`;
       } else {
+        const svcDef = SERVICES.find(x => x.id === svc.svcId);
         section.innerHTML = `
-          <div class="section-label">Service 1</div>
-          ${buildServiceFields(svc, '1st')}`;
+          <div class="svc-collapse-hdr" onclick="collapseService(${svc.idx})">
+            <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="section-label" style="margin-bottom:0;cursor:pointer">${svcDef ? svcDef.cat+' — '+svcDef.sub : 'Service 1'}</span>
+          </div>
+          <div class="svc-collapse-body${svc.collapsed?' collapsed':''}" id="svcf_${svc.idx}">
+            ${buildServiceFields(svc, '1st')}
+          </div>`;
       }
       container.appendChild(section);
     });
@@ -1710,7 +1730,7 @@ function toggleService(idx) {
     // we don't double-add.
     if (svcIndex === services.length - 1) {
       svcCount = Math.max(svcCount, ...services.map(s=>s.idx)) + 1;
-      services.push({idx:svcCount, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}});
+      services.push({idx:svcCount, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}, collapsed:false});
     }
   } else {
     // â”€â”€ Turning OFF â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -1735,6 +1755,24 @@ function toggleService(idx) {
   renderServicesDOM();
   saveState();
   recalc();
+}
+
+function collapseService(idx) {
+  const svc = services.find(s => s.idx === idx);
+  if (!svc) return;
+  svc.collapsed = !svc.collapsed;
+  const body = document.getElementById('svcf_' + idx);
+  if (body) body.classList.toggle('collapsed', svc.collapsed);
+  // Update chevron without full re-render
+  const section = body && body.closest('.section');
+  if (section) {
+    section.querySelectorAll('.svc-chev').forEach(el => {
+      el.style.transform = svc.collapsed ? '' : 'rotate(90deg)';
+    });
+    const btn = section.querySelector('button[onclick*="collapseService"]');
+    if (btn) btn.title = svc.collapsed ? 'Expand service' : 'Collapse service';
+  }
+  saveState();
 }
 
 function toTitleCase(str) {
@@ -3871,9 +3909,9 @@ function unlockRequestDate() {
     // Fresh start &mdash; Service 1 + static Service 2 toggle only
     services = [];
     svcCount = 1;
-    services.push({idx:1, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}});
+    services.push({idx:1, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}, collapsed:false});
     svcCount = 2;
-    services.push({idx:2, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}});
+    services.push({idx:2, on:false, catVal:'', svcId:'', qty:0, tier:'', travel:'yes', travelOverride:'', measurement:'', bdSnap:{}, collapsed:false});
     try { renderServicesDOM(); } catch(e) {}
     const _initDate = getCSTDate(); document.getElementById('reqDate').value=_initDate; if(window.dpSetDate) window.dpSetDate(_initDate);
     // Pre-populate bid #1
