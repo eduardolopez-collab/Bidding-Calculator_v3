@@ -2713,7 +2713,11 @@ function importVendorSubmission(input) {
       const travOvEl     = document.getElementById('trav_override_' + svc.idx);
       const travOvField  = document.getElementById('trav_override_field_' + svc.idx);
       if (travSel)     travSel.value    = 'yes';
-      if (travOvEl)    travOvEl.value   = data.travel.amount;
+      if (travOvEl) {
+        travOvEl.value             = data.travel.amount;
+        travOvEl.style.borderColor = 'var(--in-b)';
+        travOvEl.style.color       = 'var(--in-t)';
+      }
       if (travOvField) travOvField.style.display = 'flex';
     }
 
