@@ -2277,6 +2277,7 @@ function buildBreakdown(svc) {
     if (tvEl)    tvEl.innerHTML  = travelCost > 0 ? fmt(travelCost) : '—';
     if (mEl)     mEl.innerHTML   = matTotal > 0 ? fmt(matTotal) : '—';
     if (cEl)     cEl.innerHTML   = (laborWithTravel + matTotal) > 0 ? fmt(laborWithTravel + matTotal) : '—';
+    if (svc.collapsed) updateCollapseChips(svc.idx);
     _updateSublineBadges();
   } finally {
     _rebuilding = _prevRebuilding;
