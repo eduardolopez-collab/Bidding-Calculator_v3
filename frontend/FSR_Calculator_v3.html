@@ -200,6 +200,12 @@ body{background:var(--bp);color:var(--tp);min-height:100vh;transition:background
 .svc-chev.open{transform:rotate(180deg)}
 .svc-collapse-summary{font-size:11px;color:var(--tm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
 .svc-collapse-body.collapsed{display:none}
+.svc-chips{display:none;flex-wrap:wrap;gap:6px;margin-top:8px}
+.svc-chips.show{display:flex}
+.svc-chip{background:var(--bi);border:1px solid var(--bd);border-radius:6px;padding:3px 8px;font-size:10px;display:flex;flex-direction:column;gap:1px}
+.svc-chip-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--tm)}
+.svc-chip-val{font-size:12px;font-weight:700;color:var(--tp)}
+.svc-chip-val.combined{color:#b8e840}
 .svc-tog-track{width:32px;height:19px;background:var(--bi);border:1px solid var(--bm);border-radius:10px;position:relative;transition:background .2s;flex-shrink:0}
 .svc-tog-track.on{background:var(--fg);border-color:var(--fg)}
 .svc-tog-thumb{position:absolute;top:2px;left:2px;width:13px;height:13px;background:#fff;border-radius:50%;transition:transform .2s}
@@ -1563,6 +1569,7 @@ function renderServicesDOM() {
                 </button>
               </div>
             </div>
+            <div class="svc-chips${svc.collapsed?' show':''}" id="svc_chips_${svc.idx}"></div>
             <div class="svc-fields svc-collapse-body${svc.collapsed?' collapsed':''}" id="svcf_${svc.idx}">
               <div class="divider"></div>
               ${buildServiceFields(svc, ordinal)}
@@ -1577,6 +1584,7 @@ function renderServicesDOM() {
               <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none" style="width:12px;height:12px"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
+          <div class="svc-chips${svc.collapsed?' show':''}" id="svc_chips_${svc.idx}"></div>
           <div class="svc-collapse-body${svc.collapsed?' collapsed':''}" id="svcf_${svc.idx}">
             ${buildServiceFields(svc, '1st')}
           </div>`;
@@ -1770,6 +1778,26 @@ function toggleService(idx) {
   recalc();
 }
 
+function updateCollapseChips(idx) {
+  const chips = document.getElementById('svc_chips_' + idx);
+  if (!chips) return;
+  const labor   = document.getElementById('bdt_labor_'  + idx);
+  const mat     = document.getElementById('bdt_mat_'    + idx);
+  const travel  = document.getElementById('bdt_travel_' + idx);
+  const comb    = document.getElementById('bdt_comb_'   + idx);
+  const travRow = document.getElementById('bdt_travel_row_' + idx);
+  const showTravel = travRow && travRow.style.display !== 'none';
+  const lv = labor ? labor.innerHTML : '—';
+  const mv = mat   ? mat.innerHTML   : '—';
+  const tv = travel && showTravel ? travel.innerHTML : null;
+  const cv = comb  ? comb.innerHTML  : '—';
+  chips.innerHTML =
+    `<div class="svc-chip"><span class="svc-chip-lbl">Labor</span><span class="svc-chip-val">${lv}</span></div>` +
+    `<div class="svc-chip"><span class="svc-chip-lbl">Materials</span><span class="svc-chip-val">${mv}</span></div>` +
+    (tv ? `<div class="svc-chip"><span class="svc-chip-lbl">Travel</span><span class="svc-chip-val">${tv}</span></div>` : '') +
+    `<div class="svc-chip"><span class="svc-chip-lbl">Combined</span><span class="svc-chip-val combined">${cv}</span></div>`;
+}
+
 function updateSvcHeader(svc) {
   const section = document.querySelector(`.section[data-svc-idx="${svc.idx}"]`);
   if (!section) return;
@@ -1800,6 +1828,11 @@ function collapseService(idx) {
     });
     const btn = section.querySelector('button[onclick*="collapseService"]');
     if (btn) btn.title = svc.collapsed ? 'Expand service' : 'Collapse service';
+    const chipsEl = document.getElementById('svc_chips_' + idx);
+    if (chipsEl) {
+      chipsEl.classList.toggle('show', svc.collapsed);
+      if (svc.collapsed) updateCollapseChips(idx);
+    }
   }
   saveState();
 }
@@ -2474,6 +2507,8 @@ function recalcBreakdown(svcIdx) {
   if (tvEl2)    tvEl2.innerHTML  = travelCost > 0 ? fmt(travelCost) : '—';
   if (mEl)      mEl.innerHTML   = matTotal        > 0 ? fmt(matTotal)        : '—';
   if (cEl)      cEl.innerHTML   = (laborWithTravel + matTotal) > 0 ? fmt(laborWithTravel + matTotal) : '—';
+  const _collSvc = services.find(s => s.idx === svcIdx);
+  if (_collSvc && _collSvc.collapsed) updateCollapseChips(svcIdx);
   _updateSublineBadges();
   recalcResults();
   saveState();
