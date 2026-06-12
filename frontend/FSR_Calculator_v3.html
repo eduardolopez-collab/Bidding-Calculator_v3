@@ -2663,37 +2663,37 @@ function importVendorSubmission(input) {
       }
     }
 
-    // ── Step 3: populate labor rows (only if breakdown is empty) ──────────
+    // ── Step 3: populate labor rows ───────────────────────────────────────
     const hasLabor = data.labor && data.labor.length > 0;
     const hasMat   = data.materials && data.materials.length > 0;
     // Ensure breakdown is rendered before appending rows
     buildBreakdown(svc);
     const lr = document.getElementById('labor_rows_' + svc.idx);
     const mr = document.getElementById('mat_rows_'   + svc.idx);
-    const existingDynamic = lr ? lr.querySelectorAll('.labor-row-dynamic').length : 0;
-    // Mat rows always have at least one blank row — only count as non-empty if a material is selected
-    const existingMatSelected = mr ? [...mr.querySelectorAll('.mat-row')].filter(r => { const s = r.querySelector('.mat-item'); return s && s.value; }).length : 0;
-    const breakdownEmpty = existingDynamic === 0 && existingMatSelected === 0;
 
-    // Remove all default labor + material rows when import has its own data
-    if (hasLabor || hasMat) {
-      // Remove default labor rows and flag them removed in bdSnap
-      if (lr) {
-        lr.querySelectorAll('.labor-row').forEach((row, i) => { row.remove(); });
-        if (!svc.bdSnap) svc.bdSnap = {};
-        svc.bdSnap['lhrs_removed_0'] = true;
-        svc.bdSnap['lhrs_removed_1'] = true;
-      }
-      // Remove all existing mat rows (default and blank)
-      if (mr) mr.querySelectorAll('.mat-row').forEach(row => row.remove());
-    }
+    // Check for user-entered rows BEFORE removing defaults
+    const existingDynamic     = lr ? lr.querySelectorAll('.labor-row-dynamic').length : 0;
+    const existingMatSelected = mr ? [...mr.querySelectorAll('.mat-row')].filter(r => { const sel = r.querySelector('.mat-item'); return sel && sel.value; }).length : 0;
+    const hasUserData = existingDynamic > 0 || existingMatSelected > 0;
 
-    if (!breakdownEmpty) {
+    // If user already has hand-entered rows, ask before overwriting
+    if (hasUserData && (hasLabor || hasMat)) {
       if (!confirm(`Service ${svc.idx} already has breakdown rows. Add vendor rows alongside existing ones?`)) {
         saveState(); recalcResults();
         showToast(`Bid imported — breakdown unchanged.`, 't-ok', 4000);
         return;
       }
+    }
+
+    // Always remove service defaults when import has its own data
+    if (hasLabor || hasMat) {
+      if (lr) {
+        lr.querySelectorAll('.labor-row').forEach(row => row.remove());
+        if (!svc.bdSnap) svc.bdSnap = {};
+        svc.bdSnap['lhrs_removed_0'] = true;
+        svc.bdSnap['lhrs_removed_1'] = true;
+      }
+      if (mr) mr.querySelectorAll('.mat-row').forEach(row => row.remove());
     }
 
     // Populate labor
