@@ -2605,6 +2605,25 @@ function importVendorSubmission(input) {
     }
     const svc = activeSvcs[choiceIdx];
 
+    // ── Step 2b: autofill category + subtype if not already set ──────────
+    if (data.scope && data.scope.category && data.scope.subtype_id) {
+      const catSel = document.getElementById('cat_' + svc.idx);
+      const svcSel = document.getElementById('svc_' + svc.idx);
+      if (catSel && !svc.catVal) {
+        svc.catVal = data.scope.category;
+        catSel.value = data.scope.category;
+        catSel.classList.remove('placeholder-active');
+        rebuildSvcSelect(svc);
+      }
+      if (svcSel) {
+        svc.svcId = data.scope.subtype_id;
+        svcSel.value = data.scope.subtype_id;
+        svcSel.classList.remove('placeholder-active');
+        updateUnitInfo(svc);
+        recalc();
+      }
+    }
+
     // ── Step 3: populate labor rows (only if breakdown is empty) ──────────
     const hasLabor = data.labor && data.labor.length > 0;
     const hasMat   = data.materials && data.materials.length > 0;
