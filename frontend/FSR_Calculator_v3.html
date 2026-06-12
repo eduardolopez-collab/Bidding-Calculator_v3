@@ -2707,12 +2707,14 @@ function importVendorSubmission(input) {
 
     // Populate travel override if vendor included travel
     if (data.travel && data.travel.included && data.travel.amount > 0) {
-      svc.travelOverride = String(data.travel.amount);
       svc.travel = 'yes';
-      const travSel = document.getElementById('trav_' + svc.idx);
-      const travOvEl = document.getElementById('trav_ov_' + svc.idx);
-      if (travSel) travSel.value = 'yes';
-      if (travOvEl) travOvEl.value = data.travel.amount;
+      svc.travelOverride = String(data.travel.amount);
+      const travSel      = document.getElementById('trav_' + svc.idx);
+      const travOvEl     = document.getElementById('trav_override_' + svc.idx);
+      const travOvField  = document.getElementById('trav_override_field_' + svc.idx);
+      if (travSel)     travSel.value    = 'yes';
+      if (travOvEl)    travOvEl.value   = data.travel.amount;
+      if (travOvField) travOvField.style.display = 'flex';
     }
 
     recalcBreakdown(svc.idx);
