@@ -197,7 +197,7 @@ body{background:var(--bp);color:var(--tp);min-height:100vh;transition:background
 .svc-collapse-hdr{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;padding:2px 0}
 .svc-collapse-hdr:hover .svc-chev{color:var(--fg)}
 .svc-chev{width:16px;height:16px;display:flex;align-items:center;justify-content:center;color:var(--tm);transition:transform .2s;flex-shrink:0}
-.svc-chev.open{transform:rotate(90deg)}
+.svc-chev.open{transform:rotate(-90deg)}
 .svc-collapse-summary{font-size:11px;color:var(--tm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
 .svc-collapse-body.collapsed{display:none}
 .svc-tog-track{width:32px;height:19px;background:var(--bi);border:1px solid var(--bm);border-radius:10px;position:relative;transition:background .2s;flex-shrink:0}
@@ -1562,9 +1562,11 @@ function renderServicesDOM() {
       } else {
         const svcDef = SERVICES.find(x => x.id === svc.svcId);
         section.innerHTML = `
-          <div class="svc-collapse-hdr" onclick="collapseService(${svc.idx})">
-            <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span class="section-label" style="margin-bottom:0;cursor:pointer">${svcDef ? svcDef.cat+' — '+svcDef.sub : 'Service 1'}</span>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span class="section-label" style="margin-bottom:0">${svcDef ? svcDef.cat+' — '+svcDef.sub : 'Service 1'}</span>
+            <button type="button" onclick="collapseService(${svc.idx})" style="background:none;border:none;cursor:pointer;padding:2px 4px;color:var(--tm);flex-shrink:0" title="${svc.collapsed?'Expand':'Collapse'} service">
+              <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none" style="width:12px;height:12px;transition:transform .2s${svc.collapsed?'':';transform:rotate(-90deg)'}"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
           </div>
           <div class="svc-collapse-body${svc.collapsed?' collapsed':''}" id="svcf_${svc.idx}">
             ${buildServiceFields(svc, '1st')}
@@ -1767,7 +1769,7 @@ function collapseService(idx) {
   const section = body && body.closest('.section');
   if (section) {
     section.querySelectorAll('.svc-chev').forEach(el => {
-      el.style.transform = svc.collapsed ? '' : 'rotate(90deg)';
+      el.style.transform = svc.collapsed ? '' : 'rotate(-90deg)';
     });
     const btn = section.querySelector('button[onclick*="collapseService"]');
     if (btn) btn.title = svc.collapsed ? 'Expand service' : 'Collapse service';
