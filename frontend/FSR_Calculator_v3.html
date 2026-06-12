@@ -1914,6 +1914,7 @@ function _wireManualInputPlaceholder(el) {
 }
 
 function hrsInput(el, svcIdx) {
+  if (!window._appReady) return;
   if (el.classList.contains('auto-calc')) {
     el.classList.remove('auto-calc');
     el.classList.add('hrs-override');
@@ -1922,6 +1923,7 @@ function hrsInput(el, svcIdx) {
 }
 
 function qtyInput(el, svcIdx) {
+  if (!window._appReady) return;
   if (el.classList.contains('auto-calc')) {
     el.classList.remove('auto-calc');
     el.classList.add('qty-override');
@@ -1930,6 +1932,7 @@ function qtyInput(el, svcIdx) {
 }
 
 function measurementChanged(svcIdx, val) {
+  if (!window._appReady) return;
   const svc = services.find(s => s.idx === svcIdx);
   if (!svc) return;
   svc.measurement = val;
@@ -2435,6 +2438,7 @@ function laborChanged(svcIdx, rowIdx, trade) {
 const URGENCY_BUFFERS = {low:{pct:0.10,label:'Low'},medium:{pct:0.15,label:'Medium'},high:{pct:0.20,label:'High'}}; // kept for future use
 
 function recalcBreakdown(svcIdx) {
+  if (!window._appReady) return;
   const city = getCity();
   const svc  = services.find(s => s.idx === svcIdx);
   const s    = svc ? SERVICES.find(x => x.id === svc.svcId) : null;
@@ -2609,6 +2613,7 @@ function renderBids() {
 }
 
 function bidChanged(id) {
+  if (!window._appReady) return;
   const b = bids.find(x=>x.id===id);
   if (!b) return;
   const vEl=document.getElementById('bv_'+id);
