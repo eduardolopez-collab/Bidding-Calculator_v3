@@ -1548,7 +1548,7 @@ function renderServicesDOM() {
           <div class="svc-tog-row" onclick="${svc.on && svc.collapsed ? `collapseService(${svc.idx})` : `toggleService(${svc.idx})`}" style="justify-content:space-between">
             <div style="display:flex;align-items:center;gap:10px">
               <div class="svc-tog-track${svc.on?' on':''}" id="tog_${svc.idx}" style="${svc.on && svc.collapsed ? 'display:none' : ''}" onclick="event.stopPropagation();toggleService(${svc.idx})"><div class="svc-tog-thumb"></div></div>
-              <span class="svc-tog-label">${svc.on ? `<span style="font-size:10px;color:var(--tm);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-right:4px">${ordinal} Proposal</span>${svcDef ? svcDef.cat+' — '+svcDef.sub : ''}` : 'Add A '+ordinal+' Service To This Request'}</span>
+              <span class="section-label" style="margin-bottom:0">${svc.on ? `${ordinal} Proposal${svcDef ? ' <span style="font-size:11px;font-weight:500;color:var(--tm);text-transform:none;letter-spacing:0">('+svcDef.cat+' — '+svcDef.sub+')</span>' : ''}` : 'Add A '+ordinal+' Proposal To This Request'}</span>
             </div>
             ${svc.on ? `<button type="button" onclick="event.stopPropagation();collapseService(${svc.idx})" style="background:none;border:none;cursor:pointer;padding:2px 4px;color:var(--tm);flex-shrink:0" title="${svc.collapsed?'Expand':'Collapse'} service">
               <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none" style="width:12px;height:12px"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
