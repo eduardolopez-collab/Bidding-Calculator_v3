@@ -1772,6 +1772,8 @@ function collapseService(idx) {
     });
     const btn = section.querySelector('button[onclick*="collapseService"]');
     if (btn) btn.title = svc.collapsed ? 'Expand service' : 'Collapse service';
+    const togTrack = document.getElementById('tog_' + idx);
+    if (togTrack) togTrack.style.display = svc.collapsed ? 'none' : '';
   }
   saveState();
 }
