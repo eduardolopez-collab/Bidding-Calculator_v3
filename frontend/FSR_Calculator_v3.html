@@ -2605,7 +2605,26 @@ function importVendorSubmission(input) {
     }
     const svc = activeSvcs[choiceIdx];
 
-    // ── Step 2b: autofill category + subtype if not already set ──────────
+    // ── Step 2b: autofill header fields ──────────────────────────────────
+    // City — match vendor location against city select options
+    const cityEl = document.getElementById('citySelect');
+    if (cityEl && data.scope && data.scope.location && !cityEl.value) {
+      const loc = data.scope.location.toLowerCase();
+      const matched = [...cityEl.options].find(o => o.value && loc.includes(o.text.split(',')[0].trim().toLowerCase()));
+      if (matched) {
+        cityEl.value = matched.value;
+        cityEl.classList.remove('placeholder-active');
+        updateCityPriority(); recalc();
+      }
+    }
+    // Description — fill if empty
+    const descEl = document.getElementById('reqDesc');
+    if (descEl && !descEl.value.trim() && data.scope && data.scope.description) {
+      descEl.value = data.scope.description;
+      autoExpand(descEl);
+    }
+
+    // ── Step 2d: autofill category + subtype if not already set ──────────
     if (data.scope && data.scope.category && data.scope.subtype_id) {
       const catSel = document.getElementById('cat_' + svc.idx);
       const svcSel = document.getElementById('svc_' + svc.idx);
