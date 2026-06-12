@@ -521,7 +521,7 @@ select.lr-trade{width:120px;background:var(--bi) url("data:image/svg+xml,%3Csvg 
   </div>
 
   <!-- â•â• CALCULATOR â•â• -->
-  <div id="calc" class="panel active">
+  <div id="calc" class="panel active" autocomplete="off">
 
     <!-- Print invoice (hidden on screen) -->
     <div class="print-invoice" id="printInvoice"></div>
@@ -1681,7 +1681,7 @@ function buildServiceFields(svc, ordinal) {
       </div>
       <div class="field" id="trav_override_field_${svc.idx}" style="display:${svc.travel==='yes'?'flex':'none'}">
         <label>Travel Override ($)</label>
-        <input type="number" id="trav_override_${svc.idx}" min="0" step="0.01"
+        <input type="number" autocomplete="off" id="trav_override_${svc.idx}" min="0" step="0.01"
           placeholder="Benchmark rate"
           value="${svc.travelOverride||''}"
           style="${svc.travelOverride?'border-color:var(--in-b);color:var(--in-t)':''}">
@@ -1690,7 +1690,7 @@ function buildServiceFields(svc, ordinal) {
         <label id="meas_lbl_${svc.idx}">Unit</label>
         <div class="unit-meas-wrap">
           <span class="unit-meas-label" id="unit_${svc.idx}"></span>
-          <input type="number" class="unit-meas-input" id="meas_${svc.idx}" min="0" step="1"
+          <input type="number" class="unit-meas-input" autocomplete="off" id="meas_${svc.idx}" min="0" step="1"
             placeholder="e.g. 500" value="${svc.measurement||''}" disabled
             oninput="measurementChanged(${svc.idx},this.value)">
         </div>
@@ -2576,7 +2576,7 @@ function renderBids() {
           <div class="field"><label>Vendor name</label><input type="text" id="bv_${b.id}" placeholder="Company name" value="${esc(b.vendor)}" oninput="bidChanged(${b.id})"></div>
           <div class="field"><label>Bid total ($)</label>
             <div class="spin-wrap">
-              <input type="number" id="ba_${b.id}" placeholder="0.00" min="0" step="0.01" value="${b.amount}" oninput="bidChanged(${b.id})">
+              <input type="number" autocomplete="off" id="ba_${b.id}" placeholder="0.00" min="0" step="0.01" value="${b.amount}" oninput="bidChanged(${b.id})">
               <div class="spin-btns">
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepBid(${b.id},100)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepBid(${b.id},-100)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
