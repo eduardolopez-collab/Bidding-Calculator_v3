@@ -1985,7 +1985,7 @@ function buildBreakdown(svc) {
               <option value="">— Trade —</option>
               ${tradeOptions}
             </select>
-            <span class="lr-trade dl-trade-label" id="dllabel_${svc.idx}_${i}" style="display:${hasSavedTrade?'inline':'none'};cursor:pointer;text-decoration:underline dotted" title="Click to change trade">${savedTrade}</span>
+            <span class="lr-trade dl-trade-label" id="dllabel_${svc.idx}_${i}" style="display:${hasSavedTrade?'inline':'none'};cursor:pointer" title="Click to change trade">${savedTrade}</span>
             <div class="lr-sep"></div>
             <span class="lr-workers-lbl lr-workers-only">Workers</span>
             <div class="spin-wrap">
@@ -2215,7 +2215,7 @@ function addMatRow(svcIdx) {
       <option value="">— Select materials —</option>
       ${matOptions}
     </select>
-    <span class="mat-item-label" id="mlabel_${svcIdx}_${rowIdx}" style="display:none;cursor:pointer;text-decoration:underline dotted" title="Tap to change material"></span>
+    <span class="mat-item-label" id="mlabel_${svcIdx}_${rowIdx}" style="display:none;cursor:pointer" title="Tap to change material"></span>
     <div class="lr-sep"></div>
     <span class="lr-workers-lbl">Qty</span>
     <div class="spin-wrap">
@@ -2264,7 +2264,7 @@ function addLaborRow(svcIdx) {
       <option value="">— Trade —</option>
       ${tradeOptions}
     </select>
-    <span class="lr-trade dl-trade-label" id="dllabel_${svcIdx}_${rowIdx}" style="display:none;cursor:pointer;text-decoration:underline dotted" title="Click to change trade"></span>
+    <span class="lr-trade dl-trade-label" id="dllabel_${svcIdx}_${rowIdx}" style="display:none;cursor:pointer" title="Click to change trade"></span>
     <div class="lr-sep"></div>
     <span class="lr-workers-lbl lr-workers-only">Workers</span>
     <div class="spin-wrap">
