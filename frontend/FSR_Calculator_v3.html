@@ -2559,15 +2559,9 @@ function importVendorSubmission(input) {
       return;
     }
 
-    // ── Step 1: add / update bid ──────────────────────────────────────────
-    const existing = bids.find(b => b.vendor.trim().toLowerCase() === company.toLowerCase());
-    if (existing) {
-      if (!confirm(`A bid from "${company}" already exists. Replace it with the imported amount ($${amount.toFixed(2)})?`)) return;
-      existing.amount = String(amount);
-    } else {
-      bidCount++;
-      bids.push({id: bidCount, vendor: company, amount: String(amount)});
-    }
+    // ── Step 1: always add as a new bid ──────────────────────────────────
+    bidCount++;
+    bids.push({id: bidCount, vendor: company, amount: String(amount)});
     renderBids();
 
     // ── Step 2: pick target service ───────────────────────────────────────
