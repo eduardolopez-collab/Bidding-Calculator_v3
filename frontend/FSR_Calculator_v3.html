@@ -2016,7 +2016,7 @@ function buildBreakdown(svc) {
           <div class="lr-sep"></div>
           <span class="lr-workers-lbl lr-workers-only">Workers</span>
           <div class="spin-wrap">
-            <input type="number" class="lr-workers" id="${wuid}" value="${workersDefault}" min="1" step="1" title="Number of workers" oninput="recalcBreakdown(${svc.idx})">
+            <input type="number" autocomplete="off" class="lr-workers" id="${wuid}" value="${workersDefault}" min="1" step="1" title="Number of workers" oninput="recalcBreakdown(${svc.idx})">
             <div class="spin-btns">
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${wuid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${wuid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2025,7 +2025,7 @@ function buildBreakdown(svc) {
           <div class="lr-sep"></div>
           <span class="lr-workers-lbl">Hrs</span>
           <div class="spin-wrap">
-            <input type="number" class="lr-hrs" id="${uid}" value="${hrsAdjusted}" min="0" step="0.25" title="Labor hours" oninput="hrsInput(this,${svc.idx})">
+            <input type="number" autocomplete="off" class="lr-hrs" id="${uid}" value="${hrsAdjusted}" min="0" step="0.25" title="Labor hours" oninput="hrsInput(this,${svc.idx})">
             <div class="spin-btns">
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2035,7 +2035,7 @@ function buildBreakdown(svc) {
           <div class="lr-sep"></div>
           <span class="lr-workers-lbl">Rate</span>
           <div class="spin-wrap">
-            <input type="number" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="Benchmark: $${adjMed} / Hr" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
+            <input type="number" autocomplete="off" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="Benchmark: $${adjMed} / Hr" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
             <div class="spin-btns">
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2089,7 +2089,7 @@ function buildBreakdown(svc) {
             <div class="lr-sep"></div>
             <span class="lr-workers-lbl lr-workers-only">Workers</span>
             <div class="spin-wrap">
-              <input type="number" class="lr-workers" id="${wuid}" value="${savedWrk}" min="1" step="1" title="Number of workers" oninput="recalcBreakdown(${svc.idx})">
+              <input type="number" autocomplete="off" class="lr-workers" id="${wuid}" value="${savedWrk}" min="1" step="1" title="Number of workers" oninput="recalcBreakdown(${svc.idx})">
               <div class="spin-btns">
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${wuid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${wuid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2098,7 +2098,7 @@ function buildBreakdown(svc) {
             <div class="lr-sep"></div>
             <span class="lr-workers-lbl">Hrs</span>
             <div class="spin-wrap">
-              <input type="number" class="lr-hrs" id="${uid}" value="${savedHrs}" min="0" step="0.25" title="Labor hours" oninput="recalcBreakdown(${svc.idx})">
+              <input type="number" autocomplete="off" class="lr-hrs" id="${uid}" value="${savedHrs}" min="0" step="0.25" title="Labor hours" oninput="recalcBreakdown(${svc.idx})">
               <div class="spin-btns">
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2108,7 +2108,7 @@ function buildBreakdown(svc) {
             <div class="lr-sep"></div>
             <span class="lr-workers-lbl">Rate</span>
             <div class="spin-wrap">
-              <input type="number" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="${rates ? `Benchmark: $${adjMed} / Hr` : 'Benchmark: —/Hr'}" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
+              <input type="number" autocomplete="off" class="lr-rate-override" id="${ruid}" value="${savedRate}" min="0" step="1" placeholder="${rates ? `Benchmark: $${adjMed} / Hr` : 'Benchmark: —/Hr'}" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svc.idx})">
               <div class="spin-btns">
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2170,7 +2170,7 @@ function buildBreakdown(svc) {
           <div class="lr-sep"></div>
           <span class="lr-workers-lbl">Qty</span>
           <div class="spin-wrap">
-            <input type="number" class="mat-qty" id="mqty_${svc.idx}_${i}" value="${mp.qty}" min="0" step="1" title="Quantity" oninput="qtyInput(this,${svc.idx})">
+            <input type="number" autocomplete="off" class="mat-qty" id="mqty_${svc.idx}_${i}" value="${mp.qty}" min="0" step="1" title="Quantity" oninput="qtyInput(this,${svc.idx})">
             <div class="spin-btns">
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mqty_${svc.idx}_${i}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mqty_${svc.idx}_${i}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2181,7 +2181,7 @@ function buildBreakdown(svc) {
           <div class="lr-sep mat-price-sep"></div>
           <span class="lr-workers-lbl">Price</span>
           <div class="spin-wrap">
-            <input type="number" class="mat-cost" id="mcost_${svc.idx}_${i}" value="${mp.cost}" placeholder="Benchmark: $${adjMedMat}${mat ? ' / ' + matUnitAbv : ''}" min="0" step="1" title="Vendor cost per unit" oninput="recalcBreakdown(${svc.idx})">
+            <input type="number" autocomplete="off" class="mat-cost" id="mcost_${svc.idx}_${i}" value="${mp.cost}" placeholder="Benchmark: $${adjMedMat}${mat ? ' / ' + matUnitAbv : ''}" min="0" step="1" title="Vendor cost per unit" oninput="recalcBreakdown(${svc.idx})">
             <div class="spin-btns">
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mcost_${svc.idx}_${i}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mcost_${svc.idx}_${i}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2319,7 +2319,7 @@ function addMatRow(svcIdx) {
     <div class="lr-sep"></div>
     <span class="lr-workers-lbl">Qty</span>
     <div class="spin-wrap">
-      <input type="number" class="mat-qty" id="mqty_${svcIdx}_${rowIdx}" value="1" min="0" step="1" title="Quantity" oninput="recalcBreakdown(${svcIdx})">
+      <input type="number" autocomplete="off" class="mat-qty" id="mqty_${svcIdx}_${rowIdx}" value="1" min="0" step="1" title="Quantity" oninput="recalcBreakdown(${svcIdx})">
       <div class="spin-btns">
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mqty_${svcIdx}_${rowIdx}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mqty_${svcIdx}_${rowIdx}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2330,7 +2330,7 @@ function addMatRow(svcIdx) {
     <div class="lr-sep mat-price-sep"></div>
     <span class="lr-workers-lbl">Price</span>
     <div class="spin-wrap">
-      <input type="number" class="mat-cost" id="mcost_${svcIdx}_${rowIdx}" placeholder="Vendor $/unit" min="0" step="1" title="Vendor cost per unit" oninput="recalcBreakdown(${svcIdx})">
+      <input type="number" autocomplete="off" class="mat-cost" id="mcost_${svcIdx}_${rowIdx}" placeholder="Vendor $/unit" min="0" step="1" title="Vendor cost per unit" oninput="recalcBreakdown(${svcIdx})">
       <div class="spin-btns">
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mcost_${svcIdx}_${rowIdx}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('mcost_${svcIdx}_${rowIdx}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2368,7 +2368,7 @@ function addLaborRow(svcIdx) {
     <div class="lr-sep"></div>
     <span class="lr-workers-lbl lr-workers-only">Workers</span>
     <div class="spin-wrap">
-      <input type="number" class="lr-workers" id="${wuid}" value="1" min="1" step="1" title="Number of workers" oninput="recalcBreakdown(${svcIdx})">
+      <input type="number" autocomplete="off" class="lr-workers" id="${wuid}" value="1" min="1" step="1" title="Number of workers" oninput="recalcBreakdown(${svcIdx})">
       <div class="spin-btns">
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${wuid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${wuid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2377,7 +2377,7 @@ function addLaborRow(svcIdx) {
     <div class="lr-sep"></div>
     <span class="lr-workers-lbl">Hrs</span>
     <div class="spin-wrap">
-      <input type="number" class="lr-hrs" id="${uid}" value="1" min="0" step="0.25" title="Labor hours" oninput="recalcBreakdown(${svcIdx})">
+      <input type="number" autocomplete="off" class="lr-hrs" id="${uid}" value="1" min="0" step="0.25" title="Labor hours" oninput="recalcBreakdown(${svcIdx})">
       <div class="spin-btns">
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${uid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2387,7 +2387,7 @@ function addLaborRow(svcIdx) {
     <div class="lr-sep"></div>
     <span class="lr-workers-lbl">Rate</span>
     <div class="spin-wrap">
-      <input type="number" class="lr-rate-override" id="${ruid}" value="" min="0" step="1" placeholder="Benchmark: —/Hr" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svcIdx})">
+      <input type="number" autocomplete="off" class="lr-rate-override" id="${ruid}" value="" min="0" step="1" placeholder="Benchmark: —/Hr" title="Override labor rate — does not affect Benchmark" oninput="recalcBreakdown(${svcIdx})">
       <div class="spin-btns">
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="stepQty('${ruid}',-1)" tabindex="-1"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
