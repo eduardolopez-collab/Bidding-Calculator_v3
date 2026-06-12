@@ -2671,21 +2671,7 @@ function importVendorSubmission(input) {
     const lr = document.getElementById('labor_rows_' + svc.idx);
     const mr = document.getElementById('mat_rows_'   + svc.idx);
 
-    // Check for user-entered rows BEFORE removing defaults
-    const existingDynamic     = lr ? lr.querySelectorAll('.labor-row-dynamic').length : 0;
-    const existingMatSelected = mr ? [...mr.querySelectorAll('.mat-row')].filter(r => { const sel = r.querySelector('.mat-item'); return sel && sel.value; }).length : 0;
-    const hasUserData = existingDynamic > 0 || existingMatSelected > 0;
-
-    // If user already has hand-entered rows, ask before overwriting
-    if (hasUserData && (hasLabor || hasMat)) {
-      if (!confirm(`Service ${svc.idx} already has breakdown rows. Add vendor rows alongside existing ones?`)) {
-        saveState(); recalcResults();
-        showToast(`Bid imported — breakdown unchanged.`, 't-ok', 4000);
-        return;
-      }
-    }
-
-    // Always remove service defaults when import has its own data
+    // Remove service defaults and replace with imported data
     if (hasLabor || hasMat) {
       if (lr) {
         lr.querySelectorAll('.labor-row').forEach(row => row.remove());
