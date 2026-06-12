@@ -2541,7 +2541,7 @@ function removeBid(id) {
 }
 function importVendorSubmission(input) {
   const file = input.files[0];
-  input.value = ''; // reset so same file can be re-imported
+  input.value = '';
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
@@ -2554,28 +2554,131 @@ function importVendorSubmission(input) {
     }
     const company = (data.vendor.company || '').trim();
     const amount  = data.totals.grand_total;
-    if (!company || !amount || isNaN(amount) || amount <= 0) {
+    if (!company || isNaN(amount) || amount <= 0) {
       showToast('Submission is missing vendor name or bid total.', 't-er', 4000);
       return;
     }
-    // Check for duplicate company name
+
+    // ── Step 1: add / update bid ──────────────────────────────────────────
     const existing = bids.find(b => b.vendor.trim().toLowerCase() === company.toLowerCase());
     if (existing) {
       if (!confirm(`A bid from "${company}" already exists. Replace it with the imported amount ($${amount.toFixed(2)})?`)) return;
       existing.amount = String(amount);
-      renderBids();
-      saveState();
-      recalcResults();
-      showToast(`Updated bid for ${company} — $${amount.toLocaleString('en-US',{minimumFractionDigits:2})}.`, 't-ok', 4000);
+    } else {
+      bidCount++;
+      bids.push({id: bidCount, vendor: company, amount: String(amount)});
+    }
+    renderBids();
+
+    // ── Step 2: pick target service ───────────────────────────────────────
+    const activeSvcs = services.filter((s,i) => i===0 || (s.on && s.svcId));
+    if (!activeSvcs.length) {
+      saveState(); recalcResults();
+      showToast(`Imported bid for ${company}. No active service to populate breakdown.`, 't-ok', 4000);
       return;
     }
-    // Add as new bid
-    bidCount++;
-    bids.push({id: bidCount, vendor: company, amount: String(amount)});
-    renderBids();
+
+    // Try to auto-match by subtype ID
+    const submittedSubId = data.scope && data.scope.subtype_id;
+    let targetSvc = submittedSubId ? activeSvcs.find(s => s.svcId === submittedSubId) : null;
+
+    // Ask which service to populate
+    let svcChoiceMsg = `Import breakdown (labor + materials) into which service?\n\n`;
+    activeSvcs.forEach((s, i) => {
+      const svcDef = SERVICES.find(x => x.id === s.svcId);
+      const label = svcDef ? `${svcDef.cat} — ${svcDef.sub}` : `Service ${s.idx}`;
+      const matched = s === targetSvc ? ' ✓ (matches vendor scope)' : '';
+      svcChoiceMsg += `${i+1}. Service ${s.idx}: ${label}${matched}\n`;
+    });
+    svcChoiceMsg += `\nEnter 1${activeSvcs.length > 1 ? `–${activeSvcs.length}` : ''}, or Cancel to import bid only.`;
+    const choice = prompt(svcChoiceMsg);
+    if (choice === null) {
+      saveState(); recalcResults();
+      showToast(`Imported bid for ${company} — breakdown skipped.`, 't-ok', 4000);
+      return;
+    }
+    const choiceIdx = parseInt(choice) - 1;
+    if (isNaN(choiceIdx) || choiceIdx < 0 || choiceIdx >= activeSvcs.length) {
+      saveState(); recalcResults();
+      showToast(`Invalid choice — bid imported, breakdown skipped.`, 't-ok', 4000);
+      return;
+    }
+    const svc = activeSvcs[choiceIdx];
+
+    // ── Step 3: populate labor rows (only if breakdown is empty) ──────────
+    const hasLabor = data.labor && data.labor.length > 0;
+    const hasMat   = data.materials && data.materials.length > 0;
+    const lr = document.getElementById('labor_rows_' + svc.idx);
+    const mr = document.getElementById('mat_rows_'   + svc.idx);
+    const existingDynamic = lr ? lr.querySelectorAll('.labor-row-dynamic').length : 0;
+    // Mat rows always have at least one blank row — only count as non-empty if a material is selected
+    const existingMatSelected = mr ? [...mr.querySelectorAll('.mat-row')].filter(r => { const s = r.querySelector('.mat-item'); return s && s.value; }).length : 0;
+    const breakdownEmpty = existingDynamic === 0 && existingMatSelected === 0;
+
+    if (!breakdownEmpty) {
+      if (!confirm(`Service ${svc.idx} already has breakdown rows. Add vendor rows alongside existing ones?`)) {
+        saveState(); recalcResults();
+        showToast(`Bid imported — breakdown unchanged.`, 't-ok', 4000);
+        return;
+      }
+    }
+
+    // Populate labor
+    if (hasLabor && lr) {
+      data.labor.forEach(row => {
+        const trade = row.trade || '';
+        // Find best matching trade in LABOR_RATES
+        const matchedTrade = Object.keys(LABOR_RATES).find(t => t.toLowerCase() === trade.toLowerCase()) || '';
+        addLaborRow(svc.idx);
+        const dynamic = lr.querySelectorAll('.labor-row-dynamic');
+        const newIdx  = dynamic.length - 1;
+        const tSel  = document.getElementById('dltrade_' + svc.idx + '_' + newIdx);
+        const wEl   = document.getElementById('dlwrk_'   + svc.idx + '_' + newIdx);
+        const hEl   = document.getElementById('dlhrs_'   + svc.idx + '_' + newIdx);
+        const rEl   = document.getElementById('dlrate_'  + svc.idx + '_' + newIdx);
+        if (tSel && matchedTrade) { tSel.value = matchedTrade; laborChanged(svc.idx, newIdx, matchedTrade); }
+        if (wEl)  wEl.value  = row.workers   || 1;
+        if (hEl)  hEl.value  = row.hours     || 0;
+        if (rEl && row.rate_per_hr) rEl.value = row.rate_per_hr;
+        // Collapse select to label if trade matched
+        if (matchedTrade) {
+          const lblEl = document.getElementById('dllabel_' + svc.idx + '_' + newIdx);
+          if (tSel && lblEl) { tSel.style.display='none'; lblEl.style.display='inline'; lblEl.textContent=matchedTrade; }
+        }
+      });
+    }
+
+    // Populate materials
+    if (hasMat && mr) {
+      data.materials.forEach(row => {
+        const matId = row.material_id && row.material_id !== 'UNLISTED' ? row.material_id : null;
+        addMatRow(svc.idx);
+        const allRows = mr.querySelectorAll('.mat-row');
+        const newRow  = allRows[allRows.length - 1];
+        const newIdx  = newRow ? parseInt(newRow.id.split('_').pop()) : 0;
+        const selEl   = document.getElementById('msel_el_' + svc.idx + '_' + newIdx);
+        const costEl  = document.getElementById('mcost_'   + svc.idx + '_' + newIdx);
+        const qtyEl   = document.getElementById('mqty_'    + svc.idx + '_' + newIdx);
+        if (selEl && matId) { selEl.value = matId; matChanged(svc.idx, newIdx, matId); }
+        if (qtyEl && row.qty)       qtyEl.value  = row.qty;
+        if (costEl && row.unit_cost) costEl.value = row.unit_cost;
+      });
+    }
+
+    // Populate travel override if vendor included travel
+    if (data.travel && data.travel.included && data.travel.amount > 0) {
+      svc.travelOverride = String(data.travel.amount);
+      svc.travel = 'yes';
+      const travSel = document.getElementById('trav_' + svc.idx);
+      const travOvEl = document.getElementById('trav_ov_' + svc.idx);
+      if (travSel) travSel.value = 'yes';
+      if (travOvEl) travOvEl.value = data.travel.amount;
+    }
+
+    recalcBreakdown(svc.idx);
     saveState();
     recalcResults();
-    showToast(`Imported: ${company} — $${amount.toLocaleString('en-US',{minimumFractionDigits:2})}.`, 't-ok', 4000);
+    showToast(`Imported: ${company} — breakdown populated into Service ${svc.idx}.`, 't-ok', 5000);
   };
   reader.readAsText(file);
 }
