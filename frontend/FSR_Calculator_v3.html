@@ -2644,13 +2644,6 @@ function importVendorSubmission(input) {
       autoExpand(descEl);
     }
 
-    // Snapshot user-entered rows BEFORE setting category/subtype (which triggers buildBreakdown with service defaults)
-    const _lrPre = document.getElementById('labor_rows_' + svc.idx);
-    const _mrPre = document.getElementById('mat_rows_'   + svc.idx);
-    const _preUserDynamic     = _lrPre ? _lrPre.querySelectorAll('.labor-row-dynamic').length : 0;
-    const _preUserMatSelected = _mrPre ? [...(_mrPre.querySelectorAll('.mat-row'))].filter(r => { const s = r.querySelector('.mat-item'); return s && s.value; }).length : 0;
-    const hasUserData = _preUserDynamic > 0 || _preUserMatSelected > 0;
-
     // ── Step 2d: autofill category + subtype if not already set ──────────
     if (data.scope && data.scope.category && data.scope.subtype_id) {
       const catSel = document.getElementById('cat_' + svc.idx);
@@ -2677,6 +2670,11 @@ function importVendorSubmission(input) {
     buildBreakdown(svc);
     const lr = document.getElementById('labor_rows_' + svc.idx);
     const mr = document.getElementById('mat_rows_'   + svc.idx);
+
+    // Check for user-entered rows BEFORE removing defaults
+    const existingDynamic     = lr ? lr.querySelectorAll('.labor-row-dynamic').length : 0;
+    const existingMatSelected = mr ? [...mr.querySelectorAll('.mat-row')].filter(r => { const sel = r.querySelector('.mat-item'); return sel && sel.value; }).length : 0;
+    const hasUserData = existingDynamic > 0 || existingMatSelected > 0;
 
     // If user already has hand-entered rows, ask before overwriting
     if (hasUserData && (hasLabor || hasMat)) {
