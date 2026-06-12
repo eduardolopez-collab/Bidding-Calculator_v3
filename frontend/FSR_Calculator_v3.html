@@ -2722,6 +2722,36 @@ function importVendorSubmission(input) {
     }
 
     recalcBreakdown(svc.idx);
+
+    // ── Directly persist imported rows into bdSnap so refresh restores them ──
+    const snapOut = svc.bdSnap || {};
+    if (lr) {
+      const dynRows = lr.querySelectorAll('.labor-row-dynamic');
+      dynRows.forEach((row, i) => {
+        const tSel = row.querySelector('select');
+        const hEl  = row.querySelector('.lr-hrs');
+        const wEl  = row.querySelector('.lr-workers');
+        const rEl  = row.querySelector('.lr-rate-override');
+        snapOut['dl_trade_' + i] = tSel ? tSel.value : '';
+        snapOut['dl_hrs_'   + i] = hEl  ? hEl.value  : '1';
+        snapOut['dl_wrk_'   + i] = wEl  ? (parseInt(wEl.value)||1) : 1;
+        snapOut['dl_rate_'  + i] = rEl  ? rEl.value   : '';
+      });
+      snapOut['dl_count'] = dynRows.length;
+    }
+    if (mr) {
+      const matRows = mr.querySelectorAll('.mat-row');
+      matRows.forEach((row, i) => {
+        const sel  = row.querySelector('.mat-item');
+        const qEl  = row.querySelector('.mat-qty');
+        const cEl  = row.querySelector('.mat-cost');
+        snapOut['msel_'  + i] = sel  ? sel.value  : '';
+        snapOut['mqty_'  + i] = qEl  ? qEl.value  : '0';
+        snapOut['mcost_' + i] = cEl  ? cEl.value  : '';
+      });
+    }
+    svc.bdSnap = snapOut;
+
     saveState();
     recalcResults();
     showToast(`Imported: ${company} — breakdown populated into Service ${svc.idx}.`, 't-ok', 5000);
