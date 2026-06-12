@@ -1544,20 +1544,30 @@ function renderServicesDOM() {
 
       if (!isFirst) {
         const svcDef = SERVICES.find(x => x.id === svc.svcId);
-        section.innerHTML = `
-          <div class="svc-tog-row" onclick="${svc.on && svc.collapsed ? `collapseService(${svc.idx})` : `toggleService(${svc.idx})`}" style="justify-content:space-between">
-            <div style="display:flex;align-items:center;gap:10px">
-              <div class="svc-tog-track${svc.on?' on':''}" id="tog_${svc.idx}" style="${svc.on && svc.collapsed ? 'display:none' : ''}" onclick="event.stopPropagation();toggleService(${svc.idx})"><div class="svc-tog-thumb"></div></div>
-              <span class="section-label" style="margin-bottom:0">${svc.on ? `${ordinal} Proposal${svcDef ? ' <span style="font-size:11px;font-weight:500;color:var(--tm);text-transform:none;letter-spacing:0">('+svcDef.cat+' — '+svcDef.sub+')</span>' : ''}` : 'Add A '+ordinal+' Proposal To This Request'}</span>
+        if (!svc.on) {
+          // Inactive — show add button only, no toggle
+          section.innerHTML = `
+            <button class="btn-add" onclick="toggleService(${svc.idx})">
+              <div class="chev"><svg viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="#353535" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              Add A ${ordinal} Proposal To This Request
+            </button>`;
+        } else {
+          // Active — header with chevron + Remove button, no toggle track
+          section.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span class="section-label" style="margin-bottom:0">${ordinal} Proposal${svcDef ? ' <span style="font-size:11px;font-weight:500;color:var(--tm);text-transform:none;letter-spacing:0">('+svcDef.cat+' — '+svcDef.sub+')</span>' : ''}</span>
+              <div style="display:flex;align-items:center;gap:6px">
+                <button class="rm-btn" onclick="if(confirm('Remove this proposal?'))toggleService(${svc.idx})">Remove</button>
+                <button type="button" onclick="collapseService(${svc.idx})" style="background:none;border:none;cursor:pointer;padding:2px 4px;color:var(--tm);flex-shrink:0" title="${svc.collapsed?'Expand':'Collapse'} service">
+                  <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none" style="width:12px;height:12px"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
             </div>
-            ${svc.on ? `<button type="button" onclick="event.stopPropagation();collapseService(${svc.idx})" style="background:none;border:none;cursor:pointer;padding:2px 4px;color:var(--tm);flex-shrink:0" title="${svc.collapsed?'Expand':'Collapse'} service">
-              <svg class="svc-chev${svc.collapsed?'':' open'}" viewBox="0 0 10 6" fill="none" style="width:12px;height:12px"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>` : ''}
-          </div>
-          <div class="svc-fields svc-collapse-body${svc.collapsed?' collapsed':''}" id="svcf_${svc.idx}" style="${svc.on?'':'display:none'}">
-            <div class="divider"></div>
-            ${buildServiceFields(svc, ordinal)}
-          </div>`;
+            <div class="svc-fields svc-collapse-body${svc.collapsed?' collapsed':''}" id="svcf_${svc.idx}">
+              <div class="divider"></div>
+              ${buildServiceFields(svc, ordinal)}
+            </div>`;
+        }
       } else {
         const svcDef = SERVICES.find(x => x.id === svc.svcId);
         section.innerHTML = `
@@ -1789,8 +1799,6 @@ function collapseService(idx) {
     });
     const btn = section.querySelector('button[onclick*="collapseService"]');
     if (btn) btn.title = svc.collapsed ? 'Expand service' : 'Collapse service';
-    const togTrack = document.getElementById('tog_' + idx);
-    if (togTrack) togTrack.style.display = svc.collapsed ? 'none' : '';
   }
   saveState();
 }
