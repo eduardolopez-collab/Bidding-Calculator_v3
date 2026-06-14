@@ -865,6 +865,7 @@ function filterMats() {
 
 /* -- Init ---------------------------------------------------------- */
 (function init() {
+  try {
   const cats = [...new Set(SERVICES.map(s=>s.cat))].sort();
   const catSel = document.getElementById('svc_cat');
   cats.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; catSel.appendChild(o); });
@@ -873,6 +874,7 @@ function filterMats() {
   const _hadState = restoreState();
   if (!_hadState) { addLaborRow(); addMatRow(); }
   window._vpReady = true;
+  } catch(initErr) { window._initError = initErr; console.error('INIT ERROR:', initErr); }
   // Save on every input/change (debounced) AND on unload
   let _saveTimer;
   function debouncedSave(){ clearTimeout(_saveTimer); _saveTimer = setTimeout(saveState, 300); }
