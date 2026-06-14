@@ -378,7 +378,7 @@ let laborCount = 0;
 let matCount = 0;
 let _filteredMats = [];
 
-/* ── Theme ──────────────────────────────────────────────────────── */
+/* -- Theme -------------------------------------------------------- */
 function toggleTheme() {
   const h = document.documentElement;
   h.dataset.theme = h.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -386,7 +386,7 @@ function toggleTheme() {
 }
 (function(){try{const t=localStorage.getItem('vp_theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}})();
 
-/* ── Catalog data ───────────────────────────────────────────────── */
+/* -- Catalog data ------------------------------------------------- */
 const SERVICES=[
 {id:"SVC-001",cat:"Access Points",sub:"Front Entrance Gate, Repair"},
 {id:"SVC-002",cat:"Access Points",sub:"Front Entrance Gate, Replacement"},
@@ -613,10 +613,10 @@ const SERVICES=[
 {id:"SVC-223",cat:"Other",sub:"Welding Repair, Light"},
 {id:"SVC-224",cat:"Other",sub:"Welding Repair, Structural"},
 {id:"SVC-225",cat:"Other",sub:"Dumpster / Compactor Repair"},
-{id:"SVC-OTHER",cat:"Other",sub:"Not Listed — See Description Below"}
+{id:"SVC-OTHER",cat:"Other",sub:"Not Listed - See Description Below"}
 ];
 
-const TRADES=["Plumber","Electrician","HVAC Tech","Painter","Carpenter","Handyman","Laborer","Roofer","Landscaper","Janitorial","Pest Tech","Fire/Life Safety","Low-Voltage Tech","Pavement Crew","Welder","Other — Not Listed"];
+const TRADES=["Plumber","Electrician","HVAC Tech","Painter","Carpenter","Handyman","Laborer","Roofer","Landscaper","Janitorial","Pest Tech","Fire/Life Safety","Low-Voltage Tech","Pavement Crew","Welder","Other - Not Listed"];
 
 const MATERIALS=[
 {id:"M01",item:"LED Lamp | Standard (A19/PAR)",unit:"Each",type:"Lighting"},
@@ -809,14 +809,14 @@ const MATERIALS=[
 {id:"M188",item:"Scaffolding / Lift Rental (daily)",unit:"Per Day",type:"Other"},
 {id:"M189",item:"Permit / Inspection Fee",unit:"Per Job",type:"Other"},
 {id:"M190",item:"Freight / Delivery Charge",unit:"Per Job",type:"Other"},
-{id:"M-OTHER",item:"Other — Not Listed (describe in Notes)",unit:""}
+{id:"M-OTHER",item:"Other - Not Listed (describe in Notes)",unit:""}
 ];
 
-/* ── Helpers ─────────────────────────────────────────────────────── */
+/* -- Helpers ------------------------------------------------------- */
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
 
-/* ── Material filtering ──────────────────────────────────────────── */
+/* -- Material filtering -------------------------------------------- */
 function getFilteredMats() {
   const cat = (document.getElementById('svc_cat').value||'').toLowerCase();
   const sub = (document.getElementById('svc_sub').value
@@ -858,12 +858,12 @@ function filterMats() {
     const sel = document.getElementById('ms_'+id);
     if (!sel) return;
     const cur = sel.value;
-    sel.innerHTML = '<option value="">— Select Material —</option>' +
+    sel.innerHTML = '<option value="">- Select Material -</option>' +
       _filteredMats.map(m=>`<option value="${m.id}"${m.id===cur?' selected':''}>${esc(m.item)}</option>`).join('');
   });
 }
 
-/* ── Init ────────────────────────────────────────────────────────── */
+/* -- Init ---------------------------------------------------------- */
 (function init() {
   const cats = [...new Set(SERVICES.map(s=>s.cat))].sort();
   const catSel = document.getElementById('svc_cat');
@@ -879,23 +879,23 @@ function filterMats() {
   document.body.addEventListener('input',  debouncedSave);
   document.body.addEventListener('change', debouncedSave);
   window.addEventListener('beforeunload', saveState);
-  // Debug indicator — remove once persistence confirmed working
+  // Debug indicator - remove once persistence confirmed working
   const _dbg = document.createElement('div');
   _dbg.id = '_dbg';
   _dbg.style.cssText = 'position:fixed;bottom:8px;right:8px;font-size:10px;padding:4px 8px;border-radius:4px;z-index:9999;font-family:monospace';
   _dbg.style.background = _hadState ? '#1a3a00' : '#3a1a00';
   _dbg.style.color = _hadState ? '#97D700' : '#ffa500';
-  _dbg.textContent = _hadState ? '✓ State restored' : '○ No saved state';
+  _dbg.textContent = _hadState ? 'State restored' : 'No saved state';
   document.body.appendChild(_dbg);
   // Update indicator when saving
   const _origSave = saveState;
-  window.saveState = function() { _origSave(); _dbg.textContent = '✓ Saved ' + new Date().toLocaleTimeString(); _dbg.style.background='#1a3a00'; _dbg.style.color='#97D700'; };
+  window.saveState = function() { _origSave(); _dbg.textContent = 'Saved ' + new Date().toLocaleTimeString(); _dbg.style.background='#1a3a00'; _dbg.style.color='#97D700'; };
 })();
 
 function onCatChange() {
   const cat = document.getElementById('svc_cat').value;
   const subSel = document.getElementById('svc_sub');
-  subSel.innerHTML = '<option value="">— Select Subtype —</option>';
+  subSel.innerHTML = '<option value="">- Select Subtype -</option>';
   SERVICES.filter(s=>s.cat===cat).forEach(s => {
     const o=document.createElement('option'); o.value=s.id; o.textContent=s.sub; subSel.appendChild(o);
   });
@@ -925,7 +925,7 @@ function recalcTravel() {
   recalc();
 }
 
-/* ── Labor rows ──────────────────────────────────────────────────── */
+/* -- Labor rows ---------------------------------------------------- */
 function spinStep(id, delta, min, step) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -941,7 +941,7 @@ function addLaborRow() {
   div.className = 'vrow'; div.id = 'lr_'+i;
   div.innerHTML = `
     <div class="vrow-trade">
-      <select id="lt_${i}" onchange="onTradeChange(${i})"><option value="">— Trade —</option>${tradeOpts}</select>
+      <select id="lt_${i}" onchange="onTradeChange(${i})"><option value="">- Trade -</option>${tradeOpts}</select>
       <div id="lt_other_${i}" style="display:none;margin-top:4px">
         <input type="text" id="lt_other_text_${i}" autocomplete="off" placeholder="Describe trade / role" style="width:100%;border:1px solid var(--bm);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;background:var(--bi);color:var(--tp)">
       </div>
@@ -970,7 +970,7 @@ function addLaborRow() {
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lr2_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
-    <span class="vrow-total" id="ltot_${i}">—</span>
+    <span class="vrow-total" id="ltot_${i}">-</span>
     <input type="text" autocomplete="off" id="ln_${i}" class="vrow-notes" placeholder="Notes" style="border:1px solid var(--bm);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;background:var(--bi);color:var(--tp);height:30px">
     <button type="button" class="del-btn" onclick="delRow('lr_${i}');recalc()" title="Remove">&#x2715;</button>`;
   container.appendChild(div);
@@ -978,10 +978,10 @@ function addLaborRow() {
 
 function onTradeChange(i) {
   document.getElementById('lt_other_'+i).style.display =
-    document.getElementById('lt_'+i).value === 'Other — Not Listed' ? '' : 'none';
+    document.getElementById('lt_'+i).value === 'Other - Not Listed' ? '' : 'none';
 }
 
-/* ── Material rows ───────────────────────────────────────────────── */
+/* -- Material rows ------------------------------------------------- */
 function addMatRow() {
   const container = document.getElementById('matBody');
   const i = matCount++;
@@ -991,11 +991,11 @@ function addMatRow() {
   div.innerHTML = `
     <div class="vrow-item">
       <select id="ms_${i}" onchange="onMatChange(${i})">
-        <option value="">— Select Material —</option>${matOpts}
+        <option value="">- Select Material -</option>${matOpts}
       </select>
       <div id="ms_other_${i}" style="display:none;margin-top:4px">
         <input type="text" autocomplete="off" id="ms_other_text_${i}" placeholder="Describe item" style="width:100%;border:1px solid var(--bm);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;background:var(--bi);color:var(--tp)">
-        <span style="font-size:10px;color:var(--tm);display:block;margin-top:2px">Helps us expand our catalog — thank you.</span>
+        <span style="font-size:10px;color:var(--tm);display:block;margin-top:2px">Helps us expand our catalog - thank you.</span>
       </div>
     </div>
     <input type="text" autocomplete="off" id="mu_${i}" class="vrow-unit" placeholder="Unit" readonly style="border:1px solid var(--bm);border-radius:6px;padding:5px 8px;font-size:12px;height:30px;background:var(--br);color:var(--tm)">
@@ -1015,7 +1015,7 @@ function addMatRow() {
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mc_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
-    <span class="vrow-total" id="mtot_${i}">—</span>
+    <span class="vrow-total" id="mtot_${i}">-</span>
     <button type="button" class="del-btn" onclick="delRow('mr_${i}');recalc()" title="Remove">&#x2715;</button>`;
   container.appendChild(div);
 }
@@ -1030,7 +1030,7 @@ function onMatChange(i) {
 
 function delRow(id) { const el=document.getElementById(id); if(el) el.remove(); }
 
-/* ── Recalc ──────────────────────────────────────────────────────── */
+/* -- Recalc -------------------------------------------------------- */
 function recalc() {
   let laborTotal=0;
   document.querySelectorAll('#laborBody .vrow').forEach(row => {
@@ -1040,7 +1040,7 @@ function recalc() {
     const r=parseFloat(document.getElementById('lr2_'+id)?.value)||0;
     const tot=w*h*r; laborTotal+=tot;
     const totEl=document.getElementById('ltot_'+id);
-    if(totEl) totEl.textContent=tot>0?fmt(tot):'—';
+    if(totEl) totEl.textContent=tot>0?fmt(tot):'-';
   });
 
   let matTotal=0;
@@ -1050,7 +1050,7 @@ function recalc() {
     const c=parseFloat(document.getElementById('mc_'+id)?.value)||0;
     const tot=q*c; matTotal+=tot;
     const totEl=document.getElementById('mtot_'+id);
-    if(totEl) totEl.textContent=tot>0?fmt(tot):'—';
+    if(totEl) totEl.textContent=tot>0?fmt(tot):'-';
   });
 
   const hasTravelYes = document.querySelector('input[name=travel][value=yes]')?.checked;
@@ -1078,7 +1078,7 @@ function recalc() {
   document.getElementById('tot_grand').textContent = fmt(grand);
 }
 
-/* ── Validation ──────────────────────────────────────────────────── */
+/* -- Validation ---------------------------------------------------- */
 function validate() {
   const errs=[];
   [['v_company','Company Name'],['v_contact','Primary Contact'],['v_phone','Phone'],
@@ -1123,7 +1123,7 @@ function validate() {
   return true;
 }
 
-/* ── Build submission ────────────────────────────────────────────── */
+/* -- Build submission ---------------------------------------------- */
 function buildSubmission() {
   const subEl=document.getElementById('svc_sub');
   const subId=subEl.value;
@@ -1139,8 +1139,8 @@ function buildSubmission() {
     const notes=document.getElementById('ln_'+id)?.value||'';
     if(!trade) return;
     labor.push({
-      trade:trade==='Other — Not Listed'?(tradeOther||'Other'):trade,
-      trade_unlisted:trade==='Other — Not Listed'?tradeOther:'',
+      trade:trade==='Other - Not Listed'?(tradeOther||'Other'):trade,
+      trade_unlisted:trade==='Other - Not Listed'?tradeOther:'',
       workers,hours,rate_per_hr:rate,
       row_total:parseFloat((workers*hours*rate).toFixed(2)),notes
     });
@@ -1212,7 +1212,7 @@ function buildSubmission() {
   };
 }
 
-/* ── Submit ──────────────────────────────────────────────────────── */
+/* -- Submit -------------------------------------------------------- */
 function submitForm() {
   if(!validate()) return;
   recalc();
@@ -1228,7 +1228,7 @@ function submitForm() {
   setTimeout(()=>window.print(),400);
 }
 
-/* ── Persist state ─────────────────────────────────────────────────────────── */
+/* -- Persist state ----------------------------------------------------------- */
 function _storeSet(k,v){try{sessionStorage.setItem(k,v);}catch(e){} try{localStorage.setItem(k,v);}catch(e){}}
 function _storeGet(k){try{const v=sessionStorage.getItem(k);if(v!==null)return v;}catch(e){} try{const v=localStorage.getItem(k);if(v!==null)return v;}catch(e){} return null;}
 function _storeRemove(k){try{sessionStorage.removeItem(k);}catch(e){} try{localStorage.removeItem(k);}catch(e){}}
@@ -1310,7 +1310,7 @@ function restoreState() {
    'travel_notes','tax_rate','notes','v_sig'
   ].forEach(id => set(id, st[id]));
 
-  // Category → subtype (onCatChange rebuilds subtype options)
+  // Category - subtype (onCatChange rebuilds subtype options)
   if (st.svc_cat) {
     set('svc_cat', st.svc_cat);
     onCatChange();                             // rebuilds svc_sub options
