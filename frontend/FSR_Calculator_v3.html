@@ -2856,14 +2856,27 @@ function importVendorSubmission(input) {
         const selEl   = document.getElementById('msel_el_' + svc.idx + '_' + newIdx);
         const costEl  = document.getElementById('mcost_'   + svc.idx + '_' + newIdx);
         const qtyEl   = document.getElementById('mqty_'    + svc.idx + '_' + newIdx);
-        if (selEl && matId) {
-          // Rebuild options with full catalog so cross-category materials can be selected
-          if (!selEl.querySelector(`option[value="${matId}"]`)) {
-            selEl.innerHTML = '<option value="">— Select materials —</option>' +
-              MATERIALS.map(m => `<option value="${m.id}">${esc(m.item)}</option>`).join('');
+        if (matId) {
+          // Known catalog item — rebuild options if needed then select
+          if (selEl) {
+            if (!selEl.querySelector(`option[value="${matId}"]`)) {
+              selEl.innerHTML = '<option value="">— Select materials —</option>' +
+                MATERIALS.map(m => `<option value="${m.id}">${esc(m.item)}</option>`).join('');
+            }
+            selEl.value = matId;
+            matChanged(svc.idx, newIdx, matId);
           }
-          selEl.value = matId;
-          matChanged(svc.idx, newIdx, matId);
+        } else if (row.item_unlisted || row.item) {
+          // Unlisted / Other material — show label with vendor-provided name
+          const labelEl = document.getElementById('mlabel_' + svc.idx + '_' + newIdx);
+          const itemName = row.item_unlisted || row.item || 'Other (vendor-specified)';
+          if (selEl) { selEl.style.display = 'none'; }
+          if (labelEl) {
+            labelEl.textContent = itemName;
+            labelEl.style.display = 'inline';
+            labelEl.style.color = 'var(--wn-t)';
+            labelEl.title = 'Vendor-specified item — not in catalog. Review before logging.';
+          }
         }
         if (qtyEl && row.qty)       qtyEl.value  = row.qty;
         if (costEl && row.unit_cost) costEl.value = row.unit_cost;
