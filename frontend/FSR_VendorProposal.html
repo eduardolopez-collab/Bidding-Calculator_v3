@@ -313,13 +313,14 @@ a{color:var(--fg)}
     <div class="section-body">
       <div class="field-row cols2">
         <div class="field">
-          <label>Tax Rate (%)</label>
-          <input type="number" id="tax_rate" autocomplete="off" min="0" max="100" step="0.01" placeholder="e.g. 8.5" oninput="recalc()">
-          <span class="hint">Applied to Labor + Materials subtotal</span>
+          <label>Tax Amount ($)</label>
+          <input type="number" id="tax_amount" autocomplete="off" min="0" step="0.01" placeholder="e.g. 45.00" oninput="recalc()">
+          <span class="hint">Enter tax dollar amount — rate auto-calculates</span>
         </div>
         <div class="field">
-          <label>Tax Amount</label>
-          <div class="travel-total-display" id="tax_display">$0.00</div>
+          <label>Effective Tax Rate</label>
+          <div class="travel-total-display" id="tax_display">0.00%</div>
+          <span class="hint">Tax / (Labor + Materials)</span>
         </div>
       </div>
     </div>
@@ -1066,10 +1067,10 @@ function recalc() {
   const travVal = document.getElementById('tot_travel');
   if(travVal) travVal.textContent = fmt(travel);
 
-  const taxRate = parseFloat(document.getElementById('tax_rate')?.value)||0;
+  const taxAmt = parseFloat(document.getElementById('tax_amount')?.value)||0;
   const taxable = laborTotal + matTotal;
-  const taxAmt  = taxable * taxRate / 100;
-  document.getElementById('tax_display').textContent = fmt(taxAmt);
+  const taxRate = taxable > 0 ? (taxAmt / taxable * 100) : 0;
+  document.getElementById('tax_display').textContent = taxRate.toFixed(2)+'%';
   const taxRow = document.getElementById('tot_tax_row');
   if(taxRow) taxRow.style.display = taxAmt>0 ? '' : 'none';
   const taxVal = document.getElementById('tot_tax_val');
@@ -1169,9 +1170,9 @@ function buildSubmission() {
   const daily=parseFloat(document.getElementById('travel_daily')?.value)||0;
   const days=parseFloat(document.getElementById('travel_days')?.value)||1;
   const travelAmt=hasTravelYes?daily*days:0;
-  const taxRate=parseFloat(document.getElementById('tax_rate')?.value)||0;
   const taxable=labor.reduce((s,r)=>s+r.row_total,0)+materials.reduce((s,r)=>s+r.row_total,0);
-  const taxAmt=taxable*taxRate/100;
+  const taxAmt=parseFloat(document.getElementById('tax_amount')?.value)||0;
+  const taxRate=taxable>0?(taxAmt/taxable*100):0;
   const grand=taxable+travelAmt+taxAmt;
   return {
     _form_version:'2.0',_generated:new Date().toISOString(),
@@ -1283,7 +1284,7 @@ function saveState() {
       travel_daily: document.getElementById('travel_daily').value,
       travel_days:  document.getElementById('travel_days').value,
       travel_notes: document.getElementById('travel_notes').value,
-      tax_rate:  document.getElementById('tax_rate').value,
+      tax_amount: document.getElementById('tax_amount').value,
       notes:     document.getElementById('notes').value,
       v_sig:     document.getElementById('v_sig').value,
       labor, mats
@@ -1310,7 +1311,7 @@ function restoreState() {
   ['v_company','v_contact','v_phone','v_email','v_license','v_ins_provider',
    'v_ins_policy','v_ins_exp','v_valid_until','payment_terms','svc_location',
    'svc_start_date','svc_desc','svc_other_desc','travel_daily','travel_days',
-   'travel_notes','tax_rate','notes','v_sig'
+   'travel_notes','tax_amount','notes','v_sig'
   ].forEach(id => set(id, st[id]));
 
   // Category - subtype (onCatChange rebuilds subtype options)
