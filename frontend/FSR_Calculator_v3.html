@@ -2802,6 +2802,8 @@ function importVendorSubmission(input) {
     // ── Step 3: populate labor rows (only if breakdown is empty) ──────────
     const hasLabor = data.labor && data.labor.length > 0;
     const hasMat   = data.materials && data.materials.length > 0;
+    // DEBUG — remove after confirming
+    if (data.materials) data.materials.forEach((m,i)=>console.log('mat['+i+']',m.material_id, m.item, m.item_unlisted, m.unit_cost, m.qty));
     // Ensure breakdown is rendered before appending rows
     buildBreakdown(svc);
     const lr = document.getElementById('labor_rows_' + svc.idx);
