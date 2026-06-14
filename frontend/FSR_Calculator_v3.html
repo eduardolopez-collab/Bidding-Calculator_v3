@@ -3158,6 +3158,29 @@ function recalcResults() {
         const rateLabel = rateIsOverridden ? `<span style="color:var(--in-t);font-size:10px"> (Proposal)</span>` : `<span style="color:var(--tm);font-size:10px"> (Benchmark)</span>`;
         tradeRows.push(`<div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-bottom:3px"><span style="color:var(--tp);font-weight:500">${trade}${rateLabel}</span><span style="color:var(--ts)">${hrs} Hr${hrs!==1?'s':''} × ${workers} Worker${workers!==1?'s':''} @ $${adjRate}/Hr = ${fmt(rowAmt)}</span></div>`);
       });
+      // Dynamic laborer rows — include in trade rows display
+      const dlr2 = document.getElementById('labor_rows_' + svc.idx);
+      if (dlr2) {
+        dlr2.querySelectorAll('.labor-row-dynamic').forEach(row => {
+          const tradeSel = row.querySelector('select');
+          const hrsEl   = row.querySelector('.lr-hrs');
+          const wrkEl   = row.querySelector('.lr-workers');
+          const rateEl  = row.querySelector('.lr-rate-override');
+          const trade   = tradeSel ? tradeSel.value : '';
+          if (!trade) return;
+          const hrs     = hrsEl  ? (parseFloat(hrsEl.value)  || 0) : 0;
+          const workers = wrkEl  ? (parseInt(wrkEl.value)    || 1) : 1;
+          const overrideVal = rateEl && rateEl.value !== '' ? parseFloat(rateEl.value) : null;
+          const r = LABOR_RATES[trade] || {med:0};
+          const effectiveRate = (overrideVal !== null && !isNaN(overrideVal) && overrideVal > 0) ? overrideVal : r.med * city.laborMult;
+          const adjRate = Math.round(effectiveRate);
+          const rowAmt = effectiveRate * hrs * workers;
+          tradeTotal += rowAmt;
+          totalHrs   += hrs * workers;
+          const rateLabel = overrideVal ? `<span style="color:var(--in-t);font-size:10px"> (Proposal)</span>` : `<span style="color:var(--tm);font-size:10px"> (Benchmark)</span>`;
+          tradeRows.push(`<div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-bottom:3px"><span style="color:var(--tp);font-weight:500">${trade}${rateLabel}</span><span style="color:var(--ts)">${hrs} Hr${hrs!==1?'s':''} × ${workers} Worker${workers!==1?'s':''} @ $${adjRate}/Hr = ${fmt(rowAmt)}</span></div>`);
+        });
+      }
       const mr = document.getElementById('mat_rows_' + svc.idx);
       if (mr) {
         mr.querySelectorAll('.mat-row').forEach(row => {
@@ -3179,9 +3202,6 @@ function recalcResults() {
         });
       }
     });
-    const _taxRowHtml = _selectedBidTax > 0
-      ? `<div style="height:1px;background:var(--bd);margin:8px 0"></div><div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-bottom:3px"><span style="color:var(--in-t);font-weight:500">Tax <span style="color:var(--in-t);font-size:10px">(Proposal)</span></span><span style="color:var(--ts)">${fmt(_selectedBidTax)}</span></div><div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-top:4px;padding-top:4px;border-top:1px solid var(--bd)"><span style="color:var(--tm);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.04em">Tax Total</span><span style="color:var(--in-t);font-weight:600">${fmt(_selectedBidTax)}</span></div>`
-      : '';
     splitEl.style.display = 'block';
     splitEl.innerHTML = `<div class="metrics">
       <div class="metric" style="grid-column:span 4">
@@ -3228,7 +3248,7 @@ function recalcResults() {
           ${tradeRows.length ? `<div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-top:4px;padding-top:4px;border-top:1px solid var(--bd)"><span style="color:var(--tm);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.04em">Labor Total <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--tm)">${totalHrs % 1 === 0 ? totalHrs : totalHrs.toFixed(2)} Hr${totalHrs !== 1 ? 's' : ''}</span></span><span style="color:var(--tp);font-weight:600">${fmt(tradeTotal)}</span></div>` : ''}
           ${matRows.length ? `<div style="height:1px;background:var(--bd);margin:8px 0"></div>${matRows.join('')}<div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-top:4px;padding-top:4px;border-top:1px solid var(--bd)"><span style="color:var(--tm);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.04em">Materials Total <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--tm)">${totalMatQty % 1 === 0 ? totalMatQty : totalMatQty.toFixed(2)} unit${totalMatQty !== 1 ? 's' : ''}</span></span><span style="color:var(--tp);font-weight:600">${fmt(matTotal)}</span></div>` : ''}
           ${travelBench > 0 ? `<div style="height:1px;background:var(--bd);margin:8px 0"></div><div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-bottom:3px"><span style="color:var(--tp);font-weight:500">Travel${(()=>{const hasTO=activeSvcs.some(sv=>sv.travelOverride!=='');return hasTO?`<span style="color:var(--in-t);font-size:10px"> (Proposal)</span>`:`<span style="color:var(--tm);font-size:10px"> (Benchmark)</span>`;})()}</span><span style="color:var(--ts)">${fmt(travelProposal)}</span></div><div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-top:4px;padding-top:4px;border-top:1px solid var(--bd)"><span style="color:var(--tm);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.04em">Travel Total</span><span style="color:var(--tp);font-weight:600">${fmt(travelProposal)}</span></div>` : ''}
-          ${_taxRowHtml}
+          <div id="_splitTaxSlot"></div>
         </div>
         <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--bd)">${(()=>{
           const driver = laborSharePct>=matSharePct && laborSharePct>=travelSharePct ? 'labor'
@@ -3334,7 +3354,14 @@ function recalcResults() {
   const _isLowest = _selBidData.id === lowestBid.id;
 
   const _selTax = parseFloat(_selBidData.tax) || 0;
-  _selectedBidTax = _selTax; // hoist to module level for split panel access
+  _selectedBidTax = _selTax;
+  // Inject tax row into split panel now that _selTax is known
+  const _taxSlot = document.getElementById('_splitTaxSlot');
+  if (_taxSlot) {
+    _taxSlot.innerHTML = _selTax > 0
+      ? `<div style="height:1px;background:var(--bd);margin:8px 0"></div><div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-bottom:3px"><span style="color:var(--in-t);font-weight:500">Tax <span style="color:var(--in-t);font-size:10px">(Proposal)</span></span><span style="color:var(--ts)">${fmt(_selTax)}</span></div><div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-top:4px;padding-top:4px;border-top:1px solid var(--bd)"><span style="color:var(--tm);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.04em">Tax Total</span><span style="color:var(--in-t);font-weight:600">${fmt(_selTax)}</span></div>`
+      : '';
+  }
   const svc1WithTax = svc1ProposalMed + _selTax;
   const diff = _selAmt - combBenchMedHoisted;
   const bidLbl = _isLowest ? 'Lowest Bid' : 'Selected Bid';
