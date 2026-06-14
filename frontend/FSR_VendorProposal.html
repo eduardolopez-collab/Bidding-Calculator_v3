@@ -1268,75 +1268,96 @@ function saveState() {
 }
 
 function restoreState() {
-  try {
-    const raw = localStorage.getItem('vp_state');
-    if (!raw) return false;
-    const st = JSON.parse(raw);
+  let raw = null;
+  try { raw = localStorage.getItem('vp_state'); } catch(e) {}
+  if (!raw) return false;
+  let st;
+  try { st = JSON.parse(raw); } catch(e) { return false; }
+  if (!st || typeof st !== 'object') return false;
 
-    const set = (id, val) => { const el=document.getElementById(id); if(el&&val!==undefined) el.value=val; };
-    set('v_company', st.v_company); set('v_contact', st.v_contact);
-    set('v_phone', st.v_phone);     set('v_email', st.v_email);
-    set('v_license', st.v_license); set('v_ins_provider', st.v_ins_provider);
-    set('v_ins_policy', st.v_ins_policy); set('v_ins_exp', st.v_ins_exp);
-    set('v_valid_until', st.v_valid_until); set('payment_terms', st.payment_terms);
-    set('svc_location', st.svc_location); set('svc_start_date', st.svc_start_date);
-    set('svc_desc', st.svc_desc); set('svc_other_desc', st.svc_other_desc);
-    set('travel_daily', st.travel_daily); set('travel_days', st.travel_days);
-    set('travel_notes', st.travel_notes); set('tax_rate', st.tax_rate);
-    set('notes', st.notes); set('v_sig', st.v_sig);
+  const set = (id, val) => {
+    if (val === undefined || val === null) return;
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  };
 
-    // Category → rebuild subtype → set subtype
-    if (st.svc_cat) {
-      set('svc_cat', st.svc_cat);
-      onCatChange();
-      if (st.svc_sub) { set('svc_sub', st.svc_sub); onSubChange(); }
+  // Simple fields
+  ['v_company','v_contact','v_phone','v_email','v_license','v_ins_provider',
+   'v_ins_policy','v_ins_exp','v_valid_until','payment_terms','svc_location',
+   'svc_start_date','svc_desc','svc_other_desc','travel_daily','travel_days',
+   'travel_notes','tax_rate','notes','v_sig'
+  ].forEach(id => set(id, st[id]));
+
+  // Category → subtype (onCatChange rebuilds subtype options)
+  if (st.svc_cat) {
+    set('svc_cat', st.svc_cat);
+    onCatChange();                             // rebuilds svc_sub options
+    if (st.svc_sub) {
+      set('svc_sub', st.svc_sub);
+      onSubChange();
     }
+  }
 
-    // Travel radio
-    if (st.travel === 'yes') {
-      document.querySelector('input[name=travel][value=yes]').checked = true;
-      document.getElementById('travel_fields_wrap').style.display = '';
+  // Travel
+  if (st.travel === 'yes') {
+    const r = document.querySelector('input[name=travel][value=yes]');
+    if (r) r.checked = true;
+    document.getElementById('travel_fields_wrap').style.display = '';
+  }
+
+  // Labor rows
+  document.getElementById('laborBody').innerHTML = '';
+  laborCount = 0;
+  const laborData = Array.isArray(st.labor) ? st.labor : [];
+  if (laborData.length === 0) laborData.push({}); // at least one blank row
+  laborData.forEach(row => {
+    addLaborRow();
+    const i = laborCount - 1;
+    if (row.trade) set('lt_'+i, row.trade);
+    if (row.tradeOther) {
+      set('lt_other_text_'+i, row.tradeOther);
+      const el = document.getElementById('lt_other_'+i);
+      if (el) el.style.display = '';
     }
+    set('lw_'+i, row.workers || '1');
+    set('lh_'+i, row.hours   || '0');
+    set('lr2_'+i, row.rate   || '0');
+    set('ln_'+i, row.notes   || '');
+    if (row.trade) onTradeChange(i);
+  });
 
-    // Labor rows
-    if (Array.isArray(st.labor) && st.labor.length) {
-      document.getElementById('laborBody').innerHTML = '';
-      laborCount = 0;
-      st.labor.forEach(row => {
-        addLaborRow();
-        const i = laborCount - 1;
-        set('lt_'+i, row.trade);
-        if (row.tradeOther) { set('lt_other_text_'+i, row.tradeOther); document.getElementById('lt_other_'+i).style.display=''; }
-        set('lw_'+i, row.workers); set('lh_'+i, row.hours);
-        set('lr2_'+i, row.rate);   set('ln_'+i, row.notes);
-        onTradeChange(i);
-      });
-    }
-
-    // Mat rows
-    if (Array.isArray(st.mats) && st.mats.length) {
-      document.getElementById('matBody').innerHTML = '';
-      matCount = 0;
-      st.mats.forEach(row => {
-        addMatRow();
-        const i = matCount - 1;
-        const sel = document.getElementById('ms_'+i);
-        if (sel && row.matId) {
-          // ensure option exists
-          if (!sel.querySelector(`option[value="${row.matId}"]`)) {
-            sel.innerHTML += `<option value="${row.matId}">${row.matId}</option>`;
-          }
-          sel.value = row.matId;
-          onMatChange(i);
+  // Mat rows
+  document.getElementById('matBody').innerHTML = '';
+  matCount = 0;
+  const matData = Array.isArray(st.mats) ? st.mats : [];
+  if (matData.length === 0) matData.push({}); // at least one blank row
+  matData.forEach(row => {
+    addMatRow();
+    const i = matCount - 1;
+    if (row.matId) {
+      const sel = document.getElementById('ms_'+i);
+      if (sel) {
+        // If the saved material isn't in the filtered list, add it temporarily
+        if (!sel.querySelector(`option[value="${row.matId}"]`)) {
+          const m = MATERIALS.find(x => x.id === row.matId);
+          if (m) sel.innerHTML += `<option value="${m.id}" data-unit="${m.unit}">${m.item}</option>`;
         }
-        if (row.matOther) { set('ms_other_text_'+i, row.matOther); document.getElementById('ms_other_'+i).style.display=''; }
-        set('mq_'+i, row.qty); set('mc_'+i, row.cost);
-      });
+        sel.value = row.matId;
+        onMatChange(i);
+      }
     }
+    if (row.matOther) {
+      set('ms_other_text_'+i, row.matOther);
+      const el = document.getElementById('ms_other_'+i);
+      if (el) el.style.display = '';
+    }
+    set('mq_'+i, row.qty  || '1');
+    set('mc_'+i, row.cost || '0');
+  });
 
-    recalcTravel(); recalc();
-    return true;
-  } catch(e) { return false; }
+  recalcTravel();
+  recalc();
+  return true;
 }
 
 function clearForm() {
