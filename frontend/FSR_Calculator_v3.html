@@ -2618,7 +2618,7 @@ function renderBids() {
         </div>
         <div class="row r2">
           <div class="field"><label>Vendor name</label><input type="text" id="bv_${b.id}" placeholder="Company name" value="${esc(b.vendor)}" oninput="bidChanged(${b.id})"></div>
-          <div class="field"><label>Tax ($)</label><input type="number" autocomplete="off" id="bt_${b.id}" placeholder="0.00" min="0" step="0.01" value="${b.tax||''}" oninput="bidChanged(${b.id})"></div>
+          <div class="field"><label>Tax ($)</label><input type="number" autocomplete="off" id="bt_${b.id}" placeholder="0.00" min="0" step="0.01" value="${b.tax||''}" style="${b.tax&&b.tax!=='0'?'border-color:var(--in-b);color:var(--in-t)':''}" oninput="bidTaxInput(this);bidChanged(${b.id})"></div>
           <div class="field"><label>Bid total ($)</label>
             <div class="spin-wrap">
               <input type="number" autocomplete="off" id="ba_${b.id}" placeholder="0.00" min="0" step="0.01" value="${b.amount}" oninput="bidChanged(${b.id})">
@@ -2651,14 +2651,22 @@ function renderBids() {
   });
 }
 
+function bidTaxInput(el) {
+  const hasVal = el.value !== '' && parseFloat(el.value) > 0;
+  el.style.borderColor = hasVal ? 'var(--in-b)' : '';
+  el.style.color       = hasVal ? 'var(--in-t)' : '';
+}
+
 function bidChanged(id) {
   if (!window._appReady) return;
   const b = bids.find(x=>x.id===id);
   if (!b) return;
   const vEl=document.getElementById('bv_'+id);
   const aEl=document.getElementById('ba_'+id);
+  const tEl=document.getElementById('bt_'+id);
   if (vEl) b.vendor=vEl.value;
   if (aEl) b.amount=aEl.value;
+  if (tEl) b.tax=tEl.value;
   // Update winning highlight only &mdash; don't re-render
   const valid   = bids.filter(b=>b.amount!==''&&!isNaN(parseFloat(b.amount)));
   const lowestA = valid.length>0?Math.min(...valid.map(b=>parseFloat(b.amount))):Infinity;
@@ -2720,7 +2728,7 @@ function importVendorSubmission(input) {
       const tEl = document.getElementById('bt_' + bids[0].id);
       if (vEl) vEl.value = company;
       if (aEl) aEl.value = String(amount);
-      if (tEl) tEl.value = taxAmt;
+      if (tEl) { tEl.value = taxAmt; bidTaxInput(tEl); }
     } else {
       // Always use max existing id + 1 to avoid gaps from toggleService calls
       const nextId = Math.max(...bids.map(b => b.id), bidCount) + 1;
