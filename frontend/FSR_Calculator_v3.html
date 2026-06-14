@@ -2993,6 +2993,7 @@ function recalc() {
 // Module-level: latest live-DOM combined benchmarks, written by recalcResults, read by submitFSR
 let _combBenchMedLive=0, _combBenchHighLive=0, _combBenchMedHoisted=0;
 let _selectedBidId = null; // null = always track lowest bid
+let _selectedBidTax = 0;  // tax from currently selected bid
 
 // Hide subline badges (.lr-rate-badge, .mat-range) entirely if even 1px is clipped.
 // Called after layout settles via requestAnimationFrame.
@@ -3224,6 +3225,7 @@ function recalcResults() {
           ${tradeRows.length ? `<div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-top:4px;padding-top:4px;border-top:1px solid var(--bd)"><span style="color:var(--tm);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.04em">Labor Total <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--tm)">${totalHrs % 1 === 0 ? totalHrs : totalHrs.toFixed(2)} Hr${totalHrs !== 1 ? 's' : ''}</span></span><span style="color:var(--tp);font-weight:600">${fmt(tradeTotal)}</span></div>` : ''}
           ${matRows.length ? `<div style="height:1px;background:var(--bd);margin:8px 0"></div>${matRows.join('')}<div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-top:4px;padding-top:4px;border-top:1px solid var(--bd)"><span style="color:var(--tm);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.04em">Materials Total <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--tm)">${totalMatQty % 1 === 0 ? totalMatQty : totalMatQty.toFixed(2)} unit${totalMatQty !== 1 ? 's' : ''}</span></span><span style="color:var(--tp);font-weight:600">${fmt(matTotal)}</span></div>` : ''}
           ${travelBench > 0 ? `<div style="height:1px;background:var(--bd);margin:8px 0"></div><div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-bottom:3px"><span style="color:var(--tp);font-weight:500">Travel${(()=>{const hasTO=activeSvcs.some(sv=>sv.travelOverride!=='');return hasTO?`<span style="color:var(--in-t);font-size:10px"> (Proposal)</span>`:`<span style="color:var(--tm);font-size:10px"> (Benchmark)</span>`;})()}</span><span style="color:var(--ts)">${fmt(travelProposal)}</span></div><div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-top:4px;padding-top:4px;border-top:1px solid var(--bd)"><span style="color:var(--tm);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.04em">Travel Total</span><span style="color:var(--tp);font-weight:600">${fmt(travelProposal)}</span></div>` : ''}
+          ${_selectedBidTax > 0 ? '<div style="height:1px;background:var(--bd);margin:8px 0"></div><div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-bottom:3px"><span style="color:var(--in-t);font-weight:500">Tax <span style="color:var(--in-t);font-size:10px">(Proposal)</span></span><span style="color:var(--ts)">' + fmt(_selectedBidTax) + '</span></div><div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-top:4px;padding-top:4px;border-top:1px solid var(--bd)"><span style="color:var(--tm);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.04em">Tax Total</span><span style="color:var(--in-t);font-weight:600">' + fmt(_selectedBidTax) + '</span></div>' : ''}
         </div>
         <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--bd)">${(()=>{
           const driver = laborSharePct>=matSharePct && laborSharePct>=travelSharePct ? 'labor'
@@ -3329,6 +3331,7 @@ function recalcResults() {
   const _isLowest = _selBidData.id === lowestBid.id;
 
   const _selTax = parseFloat(_selBidData.tax) || 0;
+  _selectedBidTax = _selTax; // hoist to module level for split panel access
   const svc1WithTax = svc1ProposalMed + _selTax;
   const diff = _selAmt - combBenchMedHoisted;
   const bidLbl = _isLowest ? 'Lowest Bid' : 'Selected Bid';
