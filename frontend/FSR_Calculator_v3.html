@@ -3092,15 +3092,22 @@ function recalcResults() {
           const costEl = row.querySelector('.mat-cost');
           if (!sel || !sel.value) return;
           const m = MATERIALS.find(x => x.id === sel.value);
-          if (!m) return;
           const q = qtyEl ? (parseFloat(qtyEl.value) || 0) : 0;
+          const hasVendorCost = costEl && costEl.value !== '';
+          const vendorUnit    = hasVendorCost ? parseFloat(costEl.value) : 0;
+          if (!m) {
+            // Synthetic/unlisted vendor item — use vendor cost as benchmark (no market rate available)
+            matBenchLow  += vendorUnit * q * svcScale;
+            matBenchMed  += vendorUnit * q * svcScale;
+            matBenchHigh += vendorUnit * q * svcScale;
+            matProposalMed += vendorUnit * q * svcScale;
+            return;
+          }
           // Benchmark always uses market rate (never vendor cost override)
           matBenchLow  += m.low  * city.matMult * q * svcScale;
           matBenchMed  += m.med  * city.matMult * q * svcScale;
           matBenchHigh += m.high * city.matMult * q * svcScale;
           // Proposal: vendor cost if entered, else market
-          const hasVendorCost = costEl && costEl.value !== '';
-          const vendorUnit    = hasVendorCost ? parseFloat(costEl.value) : null;
           matProposalMed += (hasVendorCost ? vendorUnit * q : m.med * city.matMult * q) * svcScale;
         });
       }
