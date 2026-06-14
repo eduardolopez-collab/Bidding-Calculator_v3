@@ -1513,6 +1513,13 @@ function snapshotAllBreakdowns() {
         if (sel)  snap['msel_'  + i] = sel.value;
         if (qty_) snap['mqty_'  + i] = qty_.value;
         if (cost) snap['mcost_' + i] = cost.value;
+        // Preserve synthetic vendor item label
+        if (sel && sel.value && sel.value.startsWith('VENDOR_')) {
+          const opt = sel.querySelector(`option[value="${sel.value}"]`);
+          if (opt) snap['msynth_' + i] = opt.textContent;
+        } else if (svc.bdSnap && svc.bdSnap['msynth_' + i]) {
+          snap['msynth_' + i] = svc.bdSnap['msynth_' + i];
+        }
       });
     }
     // Only overwrite bdSnap if rows were actually found in the DOM.
@@ -2145,7 +2152,7 @@ function buildBreakdown(svc) {
       const matSlots = [];
       if (snapMatCount > 0) {
         for (let i = 0; i < snapMatCount; i++) {
-          matSlots.push({matId: snap['msel_' + i] || '', qty: snap['mqty_' + i] || '0', cost: snap['mcost_' + i] || ''});
+          matSlots.push({matId: snap['msel_' + i] || '', qty: snap['mqty_' + i] || '0', cost: snap['mcost_' + i] || '', synthLabel: snap['msynth_' + i] || ''});
         }
       } else {
         if (s.m1) matSlots.push({matId: s.m1, qty: parseFloat(((s.q1||0)*qty).toFixed(4)), cost: ''});
@@ -2164,15 +2171,20 @@ function buildBreakdown(svc) {
         const initMatCost = mp.cost !== '' ? parseFloat(mp.cost) : adjMedMat;
         const initMatTotal = initMatCost * (parseFloat(mp.qty) || 0);
         const uid = 'mrow_' + svc.idx + '_' + i;
+        const isSynth = mp.matId && mp.matId.startsWith('VENDOR_');
         const matOptions = catMats.map(m =>
           `<option value="${m.id}"${m.id === mp.matId ? ' selected' : ''}>${esc(m.item)}</option>`
         ).join('');
+        const synthOption = isSynth && mp.synthLabel ? `<option value="${mp.matId}" selected>${esc(mp.synthLabel)}</option>` : '';
+        const labelText = isSynth ? (mp.synthLabel||'Other') : (mp.matId?(MATERIALS.find(x=>x.id===mp.matId)||{item:''}).item:'');
+        const labelColor = isSynth ? 'color:var(--wn-t);' : '';
+        const showSelect = (!mp.matId && !isSynth) ? '' : 'display:none';
         return `<div class="mat-row" id="${uid}">
-          <select class="mat-item" id="msel_el_${svc.idx}_${i}" onchange="matChanged(${svc.idx},${i},this.value)" style="${mp.matId?'display:none':''}">
+          <select class="mat-item" id="msel_el_${svc.idx}_${i}" onchange="matChanged(${svc.idx},${i},this.value)" style="${showSelect}">
             <option value="">— Select materials —</option>
-            ${matOptions}
+            ${synthOption}${matOptions}
           </select>
-          <span class="mat-item-label" id="mlabel_${svc.idx}_${i}" style="${mp.matId?'display:inline':'display:none'};cursor:pointer" title="Tap to change material">${mp.matId?(MATERIALS.find(x=>x.id===mp.matId)||{item:''}).item:''}</span>
+          <span class="mat-item-label" id="mlabel_${svc.idx}_${i}" style="${mp.matId||isSynth?'display:inline':'display:none'};${labelColor}cursor:pointer" title="${isSynth?'Vendor item — not in catalog. Click to change.':'Tap to change material'}">${esc(labelText)}</span>
           <div class="lr-sep"></div>
           <span class="lr-workers-lbl">Qty</span>
           <div class="spin-wrap">
@@ -2863,15 +2875,26 @@ function importVendorSubmission(input) {
             matChanged(svc.idx, newIdx, matId);
           }
         } else if (row.item_unlisted || row.item) {
-          // Unlisted / Other material — show label with vendor-provided name
-          const labelEl = document.getElementById('mlabel_' + svc.idx + '_' + newIdx);
-          const itemName = row.item_unlisted || row.item || 'Other (vendor-specified)';
-          if (selEl) { selEl.style.display = 'none'; }
-          if (labelEl) {
-            labelEl.textContent = itemName;
-            labelEl.style.display = 'inline';
-            labelEl.style.color = 'var(--wn-t)';
-            labelEl.title = 'Vendor-specified item — not in catalog. Review before logging.';
+          // Unlisted / Other — inject as a synthetic selectable option so totals calculate
+          const itemName = (row.item_unlisted || row.item || 'Other (vendor-specified)').trim();
+          const syntheticId = 'VENDOR_' + newIdx;
+          if (selEl) {
+            // Add synthetic option and select it
+            const opt = document.createElement('option');
+            opt.value = syntheticId;
+            opt.textContent = itemName;
+            opt.style.color = 'var(--wn-t)';
+            selEl.appendChild(opt);
+            selEl.value = syntheticId;
+            // Collapse to label
+            const labelEl = document.getElementById('mlabel_' + svc.idx + '_' + newIdx);
+            if (labelEl) {
+              labelEl.textContent = itemName;
+              labelEl.style.display = 'inline';
+              labelEl.style.color = 'var(--wn-t)';
+              labelEl.title = 'Vendor item (not in catalog) — click to edit';
+              selEl.style.display = 'none';
+            }
           }
         }
         if (qtyEl && row.qty)       qtyEl.value  = row.qty;
@@ -2919,9 +2942,14 @@ function importVendorSubmission(input) {
         const sel  = row.querySelector('.mat-item');
         const qEl  = row.querySelector('.mat-qty');
         const cEl  = row.querySelector('.mat-cost');
-        snapOut['msel_'  + i] = sel  ? sel.value  : '';
-        snapOut['mqty_'  + i] = qEl  ? qEl.value  : '0';
-        snapOut['mcost_' + i] = cEl  ? cEl.value  : '';
+        snapOut['msel_'  + i] = sel ? sel.value : '';
+        snapOut['mqty_'  + i] = qEl ? qEl.value : '0';
+        snapOut['mcost_' + i] = cEl ? cEl.value : '';
+        // Persist synthetic option label for vendor unlisted items
+        if (sel && sel.value && sel.value.startsWith('VENDOR_')) {
+          const opt = sel.querySelector(`option[value="${sel.value}"]`);
+          if (opt) snapOut['msynth_' + i] = opt.textContent;
+        }
       });
     }
     svc.bdSnap = snapOut;
