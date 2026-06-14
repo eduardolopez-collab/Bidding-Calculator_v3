@@ -830,10 +830,11 @@ function getFilteredMats() {
   const searchWords = kw ? kw.split(/\W+/).filter(w=>w.length>1) : [];
 
   return MATERIALS.map(m => {
-    const key = (m.item+' '+m.type+' '+m.unit).toLowerCase();
+    const mtype = m.type || '';
+    const key = (m.item+' '+mtype+' '+m.unit).toLowerCase();
     // Exact type match gets highest score
     let score = 0;
-    if (m.type.toLowerCase() === cat) score += 10;
+    if (mtype.toLowerCase() === cat) score += 10;
     catWords.forEach(w => { if(key.includes(w)) score += 2; });
     subWords.forEach(w => { if(key.includes(w)) score += 3; });
     if (kw) searchWords.forEach(w => { if(key.includes(w)) score += 5; });
