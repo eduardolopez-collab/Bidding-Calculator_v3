@@ -2199,10 +2199,28 @@ function buildBreakdown(svc) {
       }).join('');
     }
 
-    // Wire mat-item-label click handlers for restored rows
+    // Wire mat-item-label click handlers; restore unlisted text inputs from snap
     mr.querySelectorAll('.mat-row').forEach((row, i) => {
       const selEl   = row.querySelector('.mat-item');
       const labelEl = row.querySelector('.mat-item-label');
+      const rowIdx  = row.id ? parseInt(row.id.split('_').pop()) : i;
+      // Restore unlisted text input if snap has one
+      if (snap['mtext_' + i] && selEl && !selEl.value && selEl.parentNode) {
+        const existingTxt = document.getElementById('mtext_' + svc.idx + '_' + rowIdx);
+        if (!existingTxt) {
+          const txt = document.createElement('input');
+          txt.type = 'text';
+          txt.className = 'mat-item-label';
+          txt.id = 'mtext_' + svc.idx + '_' + rowIdx;
+          txt.value = snap['mtext_' + i];
+          txt.placeholder = 'Item description';
+          txt.autocomplete = 'off';
+          txt.style.cssText = 'flex:1;min-width:0;font-size:12px;border:1px solid var(--in-b);border-radius:6px;padding:4px 8px;background:var(--bi);color:var(--in-t);height:24px';
+          txt.title = 'Vendor-specified item — editable. Not in catalog.';
+          selEl.parentNode.insertBefore(txt, selEl);
+          selEl.style.display = 'none';
+        }
+      }
       if (selEl && labelEl && labelEl.style.display !== 'none') {
         labelEl.onclick = () => {
           labelEl.style.display = 'none';
@@ -2867,15 +2885,20 @@ function importVendorSubmission(input) {
             matChanged(svc.idx, newIdx, matId);
           }
         } else if (row.item_unlisted || row.item) {
-          // Unlisted / Other material — show label with vendor-provided name
-          const labelEl = document.getElementById('mlabel_' + svc.idx + '_' + newIdx);
+          // Unlisted item — replace select with an editable text input
           const itemName = row.item_unlisted || row.item || 'Other (vendor-specified)';
-          if (selEl) { selEl.style.display = 'none'; }
-          if (labelEl) {
-            labelEl.textContent = itemName;
-            labelEl.style.display = 'inline';
-            labelEl.style.color = 'var(--wn-t)';
-            labelEl.title = 'Vendor-specified item — not in catalog. Review before logging.';
+          if (selEl && selEl.parentNode) {
+            const txt = document.createElement('input');
+            txt.type = 'text';
+            txt.className = 'mat-item-label';
+            txt.id = 'mtext_' + svc.idx + '_' + newIdx;
+            txt.value = itemName;
+            txt.placeholder = 'Item description';
+            txt.autocomplete = 'off';
+            txt.style.cssText = 'flex:1;min-width:0;font-size:12px;border:1px solid var(--in-b);border-radius:6px;padding:4px 8px;background:var(--bi);color:var(--in-t);height:24px';
+            txt.title = 'Vendor-specified item — editable. Not in catalog.';
+            selEl.parentNode.insertBefore(txt, selEl);
+            selEl.style.display = 'none';
           }
         }
         if (qtyEl && row.qty)       qtyEl.value  = row.qty;
@@ -2923,9 +2946,12 @@ function importVendorSubmission(input) {
         const sel  = row.querySelector('.mat-item');
         const qEl  = row.querySelector('.mat-qty');
         const cEl  = row.querySelector('.mat-cost');
-        snapOut['msel_'  + i] = sel  ? sel.value  : '';
-        snapOut['mqty_'  + i] = qEl  ? qEl.value  : '0';
-        snapOut['mcost_' + i] = cEl  ? cEl.value  : '';
+        const rowIdx = row.id ? parseInt(row.id.split('_').pop()) : i;
+        const txtEl = document.getElementById('mtext_' + svc.idx + '_' + rowIdx);
+        snapOut['msel_'   + i] = sel   ? sel.value   : '';
+        snapOut['mqty_'   + i] = qEl   ? qEl.value   : '0';
+        snapOut['mcost_'  + i] = cEl   ? cEl.value   : '';
+        if (txtEl) snapOut['mtext_' + i] = txtEl.value;
       });
     }
     svc.bdSnap = snapOut;
