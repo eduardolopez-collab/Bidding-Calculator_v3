@@ -371,7 +371,7 @@ a{color:var(--fg)}
 </div><!-- /page -->
 
 <!-- Hidden state store: browser preserves textarea value on reload for file:// -->
-<textarea id="_stateStore" style="display:none" autocomplete="off"></textarea>
+<textarea id="_stateStore" autocomplete="off" style="position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;pointer-events:none;tab-index:-1"></textarea>
 
 <script>
 let laborCount = 0;
