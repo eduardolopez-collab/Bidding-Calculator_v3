@@ -2199,10 +2199,19 @@ function buildBreakdown(svc) {
       }).join('');
     }
 
-    // Wire mat-item-label click handlers for restored rows
+    // Wire mat-item-label click handlers; restore unlisted labels from snap
     mr.querySelectorAll('.mat-row').forEach((row, i) => {
       const selEl   = row.querySelector('.mat-item');
       const labelEl = row.querySelector('.mat-item-label');
+      // Restore unlisted vendor item label if snap has one and select has no value
+      const unlistedLabel = snap['mlabel_unlisted_' + i];
+      if (unlistedLabel && selEl && !selEl.value && labelEl) {
+        labelEl.textContent = unlistedLabel;
+        labelEl.style.display = 'inline';
+        labelEl.style.color = 'var(--wn-t)';
+        labelEl.title = 'Vendor-specified item — not in catalog. Review before logging.';
+        selEl.style.display = 'none';
+      }
       if (selEl && labelEl && labelEl.style.display !== 'none') {
         labelEl.onclick = () => {
           labelEl.style.display = 'none';
@@ -2920,12 +2929,17 @@ function importVendorSubmission(input) {
     if (mr) {
       const matRows = mr.querySelectorAll('.mat-row');
       matRows.forEach((row, i) => {
-        const sel  = row.querySelector('.mat-item');
-        const qEl  = row.querySelector('.mat-qty');
-        const cEl  = row.querySelector('.mat-cost');
-        snapOut['msel_'  + i] = sel  ? sel.value  : '';
-        snapOut['mqty_'  + i] = qEl  ? qEl.value  : '0';
-        snapOut['mcost_' + i] = cEl  ? cEl.value  : '';
+        const sel      = row.querySelector('.mat-item');
+        const labelEl  = row.querySelector('.mat-item-label');
+        const qEl      = row.querySelector('.mat-qty');
+        const cEl      = row.querySelector('.mat-cost');
+        snapOut['msel_'   + i] = sel      ? sel.value        : '';
+        snapOut['mqty_'   + i] = qEl      ? qEl.value        : '0';
+        snapOut['mcost_'  + i] = cEl      ? cEl.value        : '';
+        // Persist unlisted item label text so it survives refresh
+        if (labelEl && labelEl.style.display !== 'none' && !sel?.value) {
+          snapOut['mlabel_unlisted_' + i] = labelEl.textContent || '';
+        }
       });
     }
     svc.bdSnap = snapOut;
