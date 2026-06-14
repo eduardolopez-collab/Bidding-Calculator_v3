@@ -3165,15 +3165,16 @@ function recalcResults() {
           const costEl = row.querySelector('.mat-cost');
           if (!sel || !sel.value) return;
           const m = MATERIALS.find(x => x.id === sel.value);
-          if (!m) return;
           const q = qtyEl ? (parseFloat(qtyEl.value) || 0) : 0;
           const hasVendor = costEl && costEl.value !== '';
-          const unitCost = hasVendor ? parseFloat(costEl.value) : Math.round(m.med * city.matMult * 100) / 100;
+          const unitCost = hasVendor ? parseFloat(costEl.value) : (m ? Math.round(m.med * city.matMult * 100) / 100 : 0);
+          if (!unitCost && !m) return;
           const rowAmt = unitCost * q;
           matTotal += rowAmt;
           totalMatQty += q;
+          const itemName = m ? m.item : (sel.options[sel.selectedIndex]?.text || 'Vendor Item');
           const matLabel = hasVendor ? `<span style="color:var(--in-t);font-size:10px"> (Proposal)</span>` : `<span style="color:var(--tm);font-size:10px"> (Benchmark)</span>`;
-          matRows.push(`<div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-bottom:3px"><span style="color:var(--tp);font-weight:500">${m.item}${matLabel}</span><span style="color:var(--ts)">${q} × $${unitCost.toFixed(2)} = ${fmt(rowAmt)}</span></div>`);
+          matRows.push(`<div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-bottom:3px"><span style="color:${m?'var(--tp)':'var(--wn-t)'};font-weight:500">${itemName}${matLabel}</span><span style="color:var(--ts)">${q} × $${unitCost.toFixed(2)} = ${fmt(rowAmt)}</span></div>`);
         });
       }
     });
