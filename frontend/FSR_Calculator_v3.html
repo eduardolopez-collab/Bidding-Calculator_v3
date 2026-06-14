@@ -3360,11 +3360,16 @@ function recalcResults() {
   _selectedBidTax = _selTax;
   // Compute benchmark scoped to the selected bid's service
   const _activeSvcsWithId = activeSvcs.filter(s => s.svcId);
-  const _selSvcIdx = _selBidData.svcIdx
-    || (_activeSvcsWithId.length === 1 ? _activeSvcsWithId[0].idx : null);
-  const _computedBench = _selSvcIdx ? computeBenchmarkForSvc(_selSvcIdx, city) : 0;
-  console.log('svcIdx:', _selSvcIdx, 'activeSvcs:', _activeSvcsWithId.length, 'computed:', _computedBench, 'combined:', combBenchMedHoisted);
-  const _benchRef = _computedBench > 0 ? _computedBench : combBenchMedHoisted;
+  // Determine which service this bid covers:
+  // 1. Use tagged svcIdx from import
+  // 2. Fall back to position mapping: bid index → service index
+  let _selSvcIdx = _selBidData.svcIdx || null;
+  if (!_selSvcIdx && _activeSvcsWithId.length > 0) {
+    const bidPos = valid.findIndex(b => b.id === _selBidData.id);
+    const svcAtPos = _activeSvcsWithId[bidPos] || _activeSvcsWithId[0];
+    _selSvcIdx = svcAtPos ? svcAtPos.idx : null;
+  }
+  const _benchRef = _selSvcIdx ? computeBenchmarkForSvc(_selSvcIdx, city) : combBenchMedHoisted;
   // Inject tax row into split panel now that _selTax is known
   const _taxSlot = document.getElementById('_splitTaxSlot');
   if (_taxSlot) {
