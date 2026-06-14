@@ -1171,10 +1171,11 @@ function buildSubmission() {
   const daily=parseFloat(document.getElementById('travel_daily')?.value)||0;
   const days=parseFloat(document.getElementById('travel_days')?.value)||1;
   const travelAmt=hasTravelYes?daily*days:0;
-  const taxable=labor.reduce((s,r)=>s+r.row_total,0)+materials.reduce((s,r)=>s+r.row_total,0)+travelAmt;
+  const subtotal=labor.reduce((s,r)=>s+r.row_total,0)+materials.reduce((s,r)=>s+r.row_total,0)+travelAmt;
+  const taxable=subtotal;
   const taxAmt=parseFloat(document.getElementById('tax_amount')?.value)||0;
   const taxRate=taxable>0?(taxAmt/taxable*100):0;
-  const grand=taxable+travelAmt+taxAmt;
+  const grand=subtotal+taxAmt;
   return {
     _form_version:'2.0',_generated:new Date().toISOString(),
     vendor:{
