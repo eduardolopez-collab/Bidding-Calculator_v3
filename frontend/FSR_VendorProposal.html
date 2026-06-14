@@ -872,9 +872,12 @@ function filterMats() {
   filterMats();
   if (!restoreState()) { addLaborRow(); addMatRow(); }
   window._vpReady = true;
-  // Auto-save on any input or change — gated behind _vpReady so restore doesn't overwrite itself
-  document.body.addEventListener('input',  saveState);
-  document.body.addEventListener('change', saveState);
+  // Save on every input/change (debounced) AND on unload
+  let _saveTimer;
+  function debouncedSave(){ clearTimeout(_saveTimer); _saveTimer = setTimeout(saveState, 300); }
+  document.body.addEventListener('input',  debouncedSave);
+  document.body.addEventListener('change', debouncedSave);
+  window.addEventListener('beforeunload', saveState);
 })();
 
 function onCatChange() {
@@ -1213,42 +1216,10 @@ function submitForm() {
   setTimeout(()=>window.print(),400);
 }
 
-/* ── Persist state ───────────────────────────────────────────────────────────
-   Primary store: hidden <textarea id="_stateStore"> — browser preserves its
-   value across reloads natively, works on file:// with zero API restrictions.
-   Secondary: localStorage for cross-session persistence.
-   ─────────────────────────────────────────────────────────────────────────── */
-function _storeSet(key, val) {
-  // Textarea store (survives reload on same tab, file:// safe)
-  try {
-    const el = document.getElementById('_stateStore');
-    const o = {}; try { Object.assign(o, JSON.parse(el.value||'{}')); } catch(e) {}
-    o[key] = val; el.value = JSON.stringify(o);
-  } catch(e) {}
-  // localStorage (persists across sessions when available)
-  try { localStorage.setItem(key, val); } catch(e) {}
-}
-function _storeGet(key) {
-  // Textarea first
-  try {
-    const el = document.getElementById('_stateStore');
-    if (el && el.value) {
-      const o = JSON.parse(el.value);
-      if (o[key] !== undefined) return o[key];
-    }
-  } catch(e) {}
-  // localStorage fallback
-  try { const v = localStorage.getItem(key); if (v !== null) return v; } catch(e) {}
-  return null;
-}
-function _storeRemove(key) {
-  try {
-    const el = document.getElementById('_stateStore');
-    const o = {}; try { Object.assign(o, JSON.parse(el.value||'{}')); } catch(e) {}
-    delete o[key]; el.value = JSON.stringify(o);
-  } catch(e) {}
-  try { localStorage.removeItem(key); } catch(e) {}
-}
+/* ── Persist state ─────────────────────────────────────────────────────────── */
+function _storeSet(k,v){try{sessionStorage.setItem(k,v);}catch(e){} try{localStorage.setItem(k,v);}catch(e){}}
+function _storeGet(k){try{const v=sessionStorage.getItem(k);if(v!==null)return v;}catch(e){} try{const v=localStorage.getItem(k);if(v!==null)return v;}catch(e){} return null;}
+function _storeRemove(k){try{sessionStorage.removeItem(k);}catch(e){} try{localStorage.removeItem(k);}catch(e){}}
 
 function saveState() {
   if (!window._vpReady) return;
