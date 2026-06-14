@@ -320,7 +320,7 @@ a{color:var(--fg)}
         <div class="field">
           <label>Effective Tax Rate</label>
           <div class="travel-total-display" id="tax_display">0.00%</div>
-          <span class="hint">Tax / (Labor + Materials)</span>
+          <span class="hint">Tax / (Labor + Materials + Travel)</span>
         </div>
       </div>
     </div>
@@ -1068,7 +1068,7 @@ function recalc() {
   if(travVal) travVal.textContent = fmt(travel);
 
   const taxAmt = parseFloat(document.getElementById('tax_amount')?.value)||0;
-  const taxable = laborTotal + matTotal;
+  const taxable = laborTotal + matTotal + travel;
   const taxRate = taxable > 0 ? (taxAmt / taxable * 100) : 0;
   document.getElementById('tax_display').textContent = taxRate.toFixed(2)+'%';
   const taxRow = document.getElementById('tot_tax_row');
@@ -1170,7 +1170,7 @@ function buildSubmission() {
   const daily=parseFloat(document.getElementById('travel_daily')?.value)||0;
   const days=parseFloat(document.getElementById('travel_days')?.value)||1;
   const travelAmt=hasTravelYes?daily*days:0;
-  const taxable=labor.reduce((s,r)=>s+r.row_total,0)+materials.reduce((s,r)=>s+r.row_total,0);
+  const taxable=labor.reduce((s,r)=>s+r.row_total,0)+materials.reduce((s,r)=>s+r.row_total,0)+travelAmt;
   const taxAmt=parseFloat(document.getElementById('tax_amount')?.value)||0;
   const taxRate=taxable>0?(taxAmt/taxable*100):0;
   const grand=taxable+travelAmt+taxAmt;
