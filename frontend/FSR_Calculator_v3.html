@@ -3051,10 +3051,10 @@ function recalcResults() {
         const r = LABOR_RATES[lp.trade] || {low:0,med:0,high:0};
         // Unit-based: hrs spinner already holds h×qty. Non-unit-based: scale by qty here.
         const labScale = s.ub ? 1 : qty;
-        // Benchmark uses market rate × hrs only — workers is a proposal variable, not a benchmark variable
-        laborBenchLow  += r.low  * city.laborMult * hrs * labScale;
-        laborBenchMed  += r.med  * city.laborMult * hrs * labScale;
-        laborBenchHigh += r.high * city.laborMult * hrs * labScale;
+        // Benchmark uses market rate × hrs × workers (workers reflect actual job scope)
+        laborBenchLow  += r.low  * city.laborMult * hrs * workers * labScale;
+        laborBenchMed  += r.med  * city.laborMult * hrs * workers * labScale;
+        laborBenchHigh += r.high * city.laborMult * hrs * workers * labScale;
         // Proposal: effective rate (override or market) × hrs × workers
         const effectiveRate = getEffectiveLaborRate(svc, lp.trade, city, i);
         laborProposalMed += effectiveRate * hrs * workers * labScale;
@@ -3072,9 +3072,9 @@ function recalcResults() {
           const hrs     = hrsEl  ? (parseFloat(hrsEl.value)  || 0) : 0;
           const workers = wrkEl  ? (parseInt(wrkEl.value)    || 1) : 1;
           const r = LABOR_RATES[trade] || {low:0,med:0,high:0};
-          laborBenchLow  += r.low  * city.laborMult * hrs;
-          laborBenchMed  += r.med  * city.laborMult * hrs;
-          laborBenchHigh += r.high * city.laborMult * hrs;
+          laborBenchLow  += r.low  * city.laborMult * hrs * workers;
+          laborBenchMed  += r.med  * city.laborMult * hrs * workers;
+          laborBenchHigh += r.high * city.laborMult * hrs * workers;
           const overrideVal = rateEl && rateEl.value !== '' ? parseFloat(rateEl.value) : null;
           const effectiveRate = (overrideVal !== null && !isNaN(overrideVal) && overrideVal > 0)
             ? overrideVal : r.med * city.laborMult;
@@ -3097,10 +3097,10 @@ function recalcResults() {
           const hasVendorCost = costEl && costEl.value !== '';
           const vendorUnit    = hasVendorCost ? parseFloat(costEl.value) : 0;
           if (!m) {
-            // Synthetic/unlisted vendor item — use vendor cost as benchmark (no market rate available)
-            matBenchLow  += vendorUnit * q * svcScale;
-            matBenchMed  += vendorUnit * q * svcScale;
-            matBenchHigh += vendorUnit * q * svcScale;
+            // Synthetic/unlisted vendor item — use vendor cost × city mult as benchmark
+            matBenchLow  += vendorUnit * city.matMult * q * svcScale;
+            matBenchMed  += vendorUnit * city.matMult * q * svcScale;
+            matBenchHigh += vendorUnit * city.matMult * q * svcScale;
             matProposalMed += vendorUnit * q * svcScale;
             return;
           }
