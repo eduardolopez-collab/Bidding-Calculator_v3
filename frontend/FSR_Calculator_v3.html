@@ -2777,6 +2777,9 @@ function importVendorSubmission(input) {
     }
     // Re-fetch svc from services array after any DOM rebuild
     const svc = services.find(s => s.idx === targetIdx);
+    // Tag the bid with which service it belongs to — used for Benchmark card scoping
+    const _importedBid = emptyFirst ? bids[0] : bids[bids.length - 1];
+    if (_importedBid && svc) _importedBid.svcIdx = svc.idx;
 
     // ── Step 2b: autofill header fields ──────────────────────────────────
     // City — match vendor location against city select options
@@ -3355,6 +3358,9 @@ function recalcResults() {
 
   const _selTax = parseFloat(_selBidData.tax) || 0;
   _selectedBidTax = _selTax;
+  // Compute benchmark scoped to the selected bid's service
+  const _selSvcIdx = _selBidData.svcIdx || null;
+  const _benchRef = _selSvcIdx ? computeBenchmarkForSvc(_selSvcIdx, city) : combBenchMedHoisted;
   // Inject tax row into split panel now that _selTax is known
   const _taxSlot = document.getElementById('_splitTaxSlot');
   if (_taxSlot) {
@@ -3363,7 +3369,6 @@ function recalcResults() {
       : '';
   }
   const svc1WithTax = svc1ProposalMed + _selTax;
-  const diff = _selAmt - combBenchMedHoisted;
   const bidLbl = _isLowest ? 'Lowest Bid' : 'Selected Bid';
 
   // Bid selector — stacked pills column to the right inside the card
@@ -3374,15 +3379,17 @@ function recalcResults() {
       }).join('')}</div>`
     : '';
 
+  const diff = _selAmt - _benchRef;
+
   document.getElementById('metricGrid').innerHTML=`
-    <div class="metric"><div class="m-lbl">Benchmark</div><div class="m-val">${fmt(combBenchMedHoisted)}</div><div class="m-sub">${city.city||'No city'} &middot; ${city.laborMult.toFixed(2)}x &middot; labor + materials${travelBench>0?' + travel':''}</div></div>
-    <div class="metric"><div class="m-lbl">1st Proposal</div><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><div class="m-val" style="color:var(--tp)">${fmt(svc1WithTax)}</div>${(()=>{const pd=svc1WithTax-combBenchMedHoisted;return pd===0?'':`<span style="font-size:12px;font-weight:600;color:${pd>0?'var(--er-t)':'#b8e840'}">${pd>0?'+':'−'}${fmt(Math.abs(pd))} vs. Benchmark</span>`;})()}</div><div class="m-sub">${activeSvcs[0]&&SERVICES.find(x=>x.id===activeSvcs[0].svcId)?SERVICES.find(x=>x.id===activeSvcs[0].svcId).sub:'—'}${_selTax>0?` &middot; ${fmt(_selTax)} tax`:''}</div></div>
-    <div class="metric" style="display:flex;flex-direction:row;align-items:flex-start"><div style="flex:1;min-width:0"><div class="m-lbl">${bidLbl}</div><div class="m-val" style="color:${_selAmt<=combBenchMedHoisted?'#b8e840':'var(--tp)'}">${fmt(_selAmt)}</div><div class="m-sub">${_selBidData.vendor||'Unnamed Vendor'}</div></div>${bidSelectorInCard}</div>
+    <div class="metric"><div class="m-lbl">Benchmark</div><div class="m-val">${fmt(_benchRef)}</div><div class="m-sub">${city.city||'No city'} &middot; ${city.laborMult.toFixed(2)}x &middot; labor + materials${travelBench>0?' + travel':''}</div></div>
+    <div class="metric"><div class="m-lbl">1st Proposal</div><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><div class="m-val" style="color:var(--tp)">${fmt(svc1WithTax)}</div>${(()=>{const pd=svc1WithTax-_benchRef;return pd===0?'':`<span style="font-size:12px;font-weight:600;color:${pd>0?'var(--er-t)':'#b8e840'}">${pd>0?'+':'−'}${fmt(Math.abs(pd))} vs. Benchmark</span>`;})()}</div><div class="m-sub">${activeSvcs[0]&&SERVICES.find(x=>x.id===activeSvcs[0].svcId)?SERVICES.find(x=>x.id===activeSvcs[0].svcId).sub:'—'}${_selTax>0?` &middot; ${fmt(_selTax)} tax`:''}</div></div>
+    <div class="metric" style="display:flex;flex-direction:row;align-items:flex-start"><div style="flex:1;min-width:0"><div class="m-lbl">${bidLbl}</div><div class="m-val" style="color:${_selAmt<=_benchRef?'#b8e840':'var(--tp)'}">${fmt(_selAmt)}</div><div class="m-sub">${_selBidData.vendor||'Unnamed Vendor'}</div></div>${bidSelectorInCard}</div>
     <div class="metric"><div class="m-lbl">Effort</div><div class="m-val ${diff<=0?'good':'bad'}">${diff<=0?'−':'+'}${fmt(Math.abs(diff))}</div><div class="m-sub">${diff<=0?'Under Benchmark':'Over Benchmark'}</div></div>`;
 
-  document.getElementById('apprResult').innerHTML=approvalHtml(_selAmt,activeSvcs,proposalRef,proposalHigh,combBenchMedHoisted);
+  document.getElementById('apprResult').innerHTML=approvalHtml(_selAmt,activeSvcs,proposalRef,proposalHigh,_benchRef);
   document.getElementById('resultsBox').style.display='block';
-  buildPrintInvoice(city,activeSvcs,valid,lowestA,lowestBid,combBenchMedHoisted,proposalRef,proposalHigh,diff);
+  buildPrintInvoice(city,activeSvcs,valid,lowestA,lowestBid,_benchRef,proposalRef,proposalHigh,diff);
 }
 
 function selectBid(bidId) {
@@ -3399,6 +3406,7 @@ function _urgencyBuffer(activeSvcs) {
   return null;
 }
 
+function computeBenchmarkForSvc(svcIdx,city){const svc=services.find(s=>s.idx===svcIdx);const s=svc?SERVICES.find(x=>x.id===svc.svcId):null;if(!svc||!s)return 0;const qty=s.ub?(parseFloat(svc.measurement)||1):1;const labScale=s.ub?1:qty;const svcScale=s.ub?1:qty;let bench=0;[{trade:s.t1,i:0},{trade:s.t2,i:1}].forEach(lp=>{if(!lp.trade)return;if(svc.bdSnap&&svc.bdSnap["lhrs_removed_"+lp.i])return;const hrsEl=document.getElementById("lhrs_"+svcIdx+"_"+lp.i);const wrkEl=document.getElementById("lwrk_"+svcIdx+"_"+lp.i);const hrs=hrsEl?(parseFloat(hrsEl.value)||0):0;const workers=wrkEl?(parseInt(wrkEl.value)||1):1;const r=LABOR_RATES[lp.trade]||{med:0};bench+=r.med*city.laborMult*hrs*workers*labScale;});const lr=document.getElementById("labor_rows_"+svcIdx);if(lr)lr.querySelectorAll(".labor-row-dynamic").forEach(row=>{const trade=row.querySelector("select")?.value||"";if(!trade)return;const hrs=parseFloat(row.querySelector(".lr-hrs")?.value)||0;const workers=parseInt(row.querySelector(".lr-workers")?.value)||1;const r=LABOR_RATES[trade]||{med:0};bench+=r.med*city.laborMult*hrs*workers;});bench+=getMarketTravelCost(svc,s,city);const mr=document.getElementById("mat_rows_"+svcIdx);if(mr)mr.querySelectorAll(".mat-row").forEach(row=>{const sel=row.querySelector(".mat-item");const qtyEl=row.querySelector(".mat-qty");const costEl=row.querySelector(".mat-cost");if(!sel||!sel.value)return;const m=MATERIALS.find(x=>x.id===sel.value);const q=qtyEl?(parseFloat(qtyEl.value)||0):0;if(!m){const vu=costEl&&costEl.value!==""?parseFloat(costEl.value):0;bench+=vu*city.matMult*q*svcScale;}else{bench+=m.med*city.matMult*q*svcScale;}});return bench;}
 function approvalHtml(lowest,activeSvcs,totalMed,totalHigh,benchMed) {
   const sps=[...new Set(activeSvcs.map(s=>{const x=SERVICES.find(v=>v.id===s.svcId);return x?x.sp:null;}).filter(Boolean))];
   if (sps.includes('Pest')) return `<div class="appr-box sp"><div class="appr-title">Procurement-Managed Service</div><div class="appr-desc">Pest removal is coordinated by Procurement &mdash; loop them in before engaging any vendor.</div></div>`;
