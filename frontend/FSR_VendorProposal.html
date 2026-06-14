@@ -1211,6 +1211,24 @@ function submitForm() {
 }
 
 /* ── Persist state ───────────────────────────────────────────────── */
+/* ── Storage helpers (localStorage → sessionStorage → window.name fallback) ── */
+function _storeSet(key, val) {
+  try { localStorage.setItem(key, val); return; } catch(e) {}
+  try { sessionStorage.setItem(key, val); return; } catch(e) {}
+  try { window.name = JSON.stringify({...JSON.parse(window.name||'{}'), [key]: val}); } catch(e) {}
+}
+function _storeGet(key) {
+  try { const v = localStorage.getItem(key); if (v !== null) return v; } catch(e) {}
+  try { const v = sessionStorage.getItem(key); if (v !== null) return v; } catch(e) {}
+  try { const o = JSON.parse(window.name||'{}'); if (o[key] !== undefined) return o[key]; } catch(e) {}
+  return null;
+}
+function _storeRemove(key) {
+  try { localStorage.removeItem(key); } catch(e) {}
+  try { sessionStorage.removeItem(key); } catch(e) {}
+  try { const o=JSON.parse(window.name||'{}'); delete o[key]; window.name=JSON.stringify(o); } catch(e) {}
+}
+
 function saveState() {
   if (!window._vpReady) return;
   try {
@@ -1263,13 +1281,13 @@ function saveState() {
       v_sig:     document.getElementById('v_sig').value,
       labor, mats
     };
-    localStorage.setItem('vp_state', JSON.stringify(st));
+    _storeSet('vp_state', JSON.stringify(st));
   } catch(e) {}
 }
 
 function restoreState() {
   let raw = null;
-  try { raw = localStorage.getItem('vp_state'); } catch(e) {}
+  raw = _storeGet('vp_state');
   if (!raw) return false;
   let st;
   try { st = JSON.parse(raw); } catch(e) { return false; }
@@ -1376,7 +1394,7 @@ function clearForm() {
   filterMats();
   addLaborRow(); addMatRow();
   recalc();
-  try { localStorage.removeItem('vp_state'); } catch(e) {}
+  _storeRemove('vp_state');
   window._vpReady = true;
 }
 </script>
