@@ -867,8 +867,10 @@ function filterMats() {
   cats.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; catSel.appendChild(o); });
   _filteredMats = MATERIALS.slice();
   filterMats();
-  addLaborRow();
-  addMatRow();
+  if (!restoreState()) { addLaborRow(); addMatRow(); }
+  // Auto-save on any input or change
+  document.body.addEventListener('input',  saveState);
+  document.body.addEventListener('change', saveState);
 })();
 
 function onCatChange() {
@@ -1207,6 +1209,134 @@ function submitForm() {
   setTimeout(()=>window.print(),400);
 }
 
+/* ── Persist state ───────────────────────────────────────────────── */
+function saveState() {
+  try {
+    const labor = [];
+    document.querySelectorAll('#laborBody .vrow').forEach(row => {
+      const id = row.id.replace('lr_','');
+      labor.push({
+        trade: document.getElementById('lt_'+id)?.value||'',
+        tradeOther: document.getElementById('lt_other_text_'+id)?.value||'',
+        workers: document.getElementById('lw_'+id)?.value||'1',
+        hours:   document.getElementById('lh_'+id)?.value||'0',
+        rate:    document.getElementById('lr2_'+id)?.value||'0',
+        notes:   document.getElementById('ln_'+id)?.value||''
+      });
+    });
+    const mats = [];
+    document.querySelectorAll('#matBody .vrow').forEach(row => {
+      const id = row.id.replace('mr_','');
+      mats.push({
+        matId:     document.getElementById('ms_'+id)?.value||'',
+        matOther:  document.getElementById('ms_other_text_'+id)?.value||'',
+        unit:      document.getElementById('mu_'+id)?.value||'',
+        qty:       document.getElementById('mq_'+id)?.value||'1',
+        cost:      document.getElementById('mc_'+id)?.value||'0'
+      });
+    });
+    const st = {
+      v_company: document.getElementById('v_company').value,
+      v_contact: document.getElementById('v_contact').value,
+      v_phone:   document.getElementById('v_phone').value,
+      v_email:   document.getElementById('v_email').value,
+      v_license: document.getElementById('v_license').value,
+      v_ins_provider: document.getElementById('v_ins_provider').value,
+      v_ins_policy:   document.getElementById('v_ins_policy').value,
+      v_ins_exp:      document.getElementById('v_ins_exp').value,
+      v_valid_until:  document.getElementById('v_valid_until').value,
+      payment_terms:  document.getElementById('payment_terms').value,
+      svc_cat:   document.getElementById('svc_cat').value,
+      svc_sub:   document.getElementById('svc_sub').value,
+      svc_location: document.getElementById('svc_location').value,
+      svc_start_date: document.getElementById('svc_start_date').value,
+      svc_desc:  document.getElementById('svc_desc').value,
+      svc_other_desc: document.getElementById('svc_other_desc').value,
+      travel:    document.querySelector('input[name=travel]:checked')?.value||'no',
+      travel_daily: document.getElementById('travel_daily').value,
+      travel_days:  document.getElementById('travel_days').value,
+      travel_notes: document.getElementById('travel_notes').value,
+      tax_rate:  document.getElementById('tax_rate').value,
+      notes:     document.getElementById('notes').value,
+      v_sig:     document.getElementById('v_sig').value,
+      labor, mats
+    };
+    localStorage.setItem('vp_state', JSON.stringify(st));
+  } catch(e) {}
+}
+
+function restoreState() {
+  try {
+    const raw = localStorage.getItem('vp_state');
+    if (!raw) return false;
+    const st = JSON.parse(raw);
+
+    const set = (id, val) => { const el=document.getElementById(id); if(el&&val!==undefined) el.value=val; };
+    set('v_company', st.v_company); set('v_contact', st.v_contact);
+    set('v_phone', st.v_phone);     set('v_email', st.v_email);
+    set('v_license', st.v_license); set('v_ins_provider', st.v_ins_provider);
+    set('v_ins_policy', st.v_ins_policy); set('v_ins_exp', st.v_ins_exp);
+    set('v_valid_until', st.v_valid_until); set('payment_terms', st.payment_terms);
+    set('svc_location', st.svc_location); set('svc_start_date', st.svc_start_date);
+    set('svc_desc', st.svc_desc); set('svc_other_desc', st.svc_other_desc);
+    set('travel_daily', st.travel_daily); set('travel_days', st.travel_days);
+    set('travel_notes', st.travel_notes); set('tax_rate', st.tax_rate);
+    set('notes', st.notes); set('v_sig', st.v_sig);
+
+    // Category → rebuild subtype → set subtype
+    if (st.svc_cat) {
+      set('svc_cat', st.svc_cat);
+      onCatChange();
+      if (st.svc_sub) { set('svc_sub', st.svc_sub); onSubChange(); }
+    }
+
+    // Travel radio
+    if (st.travel === 'yes') {
+      document.querySelector('input[name=travel][value=yes]').checked = true;
+      document.getElementById('travel_fields_wrap').style.display = '';
+    }
+
+    // Labor rows
+    if (Array.isArray(st.labor) && st.labor.length) {
+      document.getElementById('laborBody').innerHTML = '';
+      laborCount = 0;
+      st.labor.forEach(row => {
+        addLaborRow();
+        const i = laborCount - 1;
+        set('lt_'+i, row.trade);
+        if (row.tradeOther) { set('lt_other_text_'+i, row.tradeOther); document.getElementById('lt_other_'+i).style.display=''; }
+        set('lw_'+i, row.workers); set('lh_'+i, row.hours);
+        set('lr2_'+i, row.rate);   set('ln_'+i, row.notes);
+        onTradeChange(i);
+      });
+    }
+
+    // Mat rows
+    if (Array.isArray(st.mats) && st.mats.length) {
+      document.getElementById('matBody').innerHTML = '';
+      matCount = 0;
+      st.mats.forEach(row => {
+        addMatRow();
+        const i = matCount - 1;
+        const sel = document.getElementById('ms_'+i);
+        if (sel && row.matId) {
+          // ensure option exists
+          if (!sel.querySelector(`option[value="${row.matId}"]`)) {
+            sel.innerHTML += `<option value="${row.matId}">${row.matId}</option>`;
+          }
+          sel.value = row.matId;
+          onMatChange(i);
+        }
+        if (row.matOther) { set('ms_other_text_'+i, row.matOther); document.getElementById('ms_other_'+i).style.display=''; }
+        set('mq_'+i, row.qty); set('mc_'+i, row.cost);
+      });
+    }
+
+    recalcTravel(); recalc();
+    return true;
+  } catch(e) { return false; }
+}
+
 function clearForm() {
   if(!confirm('Clear all form data?')) return;
   document.querySelectorAll('input:not([type=radio]),select,textarea').forEach(el=>{el.value='';el.classList.remove('err');});
@@ -1222,6 +1352,7 @@ function clearForm() {
   filterMats();
   addLaborRow(); addMatRow();
   recalc();
+  try { localStorage.removeItem('vp_state'); } catch(e) {}
 }
 </script>
 </body>
