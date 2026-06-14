@@ -868,7 +868,8 @@ function filterMats() {
   _filteredMats = MATERIALS.slice();
   filterMats();
   if (!restoreState()) { addLaborRow(); addMatRow(); }
-  // Auto-save on any input or change
+  window._vpReady = true;
+  // Auto-save on any input or change — gated behind _vpReady so restore doesn't overwrite itself
   document.body.addEventListener('input',  saveState);
   document.body.addEventListener('change', saveState);
 })();
@@ -1211,6 +1212,7 @@ function submitForm() {
 
 /* ── Persist state ───────────────────────────────────────────────── */
 function saveState() {
+  if (!window._vpReady) return;
   try {
     const labor = [];
     document.querySelectorAll('#laborBody .vrow').forEach(row => {
@@ -1339,6 +1341,7 @@ function restoreState() {
 
 function clearForm() {
   if(!confirm('Clear all form data?')) return;
+  window._vpReady = false;
   document.querySelectorAll('input:not([type=radio]),select,textarea').forEach(el=>{el.value='';el.classList.remove('err');});
   document.querySelector('input[name=travel][value=no]').checked=true;
   document.getElementById('travel_fields_wrap').style.display='none';
@@ -1353,6 +1356,7 @@ function clearForm() {
   addLaborRow(); addMatRow();
   recalc();
   try { localStorage.removeItem('vp_state'); } catch(e) {}
+  window._vpReady = true;
 }
 </script>
 </body>
