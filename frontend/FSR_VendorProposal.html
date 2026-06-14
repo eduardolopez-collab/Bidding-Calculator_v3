@@ -842,6 +842,7 @@ function getFilteredMats() {
     return {m, score};
   })
   .filter(({m, score}) => {
+    if (m.id === 'M-OTHER') return true; // always show Other option
     if (kw) return score > 0; // keyword search: show any match
     if (!cat) return true;    // no category: show all
     return score > 0;         // category selected: show relevant
