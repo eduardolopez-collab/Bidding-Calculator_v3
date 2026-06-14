@@ -370,6 +370,9 @@ a{color:var(--fg)}
 
 </div><!-- /page -->
 
+<!-- Hidden state store: browser preserves textarea value on reload for file:// -->
+<textarea id="_stateStore" style="display:none" autocomplete="off"></textarea>
+
 <script>
 let laborCount = 0;
 let matCount = 0;
@@ -1210,32 +1213,41 @@ function submitForm() {
   setTimeout(()=>window.print(),400);
 }
 
-/* ── Persist state — URL hash survives file:// reload with zero restrictions ── */
+/* ── Persist state ───────────────────────────────────────────────────────────
+   Primary store: hidden <textarea id="_stateStore"> — browser preserves its
+   value across reloads natively, works on file:// with zero API restrictions.
+   Secondary: localStorage for cross-session persistence.
+   ─────────────────────────────────────────────────────────────────────────── */
 function _storeSet(key, val) {
-  // Primary: localStorage (most storage, survives browser close)
-  try { localStorage.setItem(key, val); } catch(e) {}
-  // Fallback: URL hash — works on file:// even when localStorage is blocked
+  // Textarea store (survives reload on same tab, file:// safe)
   try {
-    const h = {}; try { Object.assign(h, JSON.parse(decodeURIComponent(location.hash.slice(1))||'{}')); } catch(e){}
-    h[key] = val;
-    history.replaceState(null, '', '#' + encodeURIComponent(JSON.stringify(h)));
+    const el = document.getElementById('_stateStore');
+    const o = {}; try { Object.assign(o, JSON.parse(el.value||'{}')); } catch(e) {}
+    o[key] = val; el.value = JSON.stringify(o);
   } catch(e) {}
+  // localStorage (persists across sessions when available)
+  try { localStorage.setItem(key, val); } catch(e) {}
 }
 function _storeGet(key) {
-  try { const v = localStorage.getItem(key); if (v !== null) return v; } catch(e) {}
+  // Textarea first
   try {
-    const h = JSON.parse(decodeURIComponent(location.hash.slice(1))||'{}');
-    if (h[key] !== undefined) return h[key];
+    const el = document.getElementById('_stateStore');
+    if (el && el.value) {
+      const o = JSON.parse(el.value);
+      if (o[key] !== undefined) return o[key];
+    }
   } catch(e) {}
+  // localStorage fallback
+  try { const v = localStorage.getItem(key); if (v !== null) return v; } catch(e) {}
   return null;
 }
 function _storeRemove(key) {
-  try { localStorage.removeItem(key); } catch(e) {}
   try {
-    const h = {}; try { Object.assign(h, JSON.parse(decodeURIComponent(location.hash.slice(1))||'{}')); } catch(e){}
-    delete h[key];
-    history.replaceState(null, '', Object.keys(h).length ? '#' + encodeURIComponent(JSON.stringify(h)) : location.pathname + location.search);
+    const el = document.getElementById('_stateStore');
+    const o = {}; try { Object.assign(o, JSON.parse(el.value||'{}')); } catch(e) {}
+    delete o[key]; el.value = JSON.stringify(o);
   } catch(e) {}
+  try { localStorage.removeItem(key); } catch(e) {}
 }
 
 function saveState() {
