@@ -870,7 +870,8 @@ function filterMats() {
   cats.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; catSel.appendChild(o); });
   _filteredMats = MATERIALS.slice();
   filterMats();
-  if (!restoreState()) { addLaborRow(); addMatRow(); }
+  const _hadState = restoreState();
+  if (!_hadState) { addLaborRow(); addMatRow(); }
   window._vpReady = true;
   // Save on every input/change (debounced) AND on unload
   let _saveTimer;
@@ -878,6 +879,17 @@ function filterMats() {
   document.body.addEventListener('input',  debouncedSave);
   document.body.addEventListener('change', debouncedSave);
   window.addEventListener('beforeunload', saveState);
+  // Debug indicator — remove once persistence confirmed working
+  const _dbg = document.createElement('div');
+  _dbg.id = '_dbg';
+  _dbg.style.cssText = 'position:fixed;bottom:8px;right:8px;font-size:10px;padding:4px 8px;border-radius:4px;z-index:9999;font-family:monospace';
+  _dbg.style.background = _hadState ? '#1a3a00' : '#3a1a00';
+  _dbg.style.color = _hadState ? '#97D700' : '#ffa500';
+  _dbg.textContent = _hadState ? '✓ State restored' : '○ No saved state';
+  document.body.appendChild(_dbg);
+  // Update indicator when saving
+  const _origSave = saveState;
+  window.saveState = function() { _origSave(); _dbg.textContent = '✓ Saved ' + new Date().toLocaleTimeString(); _dbg.style.background='#1a3a00'; _dbg.style.color='#97D700'; };
 })();
 
 function onCatChange() {
