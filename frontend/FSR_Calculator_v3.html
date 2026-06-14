@@ -3360,6 +3360,7 @@ function recalcResults() {
   _selectedBidTax = _selTax;
   // Compute benchmark scoped to the selected bid's service
   const _selSvcIdx = _selBidData.svcIdx || null;
+  console.log('selected bid svcIdx:', _selSvcIdx, 'bid:', _selBidData.vendor, 'bids:', bids.map(b=>({id:b.id,svcIdx:b.svcIdx})));
   const _benchRef = _selSvcIdx ? computeBenchmarkForSvc(_selSvcIdx, city) : combBenchMedHoisted;
   // Inject tax row into split panel now that _selTax is known
   const _taxSlot = document.getElementById('_splitTaxSlot');
