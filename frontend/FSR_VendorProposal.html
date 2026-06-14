@@ -1,123 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FlixBus FSR — Vendor Proposal Form v2</title>
+<title>FlixBus FSR — Vendor Proposal</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Roboto',Arial,sans-serif;background:#f4f4f4;color:#222;font-size:14px}
-a{color:#97D700}
-
-/* ── Layout ── */
-.page{max-width:860px;margin:0 auto;padding:24px 16px 60px}
-.header{background:#1a1a1a;color:#fff;padding:20px 28px;border-radius:10px;margin-bottom:24px;display:flex;align-items:center;gap:20px}
-.header-logo{font-size:28px;font-weight:900;color:#97D700;letter-spacing:-.5px;font-family:Arial,sans-serif}
-.header-title{font-size:15px;font-weight:600;color:#fff;line-height:1.3}
-.header-sub{font-size:11px;color:#888;margin-top:2px}
-
-.section{background:#fff;border:1px solid #e0e0e0;border-radius:8px;margin-bottom:18px;overflow:hidden}
-.section-hd{background:#f7f7f7;border-bottom:1px solid #e0e0e0;padding:10px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#555;display:flex;align-items:center;gap:8px}
-.section-hd .num{background:#97D700;color:#1a1a1a;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
-.section-body{padding:16px}
-
-/* ── Fields ── */
-.field-row{display:grid;gap:12px;margin-bottom:12px}
-.field-row.cols2{grid-template-columns:1fr 1fr}
-.field-row.cols3{grid-template-columns:1fr 1fr 1fr}
-.field-row.cols4{grid-template-columns:1fr 1fr 1fr 1fr}
-.field{display:flex;flex-direction:column;gap:4px}
-.field label{font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.04em}
-.field input,.field select,.field textarea{width:100%;border:1px solid #ccc;border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;background:#fff;color:#222;transition:border-color .15s;-webkit-appearance:none;appearance:none}
-.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#97D700;box-shadow:0 0 0 2px rgba(151,215,0,.15)}
-.field textarea{resize:vertical;min-height:64px}
-.field .hint{font-size:10px;color:#888;margin-top:2px}
-.required-star{color:#e53935}
-
-/* ── Row cards ── */
-.vrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid #f0f0f0}
-.vrow:last-child{border-bottom:none}
-.vrow-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#888;white-space:nowrap}
-.vrow select,.vrow input[type=text],.vrow input[type=number]{border:1px solid #ccc;border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit;background:#fff;color:#222;-webkit-appearance:none;appearance:none;height:30px}
-.vrow select:focus,.vrow input:focus{outline:none;border-color:#97D700}
-.vrow-trade{flex:1;min-width:160px}
-.vrow-item{flex:1;min-width:180px}
-.spin-wrap{display:flex;align-items:stretch;border:1px solid #ccc;border-radius:6px;overflow:hidden;height:30px}
-.spin-wrap input{border:none;border-radius:0;padding:4px 6px;font-size:12px;text-align:center;width:56px;-moz-appearance:textfield}
-.spin-wrap input::-webkit-inner-spin-button,.spin-wrap input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-.spin-wrap input:focus{outline:none;background:#f9ffe6}
-.spin-btns{display:flex;flex-direction:column;width:20px;flex-shrink:0}
-.spin-btn{flex:1;background:#f5f5f5;border:none;border-left:1px solid #ccc;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:background .1s}
-.spin-btn:first-child{border-bottom:1px solid #ccc}
-.spin-btn:hover{background:#e8e8e8}
-.spin-btn svg{width:7px;height:5px}
-.vrow-unit{width:72px}
-.vrow-total{font-size:12px;font-weight:700;color:#222;min-width:72px;text-align:right;white-space:nowrap}
-.vrow-notes{flex:1;min-width:100px}
-.del-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;padding:2px 6px;border-radius:4px;line-height:1;flex-shrink:0}
-.del-btn:hover{color:#e53935;background:#ffeaea}
-.row-header{display:flex;gap:8px;padding:4px 0 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#aaa;flex-wrap:wrap}
-.rows-container{margin-bottom:4px}
-.add-row-btn{margin-top:4px;padding:5px 14px;font-size:11px;font-weight:600;color:#97D700;background:transparent;border:1px dashed #97D700;border-radius:6px;cursor:pointer;transition:background .15s}
-.add-row-btn:hover{background:rgba(151,215,0,.08)}
-
-/* ── Travel ── */
-.travel-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.radio-group{display:flex;gap:12px}
-.radio-group label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;cursor:pointer}
-.radio-group input[type=radio]{accent-color:#97D700;width:15px;height:15px}
-
-/* ── Totals ── */
-.totals-box{background:#f9f9f9;border:1px solid #e0e0e0;border-radius:8px;padding:14px 18px;margin-top:4px}
-.totals-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;font-size:13px}
-.totals-row.grand{border-top:2px solid #97D700;margin-top:8px;padding-top:10px;font-size:16px;font-weight:800;color:#1a1a1a}
-.totals-row .lbl{color:#666}
-.totals-row .val{font-weight:700;color:#222}
-.totals-row.grand .val{color:#97D700}
-
-/* ── Other / notes ── */
-.other-tag{display:inline-block;background:#fff3cd;color:#7a4f00;border:1px solid #e6a817;border-radius:4px;font-size:10px;font-weight:700;padding:2px 7px;margin-left:6px;vertical-align:middle;text-transform:uppercase;letter-spacing:.04em}
-
-/* ── Actions ── */
-.actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
-.btn{padding:10px 24px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:background .15s,color .15s;font-family:inherit}
-.btn-primary{background:#97D700;color:#1a1a1a}
-.btn-primary:hover{background:#82bb00}
-.btn-secondary{background:#1a1a1a;color:#fff}
-.btn-secondary:hover{background:#333}
-.btn-outline{background:transparent;color:#555;border:1px solid #ccc}
-.btn-outline:hover{background:#f0f0f0}
-
-/* ── Validation ── */
-.field input.err,.field select.err,.field textarea.err{border-color:#e53935;background:#fff5f5}
-.err-banner{background:#fde8ea;border:1px solid #dc3545;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#8b1a24;display:none}
-.err-banner.show{display:block}
-
-/* ── Print ── */
-@media print{
-  body{background:#fff}
-  .page{padding:0;max-width:none}
-  .actions,.add-row-btn,.del-btn,.no-print{display:none!important}
-  .header{border-radius:0;margin-bottom:16px}
-  .section{border-radius:0;margin-bottom:12px;page-break-inside:avoid}
+/* ── Flix brand tokens ─────────────────────────────────────────── */
+:root{
+  --fg:#97D700;--fg-dk:#7ab200;--fg-dim:rgba(151,215,0,.12);--fg-dim2:rgba(151,215,0,.22);
+  --blue:#005C99;--in-bg:rgba(0,92,153,.18);--in-b:rgba(0,92,153,.5);--in-t:#4db3ff;
+  --ok-bg:rgba(151,215,0,.14);--ok-b:rgba(151,215,0,.4);--ok-t:#b8e840;
+  --wn-bg:rgba(255,165,0,.14);--wn-b:rgba(255,165,0,.4);--wn-t:#ffc04d;
+  --er-bg:rgba(220,53,69,.14);--er-b:rgba(220,53,69,.4);--er-t:#ff6b78;
+  --font-head:'Dazzed','Roboto',sans-serif;--font-body:'Roboto',Arial,sans-serif;
+}
+[data-theme="dark"]{
+  --bp:#1a1a1a;--bs:#252525;--br:#2e2e2e;--bi:#1a1a1a;--bh:#333;
+  --tp:#fff;--ts:#C8C8C8;--tm:#8B8B8B;--bd:rgba(255,255,255,.10);--bm:rgba(255,255,255,.18);
+}
+[data-theme="light"]{
+  --bp:#F7F7F7;--bs:#fff;--br:#fff;--bi:#F7F7F7;--bh:#f0f0f0;
+  --tp:#353535;--ts:#444;--tm:#757575;--bd:rgba(0,0,0,.10);--bm:rgba(0,0,0,.16);
 }
 
-/* ── Responsive ── */
+/* ── Base ─────────────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--bp);color:var(--tp);font-size:14px;transition:background .2s,color .2s}
+a{color:var(--fg)}
+
+/* ── Dazzed font (same as calculator) ────────────────────────── */
+@font-face{font-family:'Dazzed';src:url('../fonts/Dazzed-Bold.otf') format('opentype');font-weight:700}
+@font-face{font-family:'Dazzed';src:url('../fonts/Dazzed-SemiBold.otf') format('opentype');font-weight:600}
+
+/* ── Layout ───────────────────────────────────────────────────── */
+.page{max-width:860px;margin:0 auto;padding:20px 14px 60px}
+
+/* ── Topbar ───────────────────────────────────────────────────── */
+.topbar{display:flex;align-items:center;justify-content:space-between;background:var(--bs);border:1px solid var(--bd);border-radius:10px;padding:14px 20px;margin-bottom:18px}
+.logo{font-family:var(--font-head);font-size:26px;font-weight:700;color:var(--fg);letter-spacing:-.5px;line-height:1}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-title{font-size:12px;font-weight:600;color:var(--tp);text-align:right;line-height:1.4}
+.topbar-sub{font-size:10px;color:var(--tm)}
+.th-tog{background:none;border:1px solid var(--bm);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--tm);cursor:pointer;white-space:nowrap;transition:all .15s}
+.th-tog:hover{border-color:var(--fg);color:var(--fg)}
+
+/* ── Section card ─────────────────────────────────────────────── */
+.section{background:var(--bs);border:1px solid var(--bd);border-radius:10px;margin-bottom:14px;overflow:hidden}
+.section-hd{background:var(--br);border-bottom:1px solid var(--bd);padding:10px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--tm);display:flex;align-items:center;gap:8px}
+.section-hd .num{background:var(--fg);color:#1a1a1a;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0}
+.section-body{padding:14px 16px}
+
+/* ── Fields ───────────────────────────────────────────────────── */
+.field-row{display:grid;gap:10px;margin-bottom:10px}
+.field-row.cols2{grid-template-columns:1fr 1fr}
+.field-row.cols3{grid-template-columns:1fr 1fr 1fr}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:10px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.05em}
+.field input,.field select,.field textarea{
+  width:100%;border:1px solid var(--bm);border-radius:6px;padding:7px 10px;
+  font-size:13px;font-family:inherit;background:var(--bi);color:var(--tp);
+  transition:border-color .15s;-webkit-appearance:none;appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--fg);box-shadow:0 0 0 2px var(--fg-dim)}
+.field textarea{resize:vertical;min-height:60px}
+.field .hint{font-size:10px;color:var(--tm);margin-top:2px}
+.required-star{color:var(--er-t)}
+.field input.err,.field select.err,.field textarea.err{border-color:var(--er-b);background:var(--er-bg)}
+
+/* ── Row cards (labor / mat) ──────────────────────────────────── */
+.vrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--bd)}
+.vrow:last-child{border-bottom:none}
+.vrow-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--tm);white-space:nowrap}
+.vrow select,.vrow input[type=text],.vrow input[type=number]{
+  border:1px solid var(--bm);border-radius:6px;padding:5px 8px;
+  font-size:12px;font-family:inherit;background:var(--bi);color:var(--tp);
+  -webkit-appearance:none;appearance:none;height:30px}
+.vrow select:focus,.vrow input:focus{outline:none;border-color:var(--fg)}
+.vrow-trade{flex:1;min-width:150px}
+.vrow-item{flex:1;min-width:170px}
+
+/* ── Spin wrap ────────────────────────────────────────────────── */
+.spin-wrap{display:flex;align-items:stretch;border:1px solid var(--bm);border-radius:6px;overflow:hidden;height:30px}
+.spin-wrap input{border:none;border-radius:0;padding:4px 6px;font-size:12px;text-align:center;width:56px;-moz-appearance:textfield;background:var(--bi);color:var(--tp)}
+.spin-wrap input::-webkit-inner-spin-button,.spin-wrap input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.spin-wrap input:focus{outline:none;background:var(--bh)}
+.spin-btns{display:flex;flex-direction:column;width:20px;flex-shrink:0}
+.spin-btn{flex:1;background:var(--br);border:none;border-left:1px solid var(--bm);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:background .1s;color:var(--tm)}
+.spin-btn:first-child{border-bottom:1px solid var(--bm)}
+.spin-btn:hover{background:var(--bh);color:var(--tp)}
+.spin-btn svg{width:7px;height:5px}
+.vrow-unit{width:68px;background:var(--br)!important;color:var(--tm)!important}
+.vrow-total{font-size:12px;font-weight:700;color:var(--tp);min-width:72px;text-align:right;white-space:nowrap}
+.vrow-notes{flex:1;min-width:90px}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--tm);font-size:15px;padding:2px 6px;border-radius:4px;line-height:1;flex-shrink:0}
+.del-btn:hover{color:var(--er-t);background:var(--er-bg)}
+.rows-container{margin-bottom:4px}
+.add-row-btn{margin-top:6px;padding:5px 14px;font-size:11px;font-weight:600;color:var(--fg);background:transparent;border:1px dashed var(--fg-dim2);border-radius:6px;cursor:pointer;transition:background .15s}
+.add-row-btn:hover{background:var(--fg-dim)}
+
+/* ── Material search ──────────────────────────────────────────── */
+.mat-search-wrap{position:relative;margin-bottom:6px}
+.mat-search{width:100%;border:1px solid var(--bm);border-radius:6px;padding:6px 10px 6px 30px;font-size:12px;background:var(--bi);color:var(--tp);outline:none}
+.mat-search:focus{border-color:var(--fg)}
+.mat-search-icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--tm);pointer-events:none}
+.mat-count{font-size:10px;color:var(--tm);margin-bottom:4px}
+
+/* ── Travel section ───────────────────────────────────────────── */
+.travel-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end}
+.radio-group{display:flex;gap:12px;padding:7px 0}
+.radio-group label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;cursor:pointer;color:var(--tp)}
+.radio-group input[type=radio]{accent-color:var(--fg);width:15px;height:15px}
+.travel-total-display{background:var(--br);border:1px solid var(--bd);border-radius:6px;padding:7px 10px;font-size:13px;font-weight:700;color:var(--fg);text-align:center}
+
+/* ── Totals ───────────────────────────────────────────────────── */
+.totals-box{background:var(--br);border:1px solid var(--bd);border-radius:8px;padding:14px 16px;margin-top:4px}
+.totals-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;font-size:13px}
+.totals-row .lbl{color:var(--tm)}
+.totals-row .val{font-weight:700;color:var(--tp)}
+.totals-row.grand{border-top:2px solid var(--fg);margin-top:8px;padding-top:10px;font-size:16px;font-weight:800}
+.totals-row.grand .val{color:var(--fg)}
+
+/* ── Other tag ────────────────────────────────────────────────── */
+.other-tag{display:inline-block;background:var(--wn-bg);color:var(--wn-t);border:1px solid var(--wn-b);border-radius:4px;font-size:9px;font-weight:700;padding:2px 6px;margin-left:6px;vertical-align:middle;text-transform:uppercase;letter-spacing:.04em}
+
+/* ── Actions ─────────────────────────────────────────────────── */
+.actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.btn{padding:10px 22px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:background .15s,color .15s;font-family:inherit}
+.btn-primary{background:var(--fg);color:#1a1a1a}
+.btn-primary:hover{background:var(--fg-dk)}
+.btn-secondary{background:var(--bs);color:var(--tp);border:1px solid var(--bm)}
+.btn-secondary:hover{background:var(--bh)}
+.btn-outline{background:transparent;color:var(--tm);border:1px solid var(--bm)}
+.btn-outline:hover{background:var(--bh)}
+
+/* ── Err banner ───────────────────────────────────────────────── */
+.err-banner{background:var(--er-bg);border:1px solid var(--er-b);border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--er-t);display:none}
+.err-banner.show{display:block}
+
+/* ── Print ───────────────────────────────────────────────────── */
+@media print{
+  body{background:#fff;color:#000}
+  [data-theme="dark"]{--bp:#fff;--bs:#fff;--br:#f5f5f5;--bi:#fff;--tp:#000;--ts:#333;--tm:#666;--bd:rgba(0,0,0,.12);--bm:rgba(0,0,0,.2)}
+  .topbar{background:#fff;border-color:#ddd}
+  .th-tog,.actions,.add-row-btn,.del-btn,.mat-search-wrap,.mat-count,.no-print{display:none!important}
+  .section{border-radius:0;margin-bottom:10px;page-break-inside:avoid}
+  .page{padding:0;max-width:none}
+}
+
+/* ── Mobile ──────────────────────────────────────────────────── */
 @media(max-width:600px){
-  .field-row.cols2,.field-row.cols3,.field-row.cols4{grid-template-columns:1fr}
-  .labor-table{font-size:11px}
+  .field-row.cols2,.field-row.cols3{grid-template-columns:1fr}
+  .travel-grid{grid-template-columns:1fr 1fr}
+  .vrow{gap:6px}
+  .vrow-trade,.vrow-item{min-width:120px}
 }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- Header -->
-  <div class="header">
-    <div class="header-logo">Flix</div>
-    <div>
-      <div class="header-title">Facility Services — Vendor Proposal Form</div>
-      <div class="header-sub">Complete all sections. Download JSON + PDF and email to your FlixBus contact.</div>
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="logo">Flix</div>
+    <div class="topbar-right">
+      <div>
+        <div class="topbar-title">Facility Services Request<br>Vendor Proposal Form</div>
+        <div class="topbar-sub">Complete all sections · Email JSON + PDF to your FlixBus contact</div>
+      </div>
+      <button class="th-tog no-print" onclick="toggleTheme()">☀ / ☾</button>
     </div>
   </div>
 
@@ -125,69 +174,63 @@ a{color:#97D700}
 
   <!-- 1 · Vendor Information -->
   <div class="section">
-    <div class="section-hd"><span class="num">1</span> Vendor Information</div>
+    <div class="section-hd"><span class="num">1</span>Vendor Information</div>
     <div class="section-body">
       <div class="field-row cols2">
-        <div class="field"><label>Company Name <span class="required-star">*</span></label><input type="text" id="v_company" placeholder="ABC Facility Services LLC"></div>
-        <div class="field"><label>Primary Contact <span class="required-star">*</span></label><input type="text" id="v_contact" placeholder="John Smith"></div>
+        <div class="field"><label>Company Name <span class="required-star">*</span></label><input type="text" id="v_company" autocomplete="off" placeholder="ABC Facility Services LLC"></div>
+        <div class="field"><label>Primary Contact <span class="required-star">*</span></label><input type="text" id="v_contact" autocomplete="off" placeholder="John Smith"></div>
       </div>
       <div class="field-row cols3">
-        <div class="field"><label>Phone <span class="required-star">*</span></label><input type="tel" id="v_phone" placeholder="(555) 000-0000"></div>
-        <div class="field"><label>Email <span class="required-star">*</span></label><input type="email" id="v_email" placeholder="john@abcservices.com"></div>
-        <div class="field"><label>License #</label><input type="text" id="v_license" placeholder="Optional"></div>
+        <div class="field"><label>Phone <span class="required-star">*</span></label><input type="tel" id="v_phone" autocomplete="off" placeholder="(555) 000-0000"></div>
+        <div class="field"><label>Email <span class="required-star">*</span></label><input type="email" id="v_email" autocomplete="off" placeholder="john@abcservices.com"></div>
+        <div class="field"><label>License #</label><input type="text" id="v_license" autocomplete="off" placeholder="Optional"></div>
       </div>
       <div class="field-row cols3">
-        <div class="field"><label>Insurance Provider</label><input type="text" id="v_ins_provider" placeholder="State Farm, etc."></div>
-        <div class="field"><label>Policy #</label><input type="text" id="v_ins_policy" placeholder="Optional"></div>
+        <div class="field"><label>Insurance Provider</label><input type="text" id="v_ins_provider" autocomplete="off" placeholder="State Farm, etc."></div>
+        <div class="field"><label>Policy #</label><input type="text" id="v_ins_policy" autocomplete="off" placeholder="Optional"></div>
         <div class="field"><label>Insurance Expiry</label><input type="date" id="v_ins_exp"></div>
       </div>
-      <div class="field-row">
-        <div class="field"><label>Quote Valid Until <span class="required-star">*</span></label><input type="date" id="v_valid_until" style="max-width:220px"></div>
+      <div class="field-row cols2">
+        <div class="field"><label>Quote Valid Until <span class="required-star">*</span></label><input type="date" id="v_valid_until"></div>
+        <div class="field"><label>Payment Terms</label>
+          <select id="payment_terms">
+            <option value="">— Select —</option>
+            <option>Net 30</option><option>Net 15</option>
+            <option>50% deposit / 50% on completion</option>
+            <option>100% on completion</option><option>Other</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- 2 · Scope of Work -->
   <div class="section">
-    <div class="section-hd"><span class="num">2</span> Scope of Work</div>
+    <div class="section-hd"><span class="num">2</span>Scope of Work</div>
     <div class="section-body">
       <div class="field-row cols2">
-        <div class="field">
-          <label>Service Category <span class="required-star">*</span></label>
-          <select id="svc_cat" onchange="onCatChange()">
-            <option value="">— Select Category —</option>
-          </select>
+        <div class="field"><label>Service Category <span class="required-star">*</span></label>
+          <select id="svc_cat" onchange="onCatChange()"><option value="">— Select Category —</option></select>
         </div>
-        <div class="field">
-          <label>Service Subtype <span class="required-star">*</span></label>
-          <select id="svc_sub" onchange="onSubChange()">
-            <option value="">— Select Category First —</option>
-          </select>
+        <div class="field"><label>Service Subtype <span class="required-star">*</span></label>
+          <select id="svc_sub" onchange="onSubChange()"><option value="">— Select Category First —</option></select>
         </div>
       </div>
       <div class="field-row cols2">
-        <div class="field">
-          <label>Facility / Location <span class="required-star">*</span></label>
-          <input type="text" id="svc_location" placeholder="e.g. Pittsburgh Bus Terminal — 11th Ave">
-        </div>
-        <div class="field">
-          <label>Requested Start Date</label>
-          <input type="date" id="svc_start_date">
-        </div>
+        <div class="field"><label>Facility / Location <span class="required-star">*</span></label><input type="text" id="svc_location" autocomplete="off" placeholder="e.g. Pittsburgh Bus Terminal — 11th Ave"></div>
+        <div class="field"><label>Requested Start Date</label><input type="date" id="svc_start_date"></div>
       </div>
       <div class="field-row">
-        <div class="field">
-          <label>Scope Description <span class="required-star">*</span></label>
+        <div class="field"><label>Scope Description <span class="required-star">*</span></label>
           <textarea id="svc_desc" placeholder="Describe the work to be performed, area dimensions, special conditions, access requirements, etc."></textarea>
         </div>
       </div>
-      <!-- Other service -->
       <div id="other_svc_wrap" style="display:none">
         <div class="field-row">
           <div class="field">
-            <label>If your service is not listed, describe it here <span class="other-tag">Other</span></label>
-            <input type="text" id="svc_other_desc" placeholder="e.g. Elevator cable inspection and lubrication">
-            <span class="hint">This helps us expand our service catalog. Thank you.</span>
+            <label>Service not listed — describe here <span class="other-tag">Other</span></label>
+            <input type="text" id="svc_other_desc" autocomplete="off" placeholder="e.g. Elevator cable inspection and lubrication">
+            <span class="hint">Helps us expand our catalog — thank you.</span>
           </div>
         </div>
       </div>
@@ -196,16 +239,10 @@ a{color:#97D700}
 
   <!-- 3 · Labor -->
   <div class="section">
-    <div class="section-hd"><span class="num">3</span> Labor</div>
+    <div class="section-hd"><span class="num">3</span>Labor</div>
     <div class="section-body">
-      <div class="row-header">
-        <span style="flex:1;min-width:160px">Trade / Role</span>
-        <span style="width:90px;text-align:center">Workers</span>
-        <span style="width:90px;text-align:center">Hours</span>
-        <span style="width:100px;text-align:center">Rate / Hr ($)</span>
-        <span style="min-width:72px;text-align:right">Total</span>
-        <span style="flex:1;min-width:100px">Notes</span>
-        <span style="width:28px"></span>
+      <div class="row-header" style="display:grid;grid-template-columns:1fr 60px 60px 80px 72px 80px 28px;gap:6px;padding:4px 0 6px">
+        <span>Trade / Role</span><span style="text-align:center">Workers</span><span style="text-align:center">Hrs</span><span style="text-align:center">$/Hr</span><span style="text-align:right">Total</span><span>Notes</span><span></span>
       </div>
       <div class="rows-container" id="laborBody"></div>
       <button type="button" class="add-row-btn" onclick="addLaborRow()">+ Add Labor Row</button>
@@ -214,15 +251,15 @@ a{color:#97D700}
 
   <!-- 4 · Materials -->
   <div class="section">
-    <div class="section-hd"><span class="num">4</span> Materials</div>
+    <div class="section-hd"><span class="num">4</span>Materials</div>
     <div class="section-body">
-      <div class="row-header">
-        <span style="flex:1;min-width:180px">Material / Item</span>
-        <span style="width:72px;text-align:center">Unit</span>
-        <span style="width:90px;text-align:center">Qty</span>
-        <span style="width:100px;text-align:center">Unit Cost ($)</span>
-        <span style="min-width:72px;text-align:right">Total</span>
-        <span style="width:28px"></span>
+      <div class="mat-search-wrap no-print">
+        <svg class="mat-search-icon" viewBox="0 0 16 16" fill="none" width="13" height="13"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <input type="text" class="mat-search" id="matSearch" autocomplete="off" placeholder="Search materials by keyword…" oninput="filterMats()">
+      </div>
+      <div class="mat-count" id="matCount"></div>
+      <div class="row-header" style="display:grid;grid-template-columns:1fr 68px 60px 80px 72px 28px;gap:6px;padding:4px 0 6px">
+        <span>Material / Item</span><span style="text-align:center">Unit</span><span style="text-align:center">Qty</span><span style="text-align:center">$/Unit</span><span style="text-align:right">Total</span><span></span>
       </div>
       <div class="rows-container" id="matBody"></div>
       <button type="button" class="add-row-btn" onclick="addMatRow()">+ Add Material Row</button>
@@ -231,73 +268,91 @@ a{color:#97D700}
 
   <!-- 5 · Travel & Mobilization -->
   <div class="section">
-    <div class="section-hd"><span class="num">5</span> Travel &amp; Mobilization</div>
+    <div class="section-hd"><span class="num">5</span>Travel &amp; Mobilization</div>
     <div class="section-body">
-      <div class="travel-row">
-        <div class="radio-group">
-          <label><input type="radio" name="travel" value="yes" onchange="onTravelChange()"> Yes — Travel cost applies</label>
-          <label><input type="radio" name="travel" value="no" onchange="onTravelChange()" checked> No — Included in rates</label>
-        </div>
-        <div id="travel_amt_wrap" style="display:none">
-          <div class="field" style="min-width:200px">
-            <label>Travel / Mobilization Cost ($) <span class="required-star">*</span></label>
-            <input type="number" id="travel_amt" min="0" step="0.01" placeholder="0.00" oninput="recalc()">
+      <div class="field-row" style="margin-bottom:10px">
+        <div class="field" style="flex-direction:row;align-items:center;gap:16px;flex-wrap:wrap">
+          <label style="font-size:11px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap">Include Travel?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="travel" value="yes" onchange="onTravelChange()"> Yes — Travel applies</label>
+            <label><input type="radio" name="travel" value="no" onchange="onTravelChange()" checked> No — Included in rates</label>
           </div>
         </div>
       </div>
-      <div class="field-row" style="margin-top:12px">
-        <div class="field">
-          <label>Travel Notes</label>
-          <input type="text" id="travel_notes" placeholder="e.g. Mileage from Pittsburgh depot — 45 min drive">
+      <div id="travel_fields_wrap" style="display:none">
+        <div class="travel-grid">
+          <div class="field">
+            <label>Daily Travel Rate ($) <span class="required-star">*</span></label>
+            <input type="number" id="travel_daily" autocomplete="off" min="0" step="0.01" placeholder="e.g. 120.00" oninput="recalcTravel()">
+            <span class="hint">Cost per travel day</span>
+          </div>
+          <div class="field">
+            <label>Estimated Duration (days) <span class="required-star">*</span></label>
+            <input type="number" id="travel_days" autocomplete="off" min="1" step="1" value="1" oninput="recalcTravel()">
+            <span class="hint">Number of travel days</span>
+          </div>
+          <div class="field">
+            <label>Total Travel Cost</label>
+            <div class="travel-total-display" id="travel_total_display">$0.00</div>
+            <span class="hint">Daily Rate × Days → use in Travel Override</span>
+          </div>
+        </div>
+        <div class="field-row" style="margin-top:10px">
+          <div class="field">
+            <label>Travel Notes</label>
+            <input type="text" id="travel_notes" autocomplete="off" placeholder="e.g. Mileage from Pittsburgh depot — 45 min drive">
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 6 · Additional Notes -->
+  <!-- 6 · Tax -->
   <div class="section">
-    <div class="section-hd"><span class="num">6</span> Additional Notes &amp; Exclusions</div>
+    <div class="section-hd"><span class="num">6</span>Tax</div>
+    <div class="section-body">
+      <div class="field-row cols2">
+        <div class="field">
+          <label>Tax Rate (%)</label>
+          <input type="number" id="tax_rate" autocomplete="off" min="0" max="100" step="0.01" placeholder="e.g. 8.5" oninput="recalc()">
+          <span class="hint">Applied to Labor + Materials subtotal</span>
+        </div>
+        <div class="field">
+          <label>Tax Amount</label>
+          <div class="travel-total-display" id="tax_display">$0.00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7 · Additional Notes -->
+  <div class="section">
+    <div class="section-hd"><span class="num">7</span>Additional Notes &amp; Exclusions</div>
     <div class="section-body">
       <div class="field-row">
         <div class="field">
           <label>Notes, Assumptions &amp; Exclusions</label>
-          <textarea id="notes" placeholder="List anything not included in this proposal, assumptions made, permit requirements, warranty terms, etc."></textarea>
-        </div>
-      </div>
-      <div class="field-row cols2">
-        <div class="field">
-          <label>Payment Terms</label>
-          <select id="payment_terms">
-            <option value="">— Select —</option>
-            <option>Net 30</option>
-            <option>Net 15</option>
-            <option>50% deposit / 50% on completion</option>
-            <option>100% on completion</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Estimated Duration</label>
-          <input type="text" id="duration" placeholder="e.g. 2 days, 1 week">
+          <textarea id="notes" placeholder="List anything not included, assumptions made, permit requirements, warranty terms, etc."></textarea>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 7 · Bid Summary -->
+  <!-- 8 · Bid Summary -->
   <div class="section">
-    <div class="section-hd"><span class="num">7</span> Bid Summary</div>
+    <div class="section-hd"><span class="num">8</span>Bid Summary</div>
     <div class="section-body">
       <div class="totals-box">
-        <div class="totals-row"><span class="lbl">Labor Total</span><span class="val" id="tot_labor">$0.00</span></div>
-        <div class="totals-row"><span class="lbl">Materials Total</span><span class="val" id="tot_mat">$0.00</span></div>
+        <div class="totals-row"><span class="lbl">Labor</span><span class="val" id="tot_labor">$0.00</span></div>
+        <div class="totals-row"><span class="lbl">Materials</span><span class="val" id="tot_mat">$0.00</span></div>
         <div class="totals-row" id="tot_travel_row" style="display:none"><span class="lbl">Travel / Mobilization</span><span class="val" id="tot_travel">$0.00</span></div>
+        <div class="totals-row" id="tot_tax_row" style="display:none"><span class="lbl">Tax</span><span class="val" id="tot_tax_val">$0.00</span></div>
         <div class="totals-row grand"><span class="lbl">Total Bid</span><span class="val" id="tot_grand">$0.00</span></div>
       </div>
       <div class="field-row" style="margin-top:12px">
         <div class="field">
-          <label>Vendor Signature / Acknowledgement</label>
-          <input type="text" id="v_sig" placeholder="Type full name to acknowledge this proposal is accurate and binding for the validity period above">
+          <label>Vendor Signature / Acknowledgement <span class="required-star">*</span></label>
+          <input type="text" id="v_sig" autocomplete="off" placeholder="Type full name to acknowledge this proposal is accurate and binding for the validity period above">
         </div>
       </div>
     </div>
@@ -309,9 +364,8 @@ a{color:#97D700}
     <button type="button" class="btn btn-secondary" onclick="window.print()">&#128438; Print / Save PDF only</button>
     <button type="button" class="btn btn-outline" onclick="clearForm()">&#10005; Clear Form</button>
   </div>
-
-  <p style="margin-top:16px;font-size:11px;color:#999;text-align:center" class="no-print">
-    Return the downloaded <strong>.json</strong> file and this PDF to your FlixBus Facilities contact via email.
+  <p style="margin-top:14px;font-size:11px;color:var(--tm);text-align:center" class="no-print">
+    Return the <strong>.json</strong> file and this PDF to your FlixBus Facilities contact via email.
   </p>
 
 </div><!-- /page -->
@@ -319,8 +373,18 @@ a{color:#97D700}
 <script>
 let laborCount = 0;
 let matCount = 0;
-// ── Catalog data (names only — no rates or prices) ─────────────────────────
-const SERVICES = [
+let _filteredMats = [];
+
+/* ── Theme ──────────────────────────────────────────────────────── */
+function toggleTheme() {
+  const h = document.documentElement;
+  h.dataset.theme = h.dataset.theme === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem('vp_theme', h.dataset.theme); } catch(e){}
+}
+(function(){try{const t=localStorage.getItem('vp_theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}})();
+
+/* ── Catalog data ───────────────────────────────────────────────── */
+const SERVICES=[
 {id:"SVC-001",cat:"Access Points",sub:"Front Entrance Gate, Repair"},
 {id:"SVC-002",cat:"Access Points",sub:"Front Entrance Gate, Replacement"},
 {id:"SVC-003",cat:"Access Points",sub:"Rear / Service Gate, Repair"},
@@ -549,217 +613,260 @@ const SERVICES = [
 {id:"SVC-OTHER",cat:"Other",sub:"Not Listed — See Description Below"}
 ];
 
-const TRADES = [
-  "Plumber","Electrician","HVAC Tech","Painter","Carpenter",
-  "Handyman","Laborer","Roofer","Landscaper","Janitorial",
-  "Pest Tech","Fire/Life Safety","Low-Voltage Tech","Pavement Crew","Welder",
-  "Other — Not Listed"
-];
+const TRADES=["Plumber","Electrician","HVAC Tech","Painter","Carpenter","Handyman","Laborer","Roofer","Landscaper","Janitorial","Pest Tech","Fire/Life Safety","Low-Voltage Tech","Pavement Crew","Welder","Other — Not Listed"];
 
-const MATERIALS = [
-{id:"M01",item:"LED Lamp | Standard (A19/PAR)",unit:"Each"},
-{id:"M02",item:"LED Lamp | High Output / HID Replace",unit:"Each"},
-{id:"M03",item:"LED Tube (T8/T5 Retrofit)",unit:"Each"},
-{id:"M04",item:"LED Troffer Fixture 2x2",unit:"Each"},
-{id:"M05",item:"LED Troffer Fixture 2x4",unit:"Each"},
-{id:"M06",item:"LED Wall Pack Fixture",unit:"Each"},
-{id:"M07",item:"LED Flood Light Fixture",unit:"Each"},
-{id:"M08",item:"LED High Bay Fixture",unit:"Each"},
-{id:"M09",item:"LED Parking Lot / Pole Fixture",unit:"Each"},
-{id:"M10",item:"LED Strip / Under-Cabinet",unit:"Per Ft"},
-{id:"M11",item:"Exit Sign / Emergency Light",unit:"Each"},
-{id:"M12",item:"Ballast / Driver",unit:"Each"},
-{id:"M13",item:"Occupancy / Daylight Sensor",unit:"Each"},
-{id:"M14",item:"Photocell",unit:"Each"},
-{id:"M15",item:"Duplex Outlet | Standard",unit:"Each"},
-{id:"M16",item:"GFCI Outlet",unit:"Each"},
-{id:"M17",item:"USB / Smart Outlet",unit:"Each"},
-{id:"M18",item:"Light Switch / Dimmer",unit:"Each"},
-{id:"M19",item:"Wall Plate / Cover",unit:"Each"},
-{id:"M20",item:"Circuit Breaker | Single Pole",unit:"Each"},
-{id:"M21",item:"Circuit Breaker | Double Pole",unit:"Each"},
-{id:"M22",item:"GFCI / AFCI Breaker",unit:"Each"},
-{id:"M23",item:"Electrical Panel | Subpanel",unit:"Each"},
-{id:"M24",item:"Electrical Panel | Main",unit:"Each"},
-{id:"M25",item:"Junction Box",unit:"Each"},
-{id:"M26",item:'Conduit EMT (1/2" or 3/4")',unit:"Per Ft"},
-{id:"M27",item:"Conduit PVC (electrical)",unit:"Per Ft"},
-{id:"M28",item:"THHN Wire (12/14 AWG)",unit:"Per Ft"},
-{id:"M29",item:"Wire | Heavy Gauge (6/8/10 AWG)",unit:"Per Ft"},
-{id:"M30",item:"Conduit + Wire Bundle (pulled)",unit:"Per Ft"},
-{id:"M31",item:"Wire Nuts / Connectors (bag)",unit:"Per Job"},
-{id:"M32",item:'PVC Pipe + Fittings (1")',unit:"Per Ft"},
-{id:"M33",item:'PVC Pipe | Heavy (2"+)',unit:"Per Ft"},
-{id:"M34",item:'Copper Pipe + Fittings (1/2-3/4")',unit:"Per Ft"},
-{id:"M35",item:'Copper Pipe | Heavy (1"+)',unit:"Per Ft"},
-{id:"M36",item:"PEX Pipe + Fittings",unit:"Per Ft"},
-{id:"M37",item:"Cast Iron / ABS Drain Pipe",unit:"Per Ft"},
-{id:"M38",item:"Supply Line (flex, per pair)",unit:"Each"},
-{id:"M39",item:"Toilet | Commercial",unit:"Each"},
-{id:"M40",item:"Toilet | ADA Commercial",unit:"Each"},
-{id:"M41",item:"Urinal",unit:"Each"},
-{id:"M42",item:"Faucet | Commercial Lavatory",unit:"Each"},
-{id:"M43",item:"Faucet | Sensor / Touchless",unit:"Each"},
-{id:"M44",item:"Kitchen / Break Room Faucet",unit:"Each"},
-{id:"M45",item:"Flush Valve (Sloan or equiv.)",unit:"Each"},
-{id:"M46",item:"Water Heater | Tank (commercial)",unit:"Each"},
-{id:"M47",item:"Water Heater | Tankless",unit:"Each"},
-{id:"M48",item:"Sink | Lavatory",unit:"Each"},
-{id:"M49",item:"Sink | Mop / Utility",unit:"Each"},
-{id:"M50",item:"Backflow Preventer",unit:"Each"},
-{id:"M51",item:"Floor Drain / Strainer",unit:"Each"},
-{id:"M52",item:"Hand / Hair Dryer",unit:"Each"},
-{id:"M53",item:"Thermostat | Programmable",unit:"Each"},
-{id:"M54",item:"Thermostat | Smart / BMS",unit:"Each"},
-{id:"M55",item:"Air Filter | Pleated Commercial",unit:"Each"},
-{id:"M56",item:"Air Filter | HEPA / High-MERV",unit:"Each"},
-{id:"M57",item:"Belt | V-Belt / Motor",unit:"Each"},
-{id:"M58",item:"HVAC Motor | Fan / Blower",unit:"Each"},
-{id:"M59",item:"Compressor | HVAC",unit:"Each"},
-{id:"M60",item:"Refrigerant (R-410A)",unit:"Per Lb"},
-{id:"M61",item:"Refrigerant (R-32 / Other)",unit:"Per Lb"},
-{id:"M62",item:"Duct Sealant / Mastic",unit:"Per Job"},
-{id:"M63",item:"Flex Duct (insulated)",unit:"Per Ft"},
-{id:"M64",item:"Sheet Metal Duct",unit:"Per Sq Ft"},
-{id:"M65",item:"Condensate Pump",unit:"Each"},
-{id:"M66",item:"Exhaust Fan",unit:"Each"},
-{id:"M67",item:"Ceiling Tile | 2x2 or 2x4 (standard)",unit:"Each"},
-{id:"M68",item:"Ceiling Tile | Decorative / Tegular",unit:"Each"},
-{id:"M69",item:"Ceiling Grid / T-Bar",unit:"Per Ft"},
-{id:"M70",item:'Drywall Sheet (4x8, 1/2")',unit:"Sheet"},
-{id:"M71",item:"Drywall Sheet | Fire/Moisture",unit:"Sheet"},
-{id:"M72",item:"Drywall Mud / Tape (per sheet)",unit:"Per Sheet"},
-{id:"M73",item:"Wall Insulation (batt/roll)",unit:"Per Sq Ft"},
-{id:"M74",item:"Wood Stud / Framing",unit:"Each"},
-{id:"M75",item:"Metal Stud (framing)",unit:"Each"},
-{id:"M76",item:"Plywood / OSB Sheet",unit:"Sheet"},
-{id:"M77",item:"Trim / Molding (MDF or wood)",unit:"Per Ft"},
-{id:"M78",item:"Base / Cove Molding",unit:"Per Ft"},
-{id:"M79",item:"Paint | Interior Latex",unit:"Per Gal"},
-{id:"M80",item:"Paint | Exterior",unit:"Per Gal"},
-{id:"M81",item:"Paint | Specialty (Epoxy, DTM, Elast.)",unit:"Per Gal"},
-{id:"M82",item:"Primer",unit:"Per Gal"},
-{id:"M83",item:"Stain / Sealer (wood)",unit:"Per Gal"},
-{id:"M84",item:"Concrete / Floor Sealer",unit:"Per Gal"},
-{id:"M85",item:"VCT Tile",unit:"Per Sq Ft"},
-{id:"M86",item:"LVP / LVT",unit:"Per Sq Ft"},
-{id:"M87",item:"Ceramic / Porcelain Tile",unit:"Per Sq Ft"},
-{id:"M88",item:"Carpet Tile",unit:"Per Sq Ft"},
-{id:"M89",item:"Carpet | Broadloom",unit:"Per Sq Ft"},
-{id:"M90",item:"Rubber / Recycled Flooring",unit:"Per Sq Ft"},
-{id:"M91",item:"Floor Adhesive",unit:"Per Gal"},
-{id:"M92",item:"Grout / Thinset",unit:"Per Bag"},
-{id:"M93",item:"Floor Wax / Finish",unit:"Per Gal"},
-{id:"M94",item:"Door Hardware | Lockset (Grade 1)",unit:"Each"},
-{id:"M95",item:"Door Closer",unit:"Each"},
-{id:"M96",item:"Panic Bar / Crash Bar",unit:"Each"},
-{id:"M97",item:"Hinge (commercial, pair)",unit:"Each"},
-{id:"M98",item:"Weather Stripping / Door Seal",unit:"Per Ft"},
-{id:"M99",item:"Door | Interior (hollow-core)",unit:"Each"},
-{id:"M100",item:"Door | Exterior (steel/commercial)",unit:"Each"},
-{id:"M101",item:"Door Frame",unit:"Each"},
-{id:"M102",item:"Electric Strike / Magnetic Lock",unit:"Each"},
-{id:"M103",item:"Key / Re-key (cylinder)",unit:"Each"},
-{id:"M104",item:"Asphalt | Hot Mix",unit:"Per Ton"},
-{id:"M105",item:"Asphalt | Cold Patch",unit:"Per Bag"},
-{id:"M106",item:"Concrete | Ready Mix",unit:"Per Cu Yd"},
-{id:"M107",item:"Concrete | Bag Mix",unit:"Per Bag"},
-{id:"M108",item:"Asphalt Sealcoat",unit:"Per Gal"},
-{id:"M109",item:"Crack Filler (hot or cold)",unit:"Per Gal"},
-{id:"M110",item:"Line-Striping Paint",unit:"Per Gal"},
-{id:"M111",item:"Rebar / Wire Mesh",unit:"Per Ft"},
-{id:"M112",item:"Bollard | Steel",unit:"Each"},
-{id:"M113",item:"Speed Bump / Hump",unit:"Each"},
-{id:"M114",item:"Wheel Stop",unit:"Each"},
-{id:"M115",item:"Roof Membrane | TPO/EPDM (60 mil)",unit:"Per Sq Ft"},
-{id:"M116",item:"Roof Coating (elastomeric)",unit:"Per Gal"},
-{id:"M117",item:"Flashing | Sheet Metal",unit:"Per Sq Ft"},
-{id:"M118",item:"Gutter | Aluminum",unit:"Per Ft"},
-{id:"M119",item:"Downspout",unit:"Per Ft"},
-{id:"M120",item:"Roof Drain",unit:"Each"},
-{id:"M121",item:"Skylight",unit:"Each"},
-{id:"M122",item:"Roofing Cement / Mastic",unit:"Per Gal"},
-{id:"M123",item:"Camera | Indoor IP",unit:"Each"},
-{id:"M124",item:"Camera | Outdoor / Vandal",unit:"Each"},
-{id:"M125",item:"Camera | PTZ",unit:"Each"},
-{id:"M126",item:"NVR / DVR",unit:"Each"},
-{id:"M127",item:"Hard Drive / Storage (per TB)",unit:"Each"},
-{id:"M128",item:"Card Reader / Access Keypad",unit:"Each"},
-{id:"M129",item:"Magnetic Lock / Strike",unit:"Each"},
-{id:"M130",item:"Cat6 Cable",unit:"Per Ft"},
-{id:"M131",item:"Cat6A / Fiber Cable",unit:"Per Ft"},
-{id:"M132",item:"Coax Cable (RG6)",unit:"Per Ft"},
-{id:"M133",item:"Cable Connector / Terminator",unit:"Each"},
-{id:"M134",item:"Network Switch (PoE)",unit:"Each"},
-{id:"M135",item:"Intercom / Call Station",unit:"Each"},
-{id:"M136",item:"Fire Extinguisher (ABC)",unit:"Each"},
-{id:"M137",item:"Smoke Detector",unit:"Each"},
-{id:"M138",item:"Heat / CO Detector",unit:"Each"},
-{id:"M139",item:"Sprinkler Head",unit:"Each"},
-{id:"M140",item:"Fire Alarm Pull Station",unit:"Each"},
-{id:"M141",item:"Fire Alarm Horn/Strobe",unit:"Each"},
-{id:"M142",item:"Emergency Egress Sign",unit:"Each"},
-{id:"M143",item:"Vinyl Lettering / Decal",unit:"Per Sq Ft"},
-{id:"M144",item:"ADA / Braille Sign",unit:"Each"},
-{id:"M145",item:"Interior Sign (standard)",unit:"Each"},
-{id:"M146",item:"Exterior Sign | Non-Illuminated",unit:"Each"},
-{id:"M147",item:"Exterior Sign | Illuminated",unit:"Each"},
-{id:"M148",item:"Digital Display / Monitor",unit:"Each"},
-{id:"M149",item:"Sign Post / Pole",unit:"Each"},
-{id:"M150",item:"Mulch | Bulk",unit:"Per Cu Yd"},
-{id:"M151",item:"Sod",unit:"Per Sq Ft"},
-{id:"M152",item:"Topsoil",unit:"Per Cu Yd"},
-{id:"M153",item:"Plants / Shrubs (small)",unit:"Each"},
-{id:"M154",item:"Plants / Shrubs (large)",unit:"Each"},
-{id:"M155",item:"Tree (installed small)",unit:"Each"},
-{id:"M156",item:"Fertilizer / Herbicide",unit:"Per Bag"},
-{id:"M157",item:"Ice Melt / De-icer",unit:"Per Bag"},
-{id:"M158",item:"Irrigation Head / Component",unit:"Each"},
-{id:"M159",item:"Pest Chemical / Bait (job)",unit:"Per Job"},
-{id:"M160",item:"Rodent Trap / Bait Station",unit:"Each"},
-{id:"M161",item:"Bird Spike / Netting",unit:"Per Ft"},
-{id:"M162",item:"Glass Pane | Standard",unit:"Per Sq Ft"},
-{id:"M163",item:"Tempered / Safety Glass",unit:"Per Sq Ft"},
-{id:"M164",item:"Window | Commercial Unit",unit:"Each"},
-{id:"M165",item:"Window Film / Tint",unit:"Per Sq Ft"},
-{id:"M166",item:"Sneeze Guard / Barrier",unit:"Each"},
-{id:"M167",item:"Partition | Toilet Stall (full)",unit:"Each"},
-{id:"M168",item:"Grab Bar (ADA)",unit:"Each"},
-{id:"M169",item:"Soap / Paper / Sanitizer Dispenser",unit:"Each"},
-{id:"M170",item:"Mirror (commercial)",unit:"Each"},
-{id:"M171",item:"Baby Changing Station",unit:"Each"},
-{id:"M172",item:"Bench | Standard (indoor)",unit:"Each"},
-{id:"M173",item:"Bench | Exterior / Heavy Duty",unit:"Each"},
-{id:"M174",item:"Chair | Lobby / Waiting",unit:"Each"},
-{id:"M175",item:"Cushion / Upholstery",unit:"Each"},
-{id:"M176",item:"Counter / Countertop Material",unit:"Per Sq Ft"},
-{id:"M177",item:"Caulk / Sealant | Silicone",unit:"Tube"},
-{id:"M178",item:"Caulk / Sealant | Polyurethane",unit:"Tube"},
-{id:"M179",item:"Adhesive | Construction",unit:"Tube"},
-{id:"M180",item:"Tape | Duct / Electrical / Painters",unit:"Roll"},
-{id:"M181",item:"Fasteners / Anchors (bag)",unit:"Per Job"},
-{id:"M182",item:"Screws / Nails (box)",unit:"Per Box"},
-{id:"M183",item:"Rags / Wipes / PPE",unit:"Per Job"},
-{id:"M184",item:"Cleaning Chemicals",unit:"Per Gal"},
-{id:"M185",item:"Disposable Supplies (janitorial)",unit:"Per Job"},
-{id:"M186",item:"Misc. Hardware / Small Parts",unit:"Per Job"},
-{id:"M187",item:"Dumpster Rental / Disposal",unit:"Per Haul"},
-{id:"M188",item:"Scaffolding / Lift Rental (daily)",unit:"Per Day"},
-{id:"M189",item:"Permit / Inspection Fee",unit:"Per Job"},
-{id:"M190",item:"Freight / Delivery Charge",unit:"Per Job"},
+const MATERIALS=[
+{id:"M01",item:"LED Lamp | Standard (A19/PAR)",unit:"Each",type:"Lighting"},
+{id:"M02",item:"LED Lamp | High Output / HID Replace",unit:"Each",type:"Lighting"},
+{id:"M03",item:"LED Tube (T8/T5 Retrofit)",unit:"Each",type:"Lighting"},
+{id:"M04",item:"LED Troffer Fixture 2x2",unit:"Each",type:"Lighting"},
+{id:"M05",item:"LED Troffer Fixture 2x4",unit:"Each",type:"Lighting"},
+{id:"M06",item:"LED Wall Pack Fixture",unit:"Each",type:"Lighting"},
+{id:"M07",item:"LED Flood Light Fixture",unit:"Each",type:"Lighting"},
+{id:"M08",item:"LED High Bay Fixture",unit:"Each",type:"Lighting"},
+{id:"M09",item:"LED Parking Lot / Pole Fixture",unit:"Each",type:"Lighting"},
+{id:"M10",item:"LED Strip / Under-Cabinet",unit:"Per Ft",type:"Lighting"},
+{id:"M11",item:"Exit Sign / Emergency Light",unit:"Each",type:"Lighting"},
+{id:"M12",item:"Ballast / Driver",unit:"Each",type:"Lighting"},
+{id:"M13",item:"Occupancy / Daylight Sensor",unit:"Each",type:"Lighting"},
+{id:"M14",item:"Photocell",unit:"Each",type:"Lighting"},
+{id:"M15",item:"Duplex Outlet | Standard",unit:"Each",type:"Electrical"},
+{id:"M16",item:"GFCI Outlet",unit:"Each",type:"Electrical"},
+{id:"M17",item:"USB / Smart Outlet",unit:"Each",type:"Electrical"},
+{id:"M18",item:"Light Switch / Dimmer",unit:"Each",type:"Electrical"},
+{id:"M19",item:"Wall Plate / Cover",unit:"Each",type:"Electrical"},
+{id:"M20",item:"Circuit Breaker | Single Pole",unit:"Each",type:"Electrical"},
+{id:"M21",item:"Circuit Breaker | Double Pole",unit:"Each",type:"Electrical"},
+{id:"M22",item:"GFCI / AFCI Breaker",unit:"Each",type:"Electrical"},
+{id:"M23",item:"Electrical Panel | Subpanel",unit:"Each",type:"Electrical"},
+{id:"M24",item:"Electrical Panel | Main",unit:"Each",type:"Electrical"},
+{id:"M25",item:"Junction Box",unit:"Each",type:"Electrical"},
+{id:"M26",item:"Conduit EMT (1/2\" or 3/4\")",unit:"Per Ft",type:"Electrical"},
+{id:"M27",item:"Conduit PVC (electrical)",unit:"Per Ft",type:"Electrical"},
+{id:"M28",item:"THHN Wire (12/14 AWG)",unit:"Per Ft",type:"Electrical"},
+{id:"M29",item:"Wire | Heavy Gauge (6/8/10 AWG)",unit:"Per Ft",type:"Electrical"},
+{id:"M30",item:"Conduit + Wire Bundle (pulled)",unit:"Per Ft",type:"Electrical"},
+{id:"M31",item:"Wire Nuts / Connectors (bag)",unit:"Per Job",type:"Electrical"},
+{id:"M32",item:"PVC Pipe + Fittings (1\")",unit:"Per Ft",type:"Plumbing"},
+{id:"M33",item:"PVC Pipe | Heavy (2\"+)",unit:"Per Ft",type:"Plumbing"},
+{id:"M34",item:"Copper Pipe + Fittings (1/2-3/4\")",unit:"Per Ft",type:"Plumbing"},
+{id:"M35",item:"Copper Pipe | Heavy (1\"+)",unit:"Per Ft",type:"Plumbing"},
+{id:"M36",item:"PEX Pipe + Fittings",unit:"Per Ft",type:"Plumbing"},
+{id:"M37",item:"Cast Iron / ABS Drain Pipe",unit:"Per Ft",type:"Plumbing"},
+{id:"M38",item:"Supply Line (flex, per pair)",unit:"Each",type:"Plumbing"},
+{id:"M39",item:"Toilet | Commercial",unit:"Each",type:"Restroom Renovation"},
+{id:"M40",item:"Toilet | ADA Commercial",unit:"Each",type:"Restroom Renovation"},
+{id:"M41",item:"Urinal",unit:"Each",type:"Restroom Renovation"},
+{id:"M42",item:"Faucet | Commercial Lavatory",unit:"Each",type:"Restroom Renovation"},
+{id:"M43",item:"Faucet | Sensor / Touchless",unit:"Each",type:"Restroom Renovation"},
+{id:"M44",item:"Kitchen / Break Room Faucet",unit:"Each",type:"Plumbing"},
+{id:"M45",item:"Flush Valve (Sloan or equiv.)",unit:"Each",type:"Restroom Renovation"},
+{id:"M46",item:"Water Heater | Tank (commercial)",unit:"Each",type:"Plumbing"},
+{id:"M47",item:"Water Heater | Tankless",unit:"Each",type:"Plumbing"},
+{id:"M48",item:"Sink | Lavatory",unit:"Each",type:"Restroom Renovation"},
+{id:"M49",item:"Sink | Mop / Utility",unit:"Each",type:"Plumbing"},
+{id:"M50",item:"Backflow Preventer",unit:"Each",type:"Plumbing"},
+{id:"M51",item:"Floor Drain / Strainer",unit:"Each",type:"Plumbing"},
+{id:"M52",item:"Hand / Hair Dryer",unit:"Each",type:"Restroom Renovation"},
+{id:"M53",item:"Thermostat | Programmable",unit:"Each",type:"HVAC"},
+{id:"M54",item:"Thermostat | Smart / BMS",unit:"Each",type:"HVAC"},
+{id:"M55",item:"Air Filter | Pleated Commercial",unit:"Each",type:"HVAC"},
+{id:"M56",item:"Air Filter | HEPA / High-MERV",unit:"Each",type:"HVAC"},
+{id:"M57",item:"Belt | V-Belt / Motor",unit:"Each",type:"HVAC"},
+{id:"M58",item:"HVAC Motor | Fan / Blower",unit:"Each",type:"HVAC"},
+{id:"M59",item:"Compressor | HVAC",unit:"Each",type:"HVAC"},
+{id:"M60",item:"Refrigerant (R-410A)",unit:"Per Lb",type:"HVAC"},
+{id:"M61",item:"Refrigerant (R-32 / Other)",unit:"Per Lb",type:"HVAC"},
+{id:"M62",item:"Duct Sealant / Mastic",unit:"Per Job",type:"HVAC"},
+{id:"M63",item:"Flex Duct (insulated)",unit:"Per Ft",type:"HVAC"},
+{id:"M64",item:"Sheet Metal Duct",unit:"Per Sq Ft",type:"HVAC"},
+{id:"M65",item:"Condensate Pump",unit:"Each",type:"HVAC"},
+{id:"M66",item:"Exhaust Fan",unit:"Each",type:"HVAC"},
+{id:"M67",item:"Ceiling Tile | 2x2 or 2x4 (standard)",unit:"Each",type:"Ceiling"},
+{id:"M68",item:"Ceiling Tile | Decorative / Tegular",unit:"Each",type:"Ceiling"},
+{id:"M69",item:"Ceiling Grid / T-Bar",unit:"Per Ft",type:"Ceiling"},
+{id:"M70",item:"Drywall Sheet (4x8, 1/2\")",unit:"Sheet",type:"Wall Repair"},
+{id:"M71",item:"Drywall Sheet | Fire/Moisture",unit:"Sheet",type:"Wall Repair"},
+{id:"M72",item:"Drywall Mud / Tape (per sheet)",unit:"Per Sheet",type:"Wall Repair"},
+{id:"M73",item:"Wall Insulation (batt/roll)",unit:"Per Sq Ft",type:"Wall Repair"},
+{id:"M74",item:"Wood Stud / Framing",unit:"Each",type:"Wall Repair"},
+{id:"M75",item:"Metal Stud (framing)",unit:"Each",type:"Wall Repair"},
+{id:"M76",item:"Plywood / OSB Sheet",unit:"Sheet",type:"Wall Repair"},
+{id:"M77",item:"Trim / Molding (MDF or wood)",unit:"Per Ft",type:"Interior Painting"},
+{id:"M78",item:"Base / Cove Molding",unit:"Per Ft",type:"Interior Painting"},
+{id:"M79",item:"Paint | Interior Latex",unit:"Per Gal",type:"Interior Painting"},
+{id:"M80",item:"Paint | Exterior",unit:"Per Gal",type:"Exterior Painting"},
+{id:"M81",item:"Paint | Specialty (Epoxy, DTM, Elast.)",unit:"Per Gal",type:"Exterior Painting"},
+{id:"M82",item:"Primer",unit:"Per Gal",type:"Interior Painting"},
+{id:"M83",item:"Stain / Sealer (wood)",unit:"Per Gal",type:"Interior Painting"},
+{id:"M84",item:"Concrete / Floor Sealer",unit:"Per Gal",type:"Interior Flooring"},
+{id:"M85",item:"VCT Tile",unit:"Per Sq Ft",type:"Interior Flooring"},
+{id:"M86",item:"LVP / LVT",unit:"Per Sq Ft",type:"Interior Flooring"},
+{id:"M87",item:"Ceramic / Porcelain Tile",unit:"Per Sq Ft",type:"Interior Flooring"},
+{id:"M88",item:"Carpet Tile",unit:"Per Sq Ft",type:"Interior Flooring"},
+{id:"M89",item:"Carpet | Broadloom",unit:"Per Sq Ft",type:"Interior Flooring"},
+{id:"M90",item:"Rubber / Recycled Flooring",unit:"Per Sq Ft",type:"Interior Flooring"},
+{id:"M91",item:"Floor Adhesive",unit:"Per Gal",type:"Interior Flooring"},
+{id:"M92",item:"Grout / Thinset",unit:"Per Bag",type:"Interior Flooring"},
+{id:"M93",item:"Floor Wax / Finish",unit:"Per Gal",type:"Interior Flooring"},
+{id:"M94",item:"Door Hardware | Lockset (Grade 1)",unit:"Each",type:"Access Points"},
+{id:"M95",item:"Door Closer",unit:"Each",type:"Access Points"},
+{id:"M96",item:"Panic Bar / Crash Bar",unit:"Each",type:"Access Points"},
+{id:"M97",item:"Hinge (commercial, pair)",unit:"Each",type:"Access Points"},
+{id:"M98",item:"Weather Stripping / Door Seal",unit:"Per Ft",type:"Access Points"},
+{id:"M99",item:"Door | Interior (hollow-core)",unit:"Each",type:"Access Points"},
+{id:"M100",item:"Door | Exterior (steel/commercial)",unit:"Each",type:"Access Points"},
+{id:"M101",item:"Door Frame",unit:"Each",type:"Access Points"},
+{id:"M102",item:"Electric Strike / Magnetic Lock",unit:"Each",type:"Access Points"},
+{id:"M103",item:"Key / Re-key (cylinder)",unit:"Each",type:"Access Points"},
+{id:"M104",item:"Asphalt | Hot Mix",unit:"Per Ton",type:"Pavement"},
+{id:"M105",item:"Asphalt | Cold Patch",unit:"Per Bag",type:"Pavement"},
+{id:"M106",item:"Concrete | Ready Mix",unit:"Per Cu Yd",type:"Pavement"},
+{id:"M107",item:"Concrete | Bag Mix",unit:"Per Bag",type:"Pavement"},
+{id:"M108",item:"Asphalt Sealcoat",unit:"Per Gal",type:"Pavement"},
+{id:"M109",item:"Crack Filler (hot or cold)",unit:"Per Gal",type:"Pavement"},
+{id:"M110",item:"Line-Striping Paint",unit:"Per Gal",type:"Pavement"},
+{id:"M111",item:"Rebar / Wire Mesh",unit:"Per Ft",type:"Pavement"},
+{id:"M112",item:"Bollard | Steel",unit:"Each",type:"Pavement"},
+{id:"M113",item:"Speed Bump / Hump",unit:"Each",type:"Pavement"},
+{id:"M114",item:"Wheel Stop",unit:"Each",type:"Pavement"},
+{id:"M115",item:"Roof Membrane | TPO/EPDM (60 mil)",unit:"Per Sq Ft",type:"Roof"},
+{id:"M116",item:"Roof Coating (elastomeric)",unit:"Per Gal",type:"Roof"},
+{id:"M117",item:"Flashing | Sheet Metal",unit:"Per Sq Ft",type:"Roof"},
+{id:"M118",item:"Gutter | Aluminum",unit:"Per Ft",type:"Roof"},
+{id:"M119",item:"Downspout",unit:"Per Ft",type:"Roof"},
+{id:"M120",item:"Roof Drain",unit:"Each",type:"Roof"},
+{id:"M121",item:"Skylight",unit:"Each",type:"Roof"},
+{id:"M122",item:"Roofing Cement / Mastic",unit:"Per Gal",type:"Roof"},
+{id:"M123",item:"Camera | Indoor IP",unit:"Each",type:"Access Points"},
+{id:"M124",item:"Camera | Outdoor / Vandal",unit:"Each",type:"Access Points"},
+{id:"M125",item:"Camera | PTZ",unit:"Each",type:"Access Points"},
+{id:"M126",item:"NVR / DVR",unit:"Each",type:"Access Points"},
+{id:"M127",item:"Hard Drive / Storage (per TB)",unit:"Each",type:"Access Points"},
+{id:"M128",item:"Card Reader / Access Keypad",unit:"Each",type:"Access Points"},
+{id:"M129",item:"Magnetic Lock / Strike",unit:"Each",type:"Access Points"},
+{id:"M130",item:"Cat6 Cable",unit:"Per Ft",type:"Electrical"},
+{id:"M131",item:"Cat6A / Fiber Cable",unit:"Per Ft",type:"Electrical"},
+{id:"M132",item:"Coax Cable (RG6)",unit:"Per Ft",type:"Electrical"},
+{id:"M133",item:"Cable Connector / Terminator",unit:"Each",type:"Electrical"},
+{id:"M134",item:"Network Switch (PoE)",unit:"Each",type:"Electrical"},
+{id:"M135",item:"Intercom / Call Station",unit:"Each",type:"Access Points"},
+{id:"M136",item:"Fire Extinguisher (ABC)",unit:"Each",type:"Fire Systems"},
+{id:"M137",item:"Smoke Detector",unit:"Each",type:"Fire Systems"},
+{id:"M138",item:"Heat / CO Detector",unit:"Each",type:"Fire Systems"},
+{id:"M139",item:"Sprinkler Head",unit:"Each",type:"Fire Systems"},
+{id:"M140",item:"Fire Alarm Pull Station",unit:"Each",type:"Fire Systems"},
+{id:"M141",item:"Fire Alarm Horn/Strobe",unit:"Each",type:"Fire Systems"},
+{id:"M142",item:"Emergency Egress Sign",unit:"Each",type:"Fire Systems"},
+{id:"M143",item:"Vinyl Lettering / Decal",unit:"Per Sq Ft",type:"Other"},
+{id:"M144",item:"ADA / Braille Sign",unit:"Each",type:"Other"},
+{id:"M145",item:"Interior Sign (standard)",unit:"Each",type:"Other"},
+{id:"M146",item:"Exterior Sign | Non-Illuminated",unit:"Each",type:"Other"},
+{id:"M147",item:"Exterior Sign | Illuminated",unit:"Each",type:"Lighting"},
+{id:"M148",item:"Digital Display / Monitor",unit:"Each",type:"Other"},
+{id:"M149",item:"Sign Post / Pole",unit:"Each",type:"Other"},
+{id:"M150",item:"Mulch | Bulk",unit:"Per Cu Yd",type:"Landscaping"},
+{id:"M151",item:"Sod",unit:"Per Sq Ft",type:"Landscaping"},
+{id:"M152",item:"Topsoil",unit:"Per Cu Yd",type:"Landscaping"},
+{id:"M153",item:"Plants / Shrubs (small)",unit:"Each",type:"Landscaping"},
+{id:"M154",item:"Plants / Shrubs (large)",unit:"Each",type:"Landscaping"},
+{id:"M155",item:"Tree (installed small)",unit:"Each",type:"Landscaping"},
+{id:"M156",item:"Fertilizer / Herbicide",unit:"Per Bag",type:"Landscaping"},
+{id:"M157",item:"Ice Melt / De-icer",unit:"Per Bag",type:"Landscaping"},
+{id:"M158",item:"Irrigation Head / Component",unit:"Each",type:"Landscaping"},
+{id:"M159",item:"Pest Chemical / Bait (job)",unit:"Per Job",type:"Pest Removal"},
+{id:"M160",item:"Rodent Trap / Bait Station",unit:"Each",type:"Pest Removal"},
+{id:"M161",item:"Bird Spike / Netting",unit:"Per Ft",type:"Pest Removal"},
+{id:"M162",item:"Glass Pane | Standard",unit:"Per Sq Ft",type:"Other"},
+{id:"M163",item:"Tempered / Safety Glass",unit:"Per Sq Ft",type:"Other"},
+{id:"M164",item:"Window | Commercial Unit",unit:"Each",type:"Other"},
+{id:"M165",item:"Window Film / Tint",unit:"Per Sq Ft",type:"Other"},
+{id:"M166",item:"Sneeze Guard / Barrier",unit:"Each",type:"Other"},
+{id:"M167",item:"Partition | Toilet Stall (full)",unit:"Each",type:"Restroom Renovation"},
+{id:"M168",item:"Grab Bar (ADA)",unit:"Each",type:"Restroom Renovation"},
+{id:"M169",item:"Soap / Paper / Sanitizer Dispenser",unit:"Each",type:"Restroom Renovation"},
+{id:"M170",item:"Mirror (commercial)",unit:"Each",type:"Restroom Renovation"},
+{id:"M171",item:"Baby Changing Station",unit:"Each",type:"Restroom Renovation"},
+{id:"M172",item:"Bench | Standard (indoor)",unit:"Each",type:"Lobby Seating"},
+{id:"M173",item:"Bench | Exterior / Heavy Duty",unit:"Each",type:"Lobby Seating"},
+{id:"M174",item:"Chair | Lobby / Waiting",unit:"Each",type:"Lobby Seating"},
+{id:"M175",item:"Cushion / Upholstery",unit:"Each",type:"Lobby Seating"},
+{id:"M176",item:"Counter / Countertop Material",unit:"Per Sq Ft",type:"Ticket Counter Refresh"},
+{id:"M177",item:"Caulk / Sealant | Silicone",unit:"Tube",type:"Other"},
+{id:"M178",item:"Caulk / Sealant | Polyurethane",unit:"Tube",type:"Other"},
+{id:"M179",item:"Adhesive | Construction",unit:"Tube",type:"Other"},
+{id:"M180",item:"Tape | Duct / Electrical / Painters",unit:"Roll",type:"Other"},
+{id:"M181",item:"Fasteners / Anchors (bag)",unit:"Per Job",type:"Other"},
+{id:"M182",item:"Screws / Nails (box)",unit:"Per Box",type:"Other"},
+{id:"M183",item:"Rags / Wipes / PPE",unit:"Per Job",type:"Janitorial"},
+{id:"M184",item:"Cleaning Chemicals",unit:"Per Gal",type:"Janitorial"},
+{id:"M185",item:"Disposable Supplies (janitorial)",unit:"Per Job",type:"Janitorial"},
+{id:"M186",item:"Misc. Hardware / Small Parts",unit:"Per Job",type:"Other"},
+{id:"M187",item:"Dumpster Rental / Disposal",unit:"Per Haul",type:"Other"},
+{id:"M188",item:"Scaffolding / Lift Rental (daily)",unit:"Per Day",type:"Other"},
+{id:"M189",item:"Permit / Inspection Fee",unit:"Per Job",type:"Other"},
+{id:"M190",item:"Freight / Delivery Charge",unit:"Per Job",type:"Other"},
 {id:"M-OTHER",item:"Other — Not Listed (describe in Notes)",unit:""}
 ];
 
-// ── Init ───────────────────────────────────────────────────────────────────
-(function init() {
-  // Populate category dropdown
-  const cats = [...new Set(SERVICES.map(s => s.cat))].sort();
-  const catSel = document.getElementById('svc_cat');
-  cats.forEach(c => {
-    const o = document.createElement('option');
-    o.value = c; o.textContent = c;
-    catSel.appendChild(o);
+/* ── Helpers ─────────────────────────────────────────────────────── */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+/* ── Material filtering ──────────────────────────────────────────── */
+function getFilteredMats() {
+  const cat = (document.getElementById('svc_cat').value||'').toLowerCase();
+  const sub = (document.getElementById('svc_sub').value
+    ? (SERVICES.find(s=>s.id===document.getElementById('svc_sub').value)||{sub:''}).sub
+    : '').toLowerCase();
+  const kw  = (document.getElementById('matSearch').value||'').toLowerCase().trim();
+
+  // Keywords from category + subtype for relevance scoring
+  const catWords = cat.split(/\W+/).filter(w=>w.length>2);
+  const subWords = sub.split(/\W+/).filter(w=>w.length>2);
+  const searchWords = kw ? kw.split(/\W+/).filter(w=>w.length>1) : [];
+
+  return MATERIALS.map(m => {
+    const key = (m.item+' '+m.type+' '+m.unit).toLowerCase();
+    // Exact type match gets highest score
+    let score = 0;
+    if (m.type.toLowerCase() === cat) score += 10;
+    catWords.forEach(w => { if(key.includes(w)) score += 2; });
+    subWords.forEach(w => { if(key.includes(w)) score += 3; });
+    if (kw) searchWords.forEach(w => { if(key.includes(w)) score += 5; });
+    return {m, score};
+  })
+  .filter(({m, score}) => {
+    if (kw) return score > 0; // keyword search: show any match
+    if (!cat) return true;    // no category: show all
+    return score > 0;         // category selected: show relevant
+  })
+  .sort((a,b) => b.score - a.score)
+  .map(({m}) => m);
+}
+
+function filterMats() {
+  _filteredMats = getFilteredMats();
+  const cnt = document.getElementById('matCount');
+  if (cnt) cnt.textContent = `${_filteredMats.length} of ${MATERIALS.length} materials shown`;
+  // Update all existing mat row selects
+  document.querySelectorAll('#matBody .vrow').forEach(row => {
+    const id = row.id.replace('mr_','');
+    const sel = document.getElementById('ms_'+id);
+    if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— Select Material —</option>' +
+      _filteredMats.map(m=>`<option value="${m.id}"${m.id===cur?' selected':''}>${esc(m.item)}</option>`).join('');
   });
+}
+
+/* ── Init ────────────────────────────────────────────────────────── */
+(function init() {
+  const cats = [...new Set(SERVICES.map(s=>s.cat))].sort();
+  const catSel = document.getElementById('svc_cat');
+  cats.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; catSel.appendChild(o); });
+  _filteredMats = MATERIALS.slice();
+  filterMats();
   addLaborRow();
   addMatRow();
 })();
@@ -768,52 +875,59 @@ function onCatChange() {
   const cat = document.getElementById('svc_cat').value;
   const subSel = document.getElementById('svc_sub');
   subSel.innerHTML = '<option value="">— Select Subtype —</option>';
-  const subs = SERVICES.filter(s => s.cat === cat);
-  subs.forEach(s => {
-    const o = document.createElement('option');
-    o.value = s.id; o.textContent = s.sub;
-    subSel.appendChild(o);
+  SERVICES.filter(s=>s.cat===cat).forEach(s => {
+    const o=document.createElement('option'); o.value=s.id; o.textContent=s.sub; subSel.appendChild(o);
   });
   onSubChange();
+  filterMats();
 }
 
 function onSubChange() {
   const val = document.getElementById('svc_sub').value;
   document.getElementById('other_svc_wrap').style.display =
-    (val === 'SVC-OTHER' || document.getElementById('svc_cat').value === 'Other') ? '' : 'none';
+    (val==='SVC-OTHER' || document.getElementById('svc_cat').value==='Other') ? '' : 'none';
+  filterMats();
 }
 
 function onTravelChange() {
   const yes = document.querySelector('input[name=travel][value=yes]').checked;
-  document.getElementById('travel_amt_wrap').style.display = yes ? '' : 'none';
-  if (!yes) document.getElementById('travel_amt').value = '';
+  document.getElementById('travel_fields_wrap').style.display = yes ? '' : 'none';
+  if (!yes) { document.getElementById('travel_daily').value=''; document.getElementById('travel_days').value='1'; }
+  recalcTravel(); recalc();
+}
+
+function recalcTravel() {
+  const daily = parseFloat(document.getElementById('travel_daily').value)||0;
+  const days  = parseFloat(document.getElementById('travel_days').value)||1;
+  const total = daily * days;
+  document.getElementById('travel_total_display').textContent = fmt(total);
   recalc();
 }
 
-// ── Labor rows ─────────────────────────────────────────────────────────────
+/* ── Labor rows ──────────────────────────────────────────────────── */
 function spinStep(id, delta, min, step) {
   const el = document.getElementById(id);
   if (!el) return;
-  const cur = parseFloat(el.value) || 0;
-  el.value = Math.max(min, parseFloat((cur + delta * step).toFixed(4)));
+  el.value = Math.max(min, parseFloat((parseFloat(el.value)||0) + delta*step).toFixed(4));
   recalc();
 }
 
 function addLaborRow() {
   const container = document.getElementById('laborBody');
   const i = laborCount++;
-  const tradeOpts = TRADES.map(t => `<option value="${t}">${t}</option>`).join('');
+  const tradeOpts = TRADES.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
   const div = document.createElement('div');
-  div.className = 'vrow';
-  div.id = 'lr_' + i;
+  div.className = 'vrow'; div.id = 'lr_'+i;
   div.innerHTML = `
     <div class="vrow-trade">
-      <select id="lt_${i}" onchange="onTradeChange(${i})"><option value="">— Select Trade —</option>${tradeOpts}</select>
-      <div id="lt_other_${i}" style="display:none;margin-top:4px"><input type="text" id="lt_other_text_${i}" placeholder="Describe trade / role" style="width:100%;border:1px solid #ccc;border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit"></div>
+      <select id="lt_${i}" onchange="onTradeChange(${i})"><option value="">— Trade —</option>${tradeOpts}</select>
+      <div id="lt_other_${i}" style="display:none;margin-top:4px">
+        <input type="text" id="lt_other_text_${i}" autocomplete="off" placeholder="Describe trade / role" style="width:100%;border:1px solid var(--bm);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;background:var(--bi);color:var(--tp)">
+      </div>
     </div>
-    <span class="vrow-lbl">Workers</span>
+    <span class="vrow-lbl">Wkrs</span>
     <div class="spin-wrap">
-      <input type="number" id="lw_${i}" min="1" step="1" value="1" oninput="recalc()">
+      <input type="number" autocomplete="off" id="lw_${i}" min="1" step="1" value="1" oninput="recalc()">
       <div class="spin-btns">
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lw_${i}',1,1,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lw_${i}',-1,1,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -821,7 +935,7 @@ function addLaborRow() {
     </div>
     <span class="vrow-lbl">Hrs</span>
     <div class="spin-wrap">
-      <input type="number" id="lh_${i}" min="0" step="0.25" value="0" oninput="recalc()">
+      <input type="number" autocomplete="off" id="lh_${i}" min="0" step="0.25" value="0" oninput="recalc()">
       <div class="spin-btns">
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lh_${i}',1,0,0.25)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lh_${i}',-1,0,0.25)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -829,44 +943,44 @@ function addLaborRow() {
     </div>
     <span class="vrow-lbl">$/Hr</span>
     <div class="spin-wrap">
-      <input type="number" id="lr2_${i}" min="0" step="1" value="0" oninput="recalc()">
+      <input type="number" autocomplete="off" id="lr2_${i}" min="0" step="1" value="0" oninput="recalc()">
       <div class="spin-btns">
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lr2_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lr2_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
     <span class="vrow-total" id="ltot_${i}">—</span>
-    <input type="text" id="ln_${i}" class="vrow-notes" placeholder="Notes (optional)" style="border:1px solid #ccc;border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;height:30px">
+    <input type="text" autocomplete="off" id="ln_${i}" class="vrow-notes" placeholder="Notes" style="border:1px solid var(--bm);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;background:var(--bi);color:var(--tp);height:30px">
     <button type="button" class="del-btn" onclick="delRow('lr_${i}');recalc()" title="Remove">&#x2715;</button>`;
   container.appendChild(div);
 }
 
 function onTradeChange(i) {
-  const val = document.getElementById('lt_' + i).value;
-  document.getElementById('lt_other_' + i).style.display =
-    val === 'Other — Not Listed' ? '' : 'none';
+  document.getElementById('lt_other_'+i).style.display =
+    document.getElementById('lt_'+i).value === 'Other — Not Listed' ? '' : 'none';
 }
 
-// ── Material rows ──────────────────────────────────────────────────────────
+/* ── Material rows ───────────────────────────────────────────────── */
 function addMatRow() {
   const container = document.getElementById('matBody');
   const i = matCount++;
-  const matOpts = MATERIALS.map(m => `<option value="${m.id}" data-unit="${m.unit}">${m.item}</option>`).join('');
+  const matOpts = _filteredMats.map(m=>`<option value="${m.id}" data-unit="${m.unit}">${esc(m.item)}</option>`).join('');
   const div = document.createElement('div');
-  div.className = 'vrow';
-  div.id = 'mr_' + i;
+  div.className = 'vrow'; div.id = 'mr_'+i;
   div.innerHTML = `
     <div class="vrow-item">
-      <select id="ms_${i}" onchange="onMatChange(${i})"><option value="">— Select Material —</option>${matOpts}</select>
+      <select id="ms_${i}" onchange="onMatChange(${i})">
+        <option value="">— Select Material —</option>${matOpts}
+      </select>
       <div id="ms_other_${i}" style="display:none;margin-top:4px">
-        <input type="text" id="ms_other_text_${i}" placeholder="Describe item" style="width:100%;border:1px solid #ccc;border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit">
-        <span class="hint" style="display:block;margin-top:2px">Helps us expand our catalog — thank you.</span>
+        <input type="text" autocomplete="off" id="ms_other_text_${i}" placeholder="Describe item" style="width:100%;border:1px solid var(--bm);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;background:var(--bi);color:var(--tp)">
+        <span style="font-size:10px;color:var(--tm);display:block;margin-top:2px">Helps us expand our catalog — thank you.</span>
       </div>
     </div>
-    <input type="text" id="mu_${i}" class="vrow-unit" placeholder="Unit" readonly style="border:1px solid #ccc;border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;height:30px;background:#f9f9f9;color:#888">
+    <input type="text" autocomplete="off" id="mu_${i}" class="vrow-unit" placeholder="Unit" readonly style="border:1px solid var(--bm);border-radius:6px;padding:5px 8px;font-size:12px;height:30px;background:var(--br);color:var(--tm)">
     <span class="vrow-lbl">Qty</span>
     <div class="spin-wrap">
-      <input type="number" id="mq_${i}" min="0" step="1" value="1" oninput="recalc()">
+      <input type="number" autocomplete="off" id="mq_${i}" min="0" step="1" value="1" oninput="recalc()">
       <div class="spin-btns">
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mq_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mq_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -874,7 +988,7 @@ function addMatRow() {
     </div>
     <span class="vrow-lbl">$/Unit</span>
     <div class="spin-wrap">
-      <input type="number" id="mc_${i}" min="0" step="1" value="0" oninput="recalc()">
+      <input type="number" autocomplete="off" id="mc_${i}" min="0" step="1" value="0" oninput="recalc()">
       <div class="spin-btns">
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mc_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mc_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -886,248 +1000,226 @@ function addMatRow() {
 }
 
 function onMatChange(i) {
-  const sel = document.getElementById('ms_' + i);
+  const sel = document.getElementById('ms_'+i);
   const opt = sel.options[sel.selectedIndex];
-  const unit = opt ? opt.dataset.unit || '' : '';
-  document.getElementById('mu_' + i).value = unit;
-  const isOther = sel.value === 'M-OTHER';
-  document.getElementById('ms_other_' + i).style.display = isOther ? '' : 'none';
+  document.getElementById('mu_'+i).value = opt ? (opt.dataset.unit||'') : '';
+  document.getElementById('ms_other_'+i).style.display = sel.value==='M-OTHER' ? '' : 'none';
   recalc();
 }
 
-function delRow(id) {
-  const el = document.getElementById(id);
-  if (el) el.remove();
-}
+function delRow(id) { const el=document.getElementById(id); if(el) el.remove(); }
 
-// ── Recalc totals ──────────────────────────────────────────────────────────
-function fmt(n) {
-  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-}
-
+/* ── Recalc ──────────────────────────────────────────────────────── */
 function recalc() {
-  // Labor
-  let laborTotal = 0;
+  let laborTotal=0;
   document.querySelectorAll('#laborBody .vrow').forEach(row => {
-    const id = row.id.replace('lr_','');
-    const w = parseFloat(document.getElementById('lw_'+id)?.value)||0;
-    const h = parseFloat(document.getElementById('lh_'+id)?.value)||0;
-    const r = parseFloat(document.getElementById('lr2_'+id)?.value)||0;
-    const tot = w * h * r;
-    laborTotal += tot;
-    const totEl = document.getElementById('ltot_'+id);
-    if (totEl) totEl.textContent = tot > 0 ? fmt(tot) : '—';
+    const id=row.id.replace('lr_','');
+    const w=parseFloat(document.getElementById('lw_'+id)?.value)||0;
+    const h=parseFloat(document.getElementById('lh_'+id)?.value)||0;
+    const r=parseFloat(document.getElementById('lr2_'+id)?.value)||0;
+    const tot=w*h*r; laborTotal+=tot;
+    const totEl=document.getElementById('ltot_'+id);
+    if(totEl) totEl.textContent=tot>0?fmt(tot):'—';
   });
 
-  // Materials
-  let matTotal = 0;
+  let matTotal=0;
   document.querySelectorAll('#matBody .vrow').forEach(row => {
-    const id = row.id.replace('mr_','');
-    const q = parseFloat(document.getElementById('mq_'+id)?.value)||0;
-    const c = parseFloat(document.getElementById('mc_'+id)?.value)||0;
-    const tot = q * c;
-    matTotal += tot;
-    const totEl = document.getElementById('mtot_'+id);
-    if (totEl) totEl.textContent = tot > 0 ? fmt(tot) : '—';
+    const id=row.id.replace('mr_','');
+    const q=parseFloat(document.getElementById('mq_'+id)?.value)||0;
+    const c=parseFloat(document.getElementById('mc_'+id)?.value)||0;
+    const tot=q*c; matTotal+=tot;
+    const totEl=document.getElementById('mtot_'+id);
+    if(totEl) totEl.textContent=tot>0?fmt(tot):'—';
   });
 
-  // Travel
   const hasTravelYes = document.querySelector('input[name=travel][value=yes]')?.checked;
-  const travel = hasTravelYes ? (parseFloat(document.getElementById('travel_amt')?.value)||0) : 0;
-  const travelRow = document.getElementById('tot_travel_row');
-  if (travelRow) travelRow.style.display = travel > 0 ? '' : 'none';
-  const travelEl = document.getElementById('tot_travel');
-  if (travelEl) travelEl.textContent = fmt(travel);
+  const daily  = parseFloat(document.getElementById('travel_daily')?.value)||0;
+  const days   = parseFloat(document.getElementById('travel_days')?.value)||1;
+  const travel = hasTravelYes ? daily*days : 0;
+  document.getElementById('travel_total_display').textContent = fmt(travel);
+  const travRow = document.getElementById('tot_travel_row');
+  if(travRow) travRow.style.display = travel>0 ? '' : 'none';
+  const travVal = document.getElementById('tot_travel');
+  if(travVal) travVal.textContent = fmt(travel);
 
-  const grand = laborTotal + matTotal + travel;
+  const taxRate = parseFloat(document.getElementById('tax_rate')?.value)||0;
+  const taxable = laborTotal + matTotal;
+  const taxAmt  = taxable * taxRate / 100;
+  document.getElementById('tax_display').textContent = fmt(taxAmt);
+  const taxRow = document.getElementById('tot_tax_row');
+  if(taxRow) taxRow.style.display = taxAmt>0 ? '' : 'none';
+  const taxVal = document.getElementById('tot_tax_val');
+  if(taxVal) taxVal.textContent = fmt(taxAmt);
+
+  const grand = laborTotal + matTotal + travel + taxAmt;
   document.getElementById('tot_labor').textContent = fmt(laborTotal);
-  document.getElementById('tot_mat').textContent = fmt(matTotal);
+  document.getElementById('tot_mat').textContent   = fmt(matTotal);
   document.getElementById('tot_grand').textContent = fmt(grand);
 }
 
-// ── Validation ─────────────────────────────────────────────────────────────
+/* ── Validation ──────────────────────────────────────────────────── */
 function validate() {
-  const errs = [];
-  const req = [
-    ['v_company','Company Name'],['v_contact','Primary Contact'],
-    ['v_phone','Phone'],['v_email','Email'],
-    ['v_valid_until','Quote Valid Until'],
-    ['svc_cat','Service Category'],['svc_sub','Service Subtype'],
-    ['svc_location','Facility / Location'],['svc_desc','Scope Description']
-  ];
-  req.forEach(([id, lbl]) => {
-    const el = document.getElementById(id);
-    if (!el || !el.value.trim()) { if(el) el.classList.add('err'); errs.push(lbl); }
+  const errs=[];
+  [['v_company','Company Name'],['v_contact','Primary Contact'],['v_phone','Phone'],
+   ['v_email','Email'],['v_valid_until','Quote Valid Until'],
+   ['svc_cat','Service Category'],['svc_sub','Service Subtype'],
+   ['svc_location','Facility / Location'],['svc_desc','Scope Description']
+  ].forEach(([id,lbl]) => {
+    const el=document.getElementById(id);
+    if(!el||!el.value.trim()){if(el)el.classList.add('err');errs.push(lbl);}
     else el.classList.remove('err');
   });
 
-  // At least one labor row with trade + hours + rate
   const lRows = document.querySelectorAll('#laborBody .vrow');
-  let hasValidLabor = false;
-  lRows.forEach(tr => {
-    const id = tr.id.replace('lr_','');
-    const t = document.getElementById('lt_'+id)?.value;
-    const h = parseFloat(document.getElementById('lh_'+id)?.value)||0;
-    const r = parseFloat(document.getElementById('lr2_'+id)?.value)||0;
-    if (t && h > 0 && r > 0) hasValidLabor = true;
+  let hasValidLabor=false;
+  lRows.forEach(row => {
+    const id=row.id.replace('lr_','');
+    const t=document.getElementById('lt_'+id)?.value;
+    const h=parseFloat(document.getElementById('lh_'+id)?.value)||0;
+    const r=parseFloat(document.getElementById('lr2_'+id)?.value)||0;
+    if(t&&h>0&&r>0) hasValidLabor=true;
   });
-  if (!hasValidLabor && lRows.length > 0) errs.push('At least one complete Labor row (trade, hours, rate)');
+  if(!hasValidLabor&&lRows.length>0) errs.push('At least one complete Labor row (trade, hours, rate)');
 
-  // Travel amount if travel = yes
-  const hasTravelYes = document.querySelector('input[name=travel][value=yes]')?.checked;
-  if (hasTravelYes) {
-    const amt = parseFloat(document.getElementById('travel_amt')?.value)||0;
-    if (amt <= 0) { document.getElementById('travel_amt').classList.add('err'); errs.push('Travel / Mobilization amount'); }
-    else document.getElementById('travel_amt').classList.remove('err');
+  if(document.querySelector('input[name=travel][value=yes]')?.checked) {
+    const d=parseFloat(document.getElementById('travel_daily')?.value)||0;
+    if(d<=0){document.getElementById('travel_daily')?.classList.add('err');errs.push('Daily Travel Rate');}
+    else document.getElementById('travel_daily')?.classList.remove('err');
   }
 
-  // Signature
-  const sig = document.getElementById('v_sig');
-  if (!sig.value.trim()) { sig.classList.add('err'); errs.push('Vendor signature / acknowledgement'); }
+  const sig=document.getElementById('v_sig');
+  if(!sig.value.trim()){sig.classList.add('err');errs.push('Vendor signature');}
   else sig.classList.remove('err');
 
-  const banner = document.getElementById('errBanner');
-  if (errs.length > 0) {
-    banner.innerHTML = '<strong>Please complete the following required fields:</strong><ul style="margin:6px 0 0 18px">' + errs.map(e=>`<li>${e}</li>`).join('') + '</ul>';
+  const banner=document.getElementById('errBanner');
+  if(errs.length>0){
+    banner.innerHTML='<strong>Please complete:</strong><ul style="margin:6px 0 0 18px">'+errs.map(e=>`<li>${e}</li>`).join('')+'</ul>';
     banner.classList.add('show');
-    banner.scrollIntoView({behavior:'smooth', block:'start'});
+    banner.scrollIntoView({behavior:'smooth',block:'start'});
     return false;
   }
   banner.classList.remove('show');
   return true;
 }
 
-// ── Build submission object ────────────────────────────────────────────────
+/* ── Build submission ────────────────────────────────────────────── */
 function buildSubmission() {
-  const catEl = document.getElementById('svc_cat');
-  const subEl = document.getElementById('svc_sub');
-  const subId = subEl.value;
-  const subText = subEl.options[subEl.selectedIndex]?.text || '';
-
-  const labor = [];
-  document.querySelectorAll('#laborBody .vrow').forEach(tr => {
-    const id = tr.id.replace('lr_','');
-    const trade = document.getElementById('lt_'+id)?.value || '';
-    const tradeOther = document.getElementById('lt_other_text_'+id)?.value || '';
-    const workers = parseFloat(document.getElementById('lw_'+id)?.value)||0;
-    const hours = parseFloat(document.getElementById('lh_'+id)?.value)||0;
-    const rate = parseFloat(document.getElementById('lr2_'+id)?.value)||0;
-    const notes = document.getElementById('ln_'+id)?.value || '';
-    if (!trade) return;
+  const subEl=document.getElementById('svc_sub');
+  const subId=subEl.value;
+  const subText=subEl.options[subEl.selectedIndex]?.text||'';
+  const labor=[];
+  document.querySelectorAll('#laborBody .vrow').forEach(row => {
+    const id=row.id.replace('lr_','');
+    const trade=document.getElementById('lt_'+id)?.value||'';
+    const tradeOther=document.getElementById('lt_other_text_'+id)?.value||'';
+    const workers=parseFloat(document.getElementById('lw_'+id)?.value)||0;
+    const hours=parseFloat(document.getElementById('lh_'+id)?.value)||0;
+    const rate=parseFloat(document.getElementById('lr2_'+id)?.value)||0;
+    const notes=document.getElementById('ln_'+id)?.value||'';
+    if(!trade) return;
     labor.push({
-      trade: trade === 'Other — Not Listed' ? (tradeOther || 'Other') : trade,
-      trade_unlisted: trade === 'Other — Not Listed' ? tradeOther : '',
-      workers, hours, rate_per_hr: rate,
-      row_total: parseFloat((workers * hours * rate).toFixed(2)),
-      notes
+      trade:trade==='Other — Not Listed'?(tradeOther||'Other'):trade,
+      trade_unlisted:trade==='Other — Not Listed'?tradeOther:'',
+      workers,hours,rate_per_hr:rate,
+      row_total:parseFloat((workers*hours*rate).toFixed(2)),notes
     });
   });
-
-  const materials = [];
-  document.querySelectorAll('#matBody .vrow').forEach(tr => {
-    const id = tr.id.replace('mr_','');
-    const sel = document.getElementById('ms_'+id);
-    const matId = sel?.value || '';
-    if (!matId) return;
-    const matItem = matId === 'M-OTHER'
-      ? (document.getElementById('ms_other_text_'+id)?.value || 'Other')
-      : (sel.options[sel.selectedIndex]?.text || '');
-    const unit = document.getElementById('mu_'+id)?.value || '';
-    const qty = parseFloat(document.getElementById('mq_'+id)?.value)||0;
-    const cost = parseFloat(document.getElementById('mc_'+id)?.value)||0;
+  const materials=[];
+  document.querySelectorAll('#matBody .vrow').forEach(row => {
+    const id=row.id.replace('mr_','');
+    const sel=document.getElementById('ms_'+id);
+    const matId=sel?.value||'';
+    if(!matId) return;
+    const matItem=matId==='M-OTHER'?(document.getElementById('ms_other_text_'+id)?.value||'Other'):(sel.options[sel.selectedIndex]?.text||'');
+    const unit=document.getElementById('mu_'+id)?.value||'';
+    const qty=parseFloat(document.getElementById('mq_'+id)?.value)||0;
+    const cost=parseFloat(document.getElementById('mc_'+id)?.value)||0;
     materials.push({
-      material_id: matId === 'M-OTHER' ? 'UNLISTED' : matId,
-      item: matItem,
-      item_unlisted: matId === 'M-OTHER' ? (document.getElementById('ms_other_text_'+id)?.value||'') : '',
-      unit, qty, unit_cost: cost,
-      row_total: parseFloat((qty * cost).toFixed(2))
+      material_id:matId==='M-OTHER'?'UNLISTED':matId,
+      item:matItem,
+      item_unlisted:matId==='M-OTHER'?(document.getElementById('ms_other_text_'+id)?.value||''):'',
+      unit,qty,unit_cost:cost,row_total:parseFloat((qty*cost).toFixed(2))
     });
   });
-
-  const hasTravelYes = document.querySelector('input[name=travel][value=yes]')?.checked;
-  const travelAmt = hasTravelYes ? (parseFloat(document.getElementById('travel_amt')?.value)||0) : 0;
-
-  const totLabor = labor.reduce((s,r)=>s+r.row_total,0);
-  const totMat = materials.reduce((s,r)=>s+r.row_total,0);
-  const grand = totLabor + totMat + travelAmt;
-
+  const hasTravelYes=document.querySelector('input[name=travel][value=yes]')?.checked;
+  const daily=parseFloat(document.getElementById('travel_daily')?.value)||0;
+  const days=parseFloat(document.getElementById('travel_days')?.value)||1;
+  const travelAmt=hasTravelYes?daily*days:0;
+  const taxRate=parseFloat(document.getElementById('tax_rate')?.value)||0;
+  const taxable=labor.reduce((s,r)=>s+r.row_total,0)+materials.reduce((s,r)=>s+r.row_total,0);
+  const taxAmt=taxable*taxRate/100;
+  const grand=taxable+travelAmt+taxAmt;
   return {
-    _form_version: '1.0',
-    _generated: new Date().toISOString(),
-    vendor: {
-      company: document.getElementById('v_company').value,
-      contact: document.getElementById('v_contact').value,
-      phone: document.getElementById('v_phone').value,
-      email: document.getElementById('v_email').value,
-      license: document.getElementById('v_license').value,
-      insurance_provider: document.getElementById('v_ins_provider').value,
-      insurance_policy: document.getElementById('v_ins_policy').value,
-      insurance_expiry: document.getElementById('v_ins_exp').value,
-      quote_valid_until: document.getElementById('v_valid_until').value,
-      signature: document.getElementById('v_sig').value
+    _form_version:'2.0',_generated:new Date().toISOString(),
+    vendor:{
+      company:document.getElementById('v_company').value,
+      contact:document.getElementById('v_contact').value,
+      phone:document.getElementById('v_phone').value,
+      email:document.getElementById('v_email').value,
+      license:document.getElementById('v_license').value,
+      insurance_provider:document.getElementById('v_ins_provider').value,
+      insurance_policy:document.getElementById('v_ins_policy').value,
+      insurance_expiry:document.getElementById('v_ins_exp').value,
+      quote_valid_until:document.getElementById('v_valid_until').value,
+      payment_terms:document.getElementById('payment_terms').value,
+      signature:document.getElementById('v_sig').value
     },
-    scope: {
-      category: catEl.value,
-      subtype_id: subId,
-      subtype: subText,
-      subtype_unlisted: document.getElementById('svc_other_desc')?.value || '',
-      location: document.getElementById('svc_location').value,
-      requested_start: document.getElementById('svc_start_date').value,
-      description: document.getElementById('svc_desc').value
+    scope:{
+      category:document.getElementById('svc_cat').value,
+      subtype_id:subId,subtype:subText,
+      subtype_unlisted:document.getElementById('svc_other_desc')?.value||'',
+      location:document.getElementById('svc_location').value,
+      requested_start:document.getElementById('svc_start_date').value,
+      description:document.getElementById('svc_desc').value
     },
-    labor,
-    materials,
-    travel: {
-      included: hasTravelYes,
-      amount: travelAmt,
-      notes: document.getElementById('travel_notes').value
+    labor,materials,
+    travel:{
+      included:hasTravelYes,
+      daily_rate:daily,days,
+      amount:parseFloat(travelAmt.toFixed(2)),
+      notes:document.getElementById('travel_notes').value
     },
-    additional: {
-      notes: document.getElementById('notes').value,
-      payment_terms: document.getElementById('payment_terms').value,
-      estimated_duration: document.getElementById('duration').value
-    },
-    totals: {
-      labor: parseFloat(totLabor.toFixed(2)),
-      materials: parseFloat(totMat.toFixed(2)),
-      travel: parseFloat(travelAmt.toFixed(2)),
-      grand_total: parseFloat(grand.toFixed(2))
+    tax:{rate:taxRate,amount:parseFloat(taxAmt.toFixed(2))},
+    additional:{notes:document.getElementById('notes').value},
+    totals:{
+      labor:parseFloat(labor.reduce((s,r)=>s+r.row_total,0).toFixed(2)),
+      materials:parseFloat(materials.reduce((s,r)=>s+r.row_total,0).toFixed(2)),
+      travel:parseFloat(travelAmt.toFixed(2)),
+      tax:parseFloat(taxAmt.toFixed(2)),
+      grand_total:parseFloat(grand.toFixed(2))
     }
   };
 }
 
-// ── Submit: download JSON then print ──────────────────────────────────────
+/* ── Submit ──────────────────────────────────────────────────────── */
 function submitForm() {
-  if (!validate()) return;
+  if(!validate()) return;
   recalc();
-  const data = buildSubmission();
-  const company = (data.vendor.company || 'vendor').replace(/[^a-z0-9]/gi,'_').toLowerCase();
-  const cat = (data.scope.category || 'scope').replace(/[^a-z0-9]/gi,'_').toLowerCase();
-  const filename = `FSR_Proposal_${company}_${cat}.json`;
-
-  // Download JSON
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
+  const data=buildSubmission();
+  const company=(data.vendor.company||'vendor').replace(/[^a-z0-9]/gi,'_').toLowerCase();
+  const cat=(data.scope.category||'scope').replace(/[^a-z0-9]/gi,'_').toLowerCase();
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`FSR_Proposal_${company}_${cat}.json`;
   document.body.appendChild(a); a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  // Then print
-  setTimeout(() => window.print(), 400);
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  setTimeout(()=>window.print(),400);
 }
 
 function clearForm() {
-  if (!confirm('Clear all form data? This cannot be undone.')) return;
-  document.querySelectorAll('input:not([type=radio]),select,textarea').forEach(el => { el.value = ''; el.classList.remove('err'); });
-  document.querySelector('input[name=travel][value=no]').checked = true;
-  document.getElementById('travel_amt_wrap').style.display = 'none';
-  document.getElementById('other_svc_wrap').style.display = 'none';
-  document.getElementById('laborBody').innerHTML = '';
-  document.getElementById('matBody').innerHTML = '';
-  laborCount = 0; matCount = 0;
+  if(!confirm('Clear all form data?')) return;
+  document.querySelectorAll('input:not([type=radio]),select,textarea').forEach(el=>{el.value='';el.classList.remove('err');});
+  document.querySelector('input[name=travel][value=no]').checked=true;
+  document.getElementById('travel_fields_wrap').style.display='none';
+  document.getElementById('other_svc_wrap').style.display='none';
+  document.getElementById('laborBody').innerHTML='';
+  document.getElementById('matBody').innerHTML='';
+  laborCount=0; matCount=0;
   document.getElementById('errBanner').classList.remove('show');
+  document.getElementById('matSearch').value='';
+  _filteredMats=MATERIALS.slice();
+  filterMats();
   addLaborRow(); addMatRow();
   recalc();
 }
