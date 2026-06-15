@@ -1512,9 +1512,9 @@ function clearForm() {
       pop.classList.add('open'); display.classList.add('open');
     }
     function close() { pop.classList.remove('open'); display.classList.remove('open'); }
-    display.addEventListener('click', e=>{e.stopPropagation(); pop.classList.contains('open')?close():open();});
+    wrap.addEventListener('click', e=>{e.stopPropagation(); pop.classList.contains('open')?close():open();});
     display.addEventListener('keydown', e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pop.classList.contains('open')?close():open();}if(e.key==='Escape')close();});
-    document.addEventListener('click', e=>{ if(!wrap.contains(e.target)) close(); });
+    document.addEventListener('click', e=>{ if(!wrap.contains(e.target)&&!pop.contains(e.target)) close(); });
     window.addEventListener('resize', ()=>{ if(pop.classList.contains('open')) positionPop(); });
     // Expose for restoreState
     hidden._dpSet = (iso) => {
