@@ -3135,8 +3135,9 @@ function recalcResults() {
     combProposalMedHoisted = (laborProposalMed + travelProposal) + matProposalMed;
     _combBenchMedLive    = combProposalMedHoisted;
     _combBenchHighLive   = combBenchHigh;
-    const laborSharePct  = combBenchMed > 0 ? Math.round((laborBenchMed  / combBenchMed) * 100) : 0;
-    const travelSharePct = combBenchMed > 0 ? Math.round((travelBench     / combBenchMed) * 100) : 0;
+    const _propTotal = laborProposalMed + travelProposal + matProposalMed;
+    const laborSharePct  = _propTotal > 0 ? Math.round((laborProposalMed / _propTotal) * 100) : 0;
+    const travelSharePct = _propTotal > 0 ? Math.round((travelProposal   / _propTotal) * 100) : 0;
     const matSharePct    = 100 - laborSharePct - travelSharePct;
     // Build trade + material rows — scoped to selected bid's service
     const tradeRows = [];
@@ -3238,8 +3239,8 @@ function recalcResults() {
             }).join('');
           })()}</div>
           <div class="m-sub" style="margin-top:6px">${(()=>{
-            const sub = [{pct:laborSharePct,lbl:'labor',val:laborBenchMed},{pct:matSharePct,lbl:'materials',val:matBenchMed}];
-            if(travelSharePct>0) sub.push({pct:travelSharePct,lbl:'travel',val:travelBench});
+            const sub = [{pct:laborSharePct,lbl:'labor',val:laborProposalMed},{pct:matSharePct,lbl:'materials',val:matProposalMed}];
+            if(travelSharePct>0) sub.push({pct:travelSharePct,lbl:'travel',val:travelProposal});
             sub.sort((a,b)=>b.pct-a.pct);
             return sub.map(s=>fmt(s.val)+' '+s.lbl).join(' &middot; ');
           })()}</div>
