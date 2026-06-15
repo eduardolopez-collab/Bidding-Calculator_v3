@@ -253,11 +253,6 @@ a{color:var(--fg)}
   <div class="section">
     <div class="section-hd"><span class="num">4</span>Materials</div>
     <div class="section-body">
-      <div class="mat-search-wrap no-print">
-        <svg class="mat-search-icon" viewBox="0 0 16 16" fill="none" width="13" height="13"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-        <input type="text" class="mat-search" id="matSearch" autocomplete="off" placeholder="Search materials by keyword…" oninput="filterMats()">
-      </div>
-      <div class="mat-count" id="matCount"></div>
       <div class="row-header" style="display:grid;grid-template-columns:1fr 68px 60px 80px 72px 28px;gap:6px;padding:4px 0 6px">
         <span>Material / Item</span><span style="text-align:center">Unit</span><span style="text-align:center">Qty</span><span style="text-align:center">$/Unit</span><span style="text-align:right">Total</span><span></span>
       </div>
@@ -823,29 +818,23 @@ function getFilteredMats() {
   const sub = (document.getElementById('svc_sub').value
     ? (SERVICES.find(s=>s.id===document.getElementById('svc_sub').value)||{sub:''}).sub
     : '').toLowerCase();
-  const kw  = (document.getElementById('matSearch').value||'').toLowerCase().trim();
 
-  // Keywords from category + subtype for relevance scoring
   const catWords = cat.split(/\W+/).filter(w=>w.length>2);
   const subWords = sub.split(/\W+/).filter(w=>w.length>2);
-  const searchWords = kw ? kw.split(/\W+/).filter(w=>w.length>1) : [];
 
   return MATERIALS.map(m => {
     const mtype = m.type || '';
     const key = (m.item+' '+mtype+' '+m.unit).toLowerCase();
-    // Exact type match gets highest score
     let score = 0;
     if (mtype.toLowerCase() === cat) score += 10;
     catWords.forEach(w => { if(key.includes(w)) score += 2; });
     subWords.forEach(w => { if(key.includes(w)) score += 3; });
-    if (kw) searchWords.forEach(w => { if(key.includes(w)) score += 5; });
     return {m, score};
   })
   .filter(({m, score}) => {
-    if (m.id === 'M-OTHER') return true; // always show Other option
-    if (kw) return score > 0; // keyword search: show any match
-    if (!cat) return true;    // no category: show all
-    return score > 0;         // category selected: show relevant
+    if (m.id === 'M-OTHER') return true;
+    if (!cat) return true;
+    return score > 0;
   })
   .sort((a,b) => b.score - a.score)
   .map(({m}) => m);
@@ -853,9 +842,6 @@ function getFilteredMats() {
 
 function filterMats() {
   _filteredMats = getFilteredMats();
-  const cnt = document.getElementById('matCount');
-  if (cnt) cnt.textContent = `${_filteredMats.length} of ${MATERIALS.length} materials shown`;
-  // Update all existing mat row selects
   document.querySelectorAll('#matBody .vrow').forEach(row => {
     const id = row.id.replace('mr_','');
     const sel = document.getElementById('ms_'+id);
