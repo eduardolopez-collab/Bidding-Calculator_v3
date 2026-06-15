@@ -1472,11 +1472,11 @@ function clearForm() {
     function fmtDisp(d) { return MONTHS[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear(); }
     function positionPop() {
       const rect = wrap.getBoundingClientRect();
-      const popW = Math.min(280, window.innerWidth - 16);
-      let top = rect.bottom + 6, left = rect.right - popW;
-      if (left < 8) left = 8;
+      const popW = Math.min(Math.max(rect.width, 240), 280);
+      let top = rect.bottom + 4, left = rect.left;
       if (left + popW > window.innerWidth - 8) left = window.innerWidth - popW - 8;
-      if (top + 340 > window.innerHeight - 8) top = Math.max(8, rect.top - 340 - 6);
+      if (left < 8) left = 8;
+      if (top + 340 > window.innerHeight - 8) top = Math.max(8, rect.top - 340 - 4);
       pop.style.top = top+'px'; pop.style.left = left+'px'; pop.style.width = popW+'px';
     }
     function render() {
