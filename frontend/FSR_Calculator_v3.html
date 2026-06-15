@@ -2995,8 +2995,9 @@ function recalc() {
 
 // Module-level: latest live-DOM combined benchmarks, written by recalcResults, read by submitFSR
 let _combBenchMedLive=0, _combBenchHighLive=0, _combBenchMedHoisted=0;
-let _selectedBidId = null; // null = always track lowest bid
-let _selectedBidTax = 0;  // tax from currently selected bid
+let _selectedBidId = null;  // null = always track lowest bid
+let _selectedBidTax = 0;   // tax from currently selected bid
+let _selectedBidSvcIdx = null; // service idx for selected bid
 
 // Hide subline badges (.lr-rate-badge, .mat-range) entirely if even 1px is clipped.
 // Called after layout settles via requestAnimationFrame.
@@ -3134,14 +3135,17 @@ function recalcResults() {
     const laborSharePct  = combBenchMed > 0 ? Math.round((laborBenchMed  / combBenchMed) * 100) : 0;
     const travelSharePct = combBenchMed > 0 ? Math.round((travelBench     / combBenchMed) * 100) : 0;
     const matSharePct    = 100 - laborSharePct - travelSharePct;
-    // Build trade + material rows from live DOM
+    // Build trade + material rows — scoped to selected bid's service
     const tradeRows = [];
     const matRows = [];
     let tradeTotal = 0;
     let matTotal = 0;
     let totalHrs = 0;
     let totalMatQty = 0;
-    activeSvcs.forEach(svc => {
+    const _breakdownSvcs = _selectedBidSvcIdx
+      ? activeSvcs.filter(s => s.idx === _selectedBidSvcIdx)
+      : activeSvcs;
+    _breakdownSvcs.forEach(svc => {
       const s = SERVICES.find(x => x.id === svc.svcId);
       if (!s) return;
       const _sp = svc.bdSnap || {};
@@ -3370,6 +3374,7 @@ function recalcResults() {
     _selSvcIdx = svcAtPos ? svcAtPos.idx : null;
   }
   const _benchRef = _selSvcIdx ? computeBenchmarkForSvc(_selSvcIdx, city) : combBenchMedHoisted;
+  _selectedBidSvcIdx = _selSvcIdx; // hoist for split panel use
   // Inject tax row into split panel now that _selTax is known
   const _taxSlot = document.getElementById('_splitTaxSlot');
   if (_taxSlot) {
