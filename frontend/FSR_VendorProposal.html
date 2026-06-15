@@ -1463,6 +1463,8 @@ function clearForm() {
     const pop     = document.getElementById('dpPop_'+hiddenId);
     const wrap    = document.getElementById('dpWrap_'+hiddenId);
     if (!hidden || !display || !pop || !wrap) return;
+    // Move pop to body so it escapes overflow:hidden on .section
+    document.body.appendChild(pop);
     let curYear, curMonth, selectedDate = null;
 
     function toISO(d) { return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
