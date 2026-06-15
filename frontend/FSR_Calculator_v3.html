@@ -3034,7 +3034,8 @@ function recalcResults() {
   let laborBenchMedWithTravel=0;
   let combBenchLowHoisted=0, combBenchMedHoisted=0, combBenchHighHoisted=0;
   let laborProposalMed=0, matProposalMed=0, travelProposal=0, combProposalMedHoisted=0;
-  let svc1ProposalMed=0; // Service 1 proposal total only
+  let svc1ProposalMed=0; // kept for compat
+  const _svcProposalMap={}; // proposal total per svc.idx
   _combBenchMedLive=0; _combBenchHighLive=0; // reset before IIFE runs
 
   // Always update split-bar panel regardless of whether bids exist
@@ -3116,8 +3117,10 @@ function recalcResults() {
           matProposalMed += (hasVendorCost ? vendorUnit * q : m.med * city.matMult * q) * svcScale;
         });
       }
-      // Capture Service 1 (first in loop) proposal total
-      if (svcLoopIdx === 0) svc1ProposalMed = (laborProposalMed + travelProposal + matProposalMed) - _propBefore;
+      // Capture per-service proposal total
+      const _svcProp = (laborProposalMed + travelProposal + matProposalMed) - _propBefore;
+      _svcProposalMap[svc.idx] = _svcProp;
+      if (svcLoopIdx === 0) svc1ProposalMed = _svcProp;
     });
     const splitEl = document.getElementById('splitPanel');
     if (!splitEl) return;
@@ -3375,6 +3378,13 @@ function recalcResults() {
   }
   const _benchRef = _selSvcIdx ? computeBenchmarkForSvc(_selSvcIdx, city) : combBenchMedHoisted;
   _selectedBidSvcIdx = _selSvcIdx; // hoist for split panel use
+  // Proposal for selected service
+  const _selProposal = (_selSvcIdx && _svcProposalMap[_selSvcIdx] !== undefined)
+    ? _svcProposalMap[_selSvcIdx] : svc1ProposalMed;
+  const _selProposalWithTax = _selProposal + _selTax;
+  // Service subtype label for Proposal card
+  const _selSvcData = _selSvcIdx ? activeSvcs.find(s => s.idx === _selSvcIdx) : activeSvcs[0];
+  const _selSvcDef = _selSvcData ? SERVICES.find(x => x.id === _selSvcData.svcId) : null;
   // Inject tax row into split panel now that _selTax is known
   const _taxSlot = document.getElementById('_splitTaxSlot');
   if (_taxSlot) {
@@ -3397,7 +3407,7 @@ function recalcResults() {
 
   document.getElementById('metricGrid').innerHTML=`
     <div class="metric"><div class="m-lbl">Benchmark</div><div class="m-val">${fmt(_benchRef)}</div><div class="m-sub">${city.city||'No city'} &middot; ${city.laborMult.toFixed(2)}x &middot; labor + materials${travelBench>0?' + travel':''}</div></div>
-    <div class="metric"><div class="m-lbl">1st Proposal</div><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><div class="m-val" style="color:var(--tp)">${fmt(svc1WithTax)}</div>${(()=>{const pd=svc1WithTax-_benchRef;return pd===0?'':`<span style="font-size:12px;font-weight:600;color:${pd>0?'var(--er-t)':'#b8e840'}">${pd>0?'+':'−'}${fmt(Math.abs(pd))} vs. Benchmark</span>`;})()}</div><div class="m-sub">${activeSvcs[0]&&SERVICES.find(x=>x.id===activeSvcs[0].svcId)?SERVICES.find(x=>x.id===activeSvcs[0].svcId).sub:'—'}${_selTax>0?` &middot; ${fmt(_selTax)} tax`:''}</div></div>
+    <div class="metric"><div class="m-lbl">Proposal</div><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><div class="m-val" style="color:var(--tp)">${fmt(_selProposalWithTax)}</div>${(()=>{const pd=_selProposalWithTax-_benchRef;return pd===0?'':`<span style="font-size:12px;font-weight:600;color:${pd>0?'var(--er-t)':'#b8e840'}">${pd>0?'+':'−'}${fmt(Math.abs(pd))} vs. Benchmark</span>`;})()}</div><div class="m-sub">${_selSvcDef?_selSvcDef.sub:'—'}${_selTax>0?` &middot; ${fmt(_selTax)} tax`:''}</div></div>
     <div class="metric" style="display:flex;flex-direction:row;align-items:flex-start"><div style="flex:1;min-width:0"><div class="m-lbl">${bidLbl}</div><div class="m-val" style="color:${_selAmt<=_benchRef?'#b8e840':'var(--tp)'}">${fmt(_selAmt)}</div><div class="m-sub">${_selBidData.vendor||'Unnamed Vendor'}</div></div>${bidSelectorInCard}</div>
     <div class="metric"><div class="m-lbl">Effort</div><div class="m-val ${diff<=0?'good':'bad'}">${diff<=0?'−':'+'}${fmt(Math.abs(diff))}</div><div class="m-sub">${diff<=0?'Under Benchmark':'Over Benchmark'}</div></div>`;
 
