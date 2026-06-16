@@ -861,12 +861,7 @@ function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,max
 /* -- Material filtering -------------------------------------------- */
 function getFilteredMats() {
   const cat = (document.getElementById('svc_cat').value||'').toLowerCase();
-  const sub = (document.getElementById('svc_sub').value
-    ? (SERVICES.find(s=>s.id===document.getElementById('svc_sub').value)||{sub:''}).sub
-    : '').toLowerCase();
-
   const catWords = cat.split(/\W+/).filter(w=>w.length>2);
-  const subWords = sub.split(/\W+/).filter(w=>w.length>2);
 
   return MATERIALS.map(m => {
     const mtype = m.type || '';
@@ -874,7 +869,6 @@ function getFilteredMats() {
     let score = 0;
     if (mtype.toLowerCase() === cat) score += 10;
     catWords.forEach(w => { if(key.includes(w)) score += 2; });
-    subWords.forEach(w => { if(key.includes(w)) score += 3; });
     return {m, score};
   })
   .filter(({m, score}) => {
@@ -945,7 +939,6 @@ function onSubChange() {
   const val = document.getElementById('svc_sub').value;
   document.getElementById('other_svc_wrap').style.display =
     (val==='SVC-OTHER' || document.getElementById('svc_cat').value==='Other') ? '' : 'none';
-  filterMats();
 }
 
 function onTravelChange() {
