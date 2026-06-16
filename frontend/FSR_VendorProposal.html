@@ -238,11 +238,11 @@ a{color:var(--fg)}
       <div class="field-row cols3">
         <div class="field"><label>Phone <span class="required-star">*</span></label><input type="tel" id="v_phone" autocomplete="off" placeholder="(555) 000-0000"></div>
         <div class="field"><label>Email <span class="required-star">*</span></label><input type="email" id="v_email" autocomplete="off" placeholder="john@abcservices.com"></div>
-        <div class="field"><label>License #</label><input type="text" id="v_license" autocomplete="off" placeholder="Optional"></div>
+        <div class="field"><label>Proposal # <span class="required-star">*</span></label><input type="text" id="v_license" autocomplete="off" placeholder="e.g. PROP-2026-001"></div>
       </div>
       <div class="field-row cols3">
-        <div class="field"><label>Insurance Provider</label><input type="text" id="v_ins_provider" autocomplete="off" placeholder="State Farm, etc."></div>
-        <div class="field"><label>Policy #</label><input type="text" id="v_ins_policy" autocomplete="off" placeholder="Optional"></div>
+        <div class="field"><label>Work Order # <span class="required-star">*</span></label><input type="text" id="v_ins_provider" autocomplete="off" placeholder="e.g. WO-10045"></div>
+        <div class="field"><label>FST # <span class="required-star">*</span></label><input type="text" id="v_ins_policy" autocomplete="off" placeholder="e.g. FST-2026-088"></div>
         <div class="field"><label>Insurance Expiry</label>
           <div class="dp-wrap" id="dpWrap_v_ins_exp">
             <div class="dp-input" id="dpDisp_v_ins_exp" tabindex="0">Pick a date</div>
@@ -1168,7 +1168,8 @@ function recalc() {
 function validate() {
   const errs=[];
   [['v_company','Company Name'],['v_contact','Primary Contact'],['v_phone','Phone'],
-   ['v_email','Email'],['v_valid_until','Quote Valid Until'],
+   ['v_email','Email'],['v_license','Proposal #'],['v_ins_provider','Work Order #'],
+   ['v_ins_policy','FST #'],['v_valid_until','Quote Valid Until'],
    ['svc_cat','Service Category'],['svc_sub','Service Subtype'],
    ['svc_location','Facility / Location'],['svc_desc','Scope Description']
   ].forEach(([id,lbl]) => {
@@ -1559,8 +1560,9 @@ function buildPrintView() {
     <div><div class="pv-meta-lbl">Primary Contact</div><div class="pv-meta-val">${d.vendor.contact||'—'}</div></div>
     <div><div class="pv-meta-lbl">Phone</div><div class="pv-meta-val">${d.vendor.phone||'—'}</div></div>
     <div><div class="pv-meta-lbl">Email</div><div class="pv-meta-val">${d.vendor.email||'—'}</div></div>
-    ${d.vendor.license?`<div><div class="pv-meta-lbl">License #</div><div class="pv-meta-val">${d.vendor.license}</div></div>`:''}
-    ${d.vendor.insurance_provider?`<div><div class="pv-meta-lbl">Insurance</div><div class="pv-meta-val">${d.vendor.insurance_provider}${d.vendor.insurance_policy?' · '+d.vendor.insurance_policy:''}${d.vendor.insurance_expiry?' (exp. '+fmtD(d.vendor.insurance_expiry)+')':''}</div></div>`:''}
+    ${d.vendor.license?`<div><div class="pv-meta-lbl">Proposal #</div><div class="pv-meta-val">${d.vendor.license}</div></div>`:''}
+    ${d.vendor.insurance_provider?`<div><div class="pv-meta-lbl">Work Order #</div><div class="pv-meta-val">${d.vendor.insurance_provider}</div></div>`:''}
+    ${d.vendor.insurance_policy?`<div><div class="pv-meta-lbl">FST #</div><div class="pv-meta-val">${d.vendor.insurance_policy}${d.vendor.insurance_expiry?' · Ins. Exp. '+fmtD(d.vendor.insurance_expiry):''}</div></div>`:''}
     ${d.vendor.payment_terms?`<div><div class="pv-meta-lbl">Payment Terms</div><div class="pv-meta-val">${d.vendor.payment_terms}</div></div>`:''}
   </div>
 
