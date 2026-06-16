@@ -242,7 +242,7 @@ a{color:var(--fg)}
       </div>
       <div class="field-row cols3">
         <div class="field"><label>Work Order # <span class="required-star">*</span></label><input type="text" id="v_ins_provider" autocomplete="off" placeholder="e.g. WO-10045"></div>
-        <div class="field"><label>FST# 2026 <span class="required-star">*</span></label><input type="text" id="v_ins_policy" autocomplete="off" placeholder="e.g. FST-2026-088"></div>
+        <div class="field"><label>FST # <span class="required-star">*</span></label><input type="text" id="v_ins_policy" autocomplete="off" placeholder="e.g. FST-2026-088"></div>
         <div class="field"><label>Insurance Expiry</label>
           <div class="dp-wrap" id="dpWrap_v_ins_exp">
             <div class="dp-input" id="dpDisp_v_ins_exp" tabindex="0">Pick a date</div>
@@ -1169,7 +1169,7 @@ function validate() {
   const errs=[];
   [['v_company','Company Name'],['v_contact','Primary Contact'],['v_phone','Phone'],
    ['v_email','Email'],['v_license','Proposal #'],['v_ins_provider','Work Order #'],
-   ['v_ins_policy','FST# 2026'],['v_valid_until','Quote Valid Until'],
+   ['v_ins_policy','FST #'],['v_valid_until','Quote Valid Until'],
    ['svc_cat','Service Category'],['svc_sub','Service Subtype'],
    ['svc_location','Facility / Location'],['svc_desc','Scope Description']
   ].forEach(([id,lbl]) => {
@@ -1562,7 +1562,7 @@ function buildPrintView() {
     <div><div class="pv-meta-lbl">Email</div><div class="pv-meta-val">${d.vendor.email||'—'}</div></div>
     ${d.vendor.license?`<div><div class="pv-meta-lbl">Proposal #</div><div class="pv-meta-val">${d.vendor.license}</div></div>`:''}
     ${d.vendor.insurance_provider?`<div><div class="pv-meta-lbl">Work Order #</div><div class="pv-meta-val">${d.vendor.insurance_provider}</div></div>`:''}
-    ${d.vendor.insurance_policy?`<div><div class="pv-meta-lbl">FST# 2026</div><div class="pv-meta-val">${d.vendor.insurance_policy}${d.vendor.insurance_expiry?' · Ins. Exp. '+fmtD(d.vendor.insurance_expiry):''}</div></div>`:''}
+    ${d.vendor.insurance_policy?`<div><div class="pv-meta-lbl">FST #</div><div class="pv-meta-val">${d.vendor.insurance_policy}${d.vendor.insurance_expiry?' · Ins. Exp. '+fmtD(d.vendor.insurance_expiry):''}</div></div>`:''}
     ${d.vendor.payment_terms?`<div><div class="pv-meta-lbl">Payment Terms</div><div class="pv-meta-val">${d.vendor.payment_terms}</div></div>`:''}
   </div>
 
