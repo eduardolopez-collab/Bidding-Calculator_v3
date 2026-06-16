@@ -57,10 +57,20 @@ a{color:var(--fg)}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:10px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.05em}
 .field input,.field select,.field textarea{
-  width:100%;border:1px solid var(--bm);border-radius:6px;padding:7px 10px;
+  width:100%;border:1px solid var(--bm);border-radius:8px;padding:8px 12px;
   font-size:13px;font-family:inherit;background:var(--bi);color:var(--tp);
   transition:border-color .15s;-webkit-appearance:none;appearance:none}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--fg);box-shadow:0 0 0 2px var(--fg-dim)}
+.field select{padding-right:32px;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238B8B8B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:12px 8px;cursor:pointer}
+[data-theme="light"] .field select{background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23757575' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E")}
+.field select:has(option[value=""]:checked){color:var(--tm)}
+.field select.placeholder-active{color:var(--tm)}
+.field input{background-image:none;padding-right:12px}
+.field input[type=number]{-moz-appearance:textfield}
+.field input[type=number]::-webkit-inner-spin-button,.field input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+/* field-level spin-wrap: full width, inherits field sizing */
+.field .spin-wrap{width:100%}
+.field .spin-wrap input[type=number]{width:100%;height:38px;font-size:13px;padding:8px 36px 8px 12px;border-radius:8px}
 .field textarea{resize:vertical;min-height:60px}
 .field .hint{font-size:10px;color:var(--tm);margin-top:2px}
 .required-star{color:var(--er-t)}
@@ -74,7 +84,9 @@ a{color:var(--fg)}
   border:1px solid var(--bm);border-radius:6px;padding:5px 8px;
   font-size:12px;font-family:inherit;background:var(--bi);color:var(--tp);
   -webkit-appearance:none;appearance:none;height:30px}
-.vrow select:focus,.vrow input:focus{outline:none;border-color:var(--fg)}
+.vrow select{padding-right:24px;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238B8B8B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;background-size:10px 7px;cursor:pointer}
+[data-theme="light"] .vrow select{background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23757575' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E")}
+.vrow select:focus,.vrow input:focus{outline:none;border-color:var(--fg);box-shadow:0 0 0 2px var(--fg-dim)}
 .vrow-trade{flex:1;min-width:150px}
 .vrow-item{flex:1;min-width:170px}
 
@@ -349,12 +361,12 @@ a{color:var(--fg)}
         <div class="travel-grid">
           <div class="field">
             <label>Daily Travel Rate ($) <span class="required-star">*</span></label>
-            <input type="number" id="travel_daily" autocomplete="off" min="0" step="0.01" placeholder="e.g. 120.00" oninput="recalcTravel()">
+            <div class="spin-wrap"><input type="number" id="travel_daily" autocomplete="off" min="0" step="0.01" placeholder="e.g. 120.00" oninput="recalcTravel()"><div class="spin-btns"><button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('travel_daily',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('travel_daily',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
             <span class="hint">Cost per travel day</span>
           </div>
           <div class="field">
             <label>Estimated Duration (days) <span class="required-star">*</span></label>
-            <input type="number" id="travel_days" autocomplete="off" min="1" step="1" value="1" oninput="recalcTravel()">
+            <div class="spin-wrap"><input type="number" id="travel_days" autocomplete="off" min="1" step="1" value="1" oninput="recalcTravel()"><div class="spin-btns"><button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('travel_days',1,1,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('travel_days',-1,1,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
             <span class="hint">Number of travel days</span>
           </div>
           <div class="field">
@@ -380,7 +392,7 @@ a{color:var(--fg)}
       <div class="field-row cols2">
         <div class="field">
           <label>Tax Amount ($)</label>
-          <input type="number" id="tax_amount" autocomplete="off" min="0" step="0.01" placeholder="e.g. 45.00" oninput="recalc()">
+          <div class="spin-wrap"><input type="number" id="tax_amount" autocomplete="off" min="0" step="0.01" placeholder="e.g. 45.00" oninput="recalc()"><div class="spin-btns"><button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('tax_amount',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('tax_amount',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
           <span class="hint">Enter tax dollar amount — rate auto-calculates</span>
         </div>
         <div class="field">
@@ -1011,7 +1023,8 @@ function spinStep(id, delta, min, step) {
   const el = document.getElementById(id);
   if (!el) return;
   el.value = Math.max(min, parseFloat((parseFloat(el.value)||0) + delta*step).toFixed(4));
-  recalc();
+  if (id === 'travel_daily' || id === 'travel_days') recalcTravel();
+  else recalc();
 }
 
 function addLaborRow() {
