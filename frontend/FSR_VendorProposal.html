@@ -79,15 +79,16 @@ a{color:var(--fg)}
 .vrow-item{flex:1;min-width:170px}
 
 /* ── Spin wrap ────────────────────────────────────────────────── */
-.spin-wrap{display:flex;align-items:stretch;border:1px solid var(--bm);border-radius:6px;overflow:hidden;height:30px}
-.spin-wrap input{border:none;border-radius:0;padding:4px 6px;font-size:12px;text-align:center;width:56px;-moz-appearance:textfield;background:var(--bi);color:var(--tp)}
-.spin-wrap input::-webkit-inner-spin-button,.spin-wrap input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-.spin-wrap input:focus{outline:none;background:var(--bh)}
-.spin-btns{display:flex;flex-direction:column;width:20px;flex-shrink:0}
-.spin-btn{flex:1;background:var(--br);border:none;border-left:1px solid var(--bm);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:background .1s;color:var(--tm)}
-.spin-btn:first-child{border-bottom:1px solid var(--bm)}
+.spin-wrap{position:relative;display:flex;align-items:stretch}
+.spin-wrap input[type=number]{padding-left:6px;padding-right:28px;flex:1;min-width:0;width:64px;height:30px;font-size:12px;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;-moz-appearance:textfield;-webkit-appearance:none;appearance:none}
+.spin-wrap input[type=number]::-webkit-inner-spin-button,.spin-wrap input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.spin-wrap input[type=number]:focus{outline:none;border-color:var(--fg);box-shadow:0 0 0 2px var(--fg-dim)}
+.spin-btns{position:absolute;right:1px;top:1px;bottom:1px;width:26px;display:flex;flex-direction:column;border-left:1px solid var(--bm);border-radius:0 5px 5px 0;overflow:hidden}
+.spin-btn{flex:1;background:var(--bi);border:none;border-bottom:1px solid var(--bm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tm);padding:0;transition:background .12s}
+.spin-btn:last-child{border-bottom:none}
 .spin-btn:hover{background:var(--bh);color:var(--tp)}
-.spin-btn svg{width:7px;height:5px}
+.spin-btn:active{background:var(--bst,var(--bh));color:var(--tp)}
+.spin-btn svg{width:8px;height:5px;display:block}
 .vrow-unit{width:68px;background:var(--br)!important;color:var(--tm)!important}
 .vrow-total{font-size:12px;font-weight:700;color:var(--tp);min-width:72px;text-align:right;white-space:nowrap}
 .vrow-notes{flex:1;min-width:90px}
