@@ -1657,10 +1657,11 @@ function buildPrintView() {
       const scrollX = window.scrollX || window.pageXOffset;
       const scrollY = window.scrollY || window.pageYOffset;
       const popW = Math.min(Math.max(rect.width, 240), 280);
+      // Right-align to wrap's right edge; fall back to left-align if that clips left edge
+      let left = rect.right + scrollX - popW;
+      if (left < 8 + scrollX) left = rect.left + scrollX;
+      if (left + popW > scrollX + window.innerWidth - 8) left = scrollX + window.innerWidth - popW - 8;
       let top = rect.bottom + scrollY + 4;
-      let left = rect.left + scrollX;
-      if (rect.left + popW > window.innerWidth - 8) left = rect.right + scrollX - popW;
-      if (left < 8 + scrollX) left = 8 + scrollX;
       if (rect.bottom + 340 > window.innerHeight - 8) top = rect.top + scrollY - 340 - 4;
       pop.style.top = top+'px'; pop.style.left = left+'px'; pop.style.width = popW+'px';
     }
