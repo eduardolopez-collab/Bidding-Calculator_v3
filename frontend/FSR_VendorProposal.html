@@ -162,13 +162,43 @@ a{color:var(--fg)}
 .err-banner.show{display:block}
 
 /* ── Print ───────────────────────────────────────────────────── */
+/* ── Print view (document layout) ──────────────────────────────── */
+#printView{display:none}
 @media print{
-  body{background:#fff;color:#000}
-  [data-theme="dark"]{--bp:#fff;--bs:#fff;--br:#f5f5f5;--bi:#fff;--tp:#000;--ts:#333;--tm:#666;--bd:rgba(0,0,0,.12);--bm:rgba(0,0,0,.2)}
-  .topbar{background:#fff;border-color:#ddd}
-  .th-tog,.actions,.add-row-btn,.del-btn,.mat-search-wrap,.mat-count,.no-print{display:none!important}
-  .section{border-radius:0;margin-bottom:10px;page-break-inside:avoid}
-  .page{padding:0;max-width:none}
+  body{background:#fff;color:#000;margin:0}
+  .page,#_stateStore{display:none!important}
+  #printView{display:block;font-family:'Roboto',Arial,sans-serif;font-size:10pt;color:#111;padding:18mm 18mm 14mm;max-width:none;line-height:1.5}
+  /* header */
+  .pv-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2.5pt solid #97D700;padding-bottom:8pt;margin-bottom:14pt}
+  .pv-logo{font-size:22pt;font-weight:800;color:#97D700;letter-spacing:-1px;line-height:1}
+  .pv-logo span{color:#111}
+  .pv-header-right{text-align:right;font-size:8.5pt;color:#444;line-height:1.6}
+  .pv-header-right strong{font-size:10pt;color:#111;display:block}
+  /* meta grid */
+  .pv-meta{display:grid;grid-template-columns:1fr 1fr;gap:3pt 24pt;margin-bottom:14pt;font-size:9pt}
+  .pv-meta-row{display:contents}
+  .pv-meta-lbl{color:#666;font-size:8pt;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .pv-meta-val{color:#111}
+  /* section */
+  .pv-section{margin-bottom:14pt;page-break-inside:avoid}
+  .pv-section-title{font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#555;border-bottom:1pt solid #ddd;padding-bottom:3pt;margin-bottom:7pt}
+  /* table */
+  .pv-table{width:100%;border-collapse:collapse;font-size:9pt}
+  .pv-table th{text-align:left;font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#777;padding:3pt 6pt;border-bottom:1pt solid #ccc}
+  .pv-table th.r,.pv-table td.r{text-align:right}
+  .pv-table td{padding:4pt 6pt;border-bottom:.5pt solid #eee;color:#111}
+  .pv-table tr:last-child td{border-bottom:none}
+  /* totals */
+  .pv-totals{width:240pt;margin-left:auto;margin-top:4pt;font-size:9.5pt}
+  .pv-totals-row{display:flex;justify-content:space-between;padding:3pt 0;border-bottom:.5pt solid #eee}
+  .pv-totals-row.grand{font-weight:700;font-size:11pt;border-top:1.5pt solid #111;border-bottom:none;padding-top:5pt;margin-top:2pt}
+  /* notes / sig */
+  .pv-notes{font-size:9pt;color:#333;white-space:pre-wrap;background:#fafafa;border:1pt solid #e0e0e0;border-radius:3pt;padding:7pt 9pt}
+  .pv-sig-block{margin-top:18pt;padding-top:10pt;border-top:1pt solid #ccc;display:flex;gap:32pt}
+  .pv-sig-item{flex:1}
+  .pv-sig-lbl{font-size:7.5pt;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2pt}
+  .pv-sig-val{font-size:10pt;color:#111;font-weight:500;border-bottom:1pt solid #999;padding-bottom:2pt;min-height:16pt}
+  .pv-footer{margin-top:18pt;padding-top:6pt;border-top:1pt solid #ddd;font-size:7.5pt;color:#999;display:flex;justify-content:space-between}
 }
 
 /* ── Mobile ──────────────────────────────────────────────────── */
@@ -403,7 +433,7 @@ a{color:var(--fg)}
   <!-- Actions -->
   <div class="actions no-print">
     <button type="button" class="btn btn-primary" onclick="submitForm()">&#8595; Download JSON + Print PDF</button>
-    <button type="button" class="btn btn-secondary" onclick="window.print()">&#128438; Print / Save PDF only</button>
+    <button type="button" class="btn btn-secondary" onclick="buildPrintView();window.print()">&#128438; Print / Save PDF only</button>
     <button type="button" class="btn btn-outline" onclick="clearForm()">&#10005; Clear Form</button>
   </div>
   <p style="margin-top:14px;font-size:11px;color:var(--tm);text-align:center" class="no-print">
@@ -411,6 +441,9 @@ a{color:var(--fg)}
   </p>
 
 </div><!-- /page -->
+
+<!-- Print document view (populated by buildPrintView() before window.print()) -->
+<div id="printView"></div>
 
 <!-- Hidden state store: browser preserves textarea value on reload for file:// -->
 <textarea id="_stateStore" autocomplete="off" style="position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;pointer-events:none;tab-index:-1"></textarea>
@@ -1279,6 +1312,7 @@ function submitForm() {
   a.href=url; a.download=`FSR_Proposal_${company}_${cat}.json`;
   document.body.appendChild(a); a.click();
   document.body.removeChild(a); URL.revokeObjectURL(url);
+  buildPrintView();
   setTimeout(()=>window.print(),400);
 }
 
@@ -1465,6 +1499,121 @@ function clearForm() {
   recalc();
   _storeRemove('vp_state');
   window._vpReady = true;
+}
+
+/* ── Print document view ────────────────────────────────────────── */
+function buildPrintView() {
+  const d = buildSubmission();
+  const fmtD = iso => { if(!iso) return '—'; const [y,m,day]=iso.split('-'); return `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m-1]} ${+day}, ${y}`; };
+  const fmtC = n => '$'+(+n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const today = new Date();
+  const todayStr = fmtD(today.toISOString().slice(0,10));
+
+  // Labor rows
+  const laborRows = d.labor.filter(r=>r.row_total>0||r.trade_unlisted||r.trade).map(r=>{
+    const trade = r.trade==='Other - Not Listed' ? (r.trade_unlisted||'Other') : r.trade;
+    const detail = `${r.workers} worker${r.workers!==1?'s':''} × ${r.hours} hr${r.hours!==1?'s':''} @ ${fmtC(r.rate_per_hr)}/hr`;
+    return `<tr><td>${trade||'—'}${r.notes?`<br><span style="color:#888;font-size:8pt">${r.notes}</span>`:''}</td><td>${detail}</td><td class="r">${fmtC(r.row_total)}</td></tr>`;
+  }).join('');
+
+  // Material rows
+  const matRows = d.materials.map(r=>{
+    const item = r.material_id==='UNLISTED' ? (r.item_unlisted||r.item||'Unlisted') : r.item;
+    return `<tr><td>${item}</td><td>${r.unit}</td><td class="r">${r.qty}</td><td class="r">${fmtC(r.unit_cost)}</td><td class="r">${fmtC(r.row_total)}</td></tr>`;
+  }).join('');
+
+  // Travel row
+  const travelSection = d.travel.included ? `
+  <div class="pv-section">
+    <div class="pv-section-title">Travel &amp; Mobilization</div>
+    <table class="pv-table"><thead><tr><th>Daily Rate</th><th>Days</th><th>Notes</th><th class="r">Total</th></tr></thead>
+    <tbody><tr><td>${fmtC(d.travel.daily_rate)}</td><td>${d.travel.days}</td><td>${d.travel.notes||'—'}</td><td class="r">${fmtC(d.travel.amount)}</td></tr></tbody></table>
+  </div>` : '';
+
+  // Totals
+  const taxRow = d.tax.amount>0 ? `<div class="pv-totals-row"><span>Tax (${d.tax.rate.toFixed(2)}%)</span><span>${fmtC(d.tax.amount)}</span></div>` : '';
+  const travelTotRow = d.travel.included && d.travel.amount>0 ? `<div class="pv-totals-row"><span>Travel / Mobilization</span><span>${fmtC(d.travel.amount)}</span></div>` : '';
+
+  // Notes
+  const notesSection = d.additional.notes ? `
+  <div class="pv-section">
+    <div class="pv-section-title">Notes, Assumptions &amp; Exclusions</div>
+    <div class="pv-notes">${d.additional.notes.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>
+  </div>` : '';
+
+  document.getElementById('printView').innerHTML = `
+  <div class="pv-header">
+    <div>
+      <div class="pv-logo">Flix<span>Bus</span></div>
+      <div style="font-size:8pt;color:#555;margin-top:3pt">Facility Services Request</div>
+    </div>
+    <div class="pv-header-right">
+      <strong>Vendor Proposal</strong>
+      <span>Prepared: ${todayStr}</span><br>
+      <span>Quote Valid Until: ${fmtD(d.vendor.quote_valid_until)}</span>
+    </div>
+  </div>
+
+  <div class="pv-meta">
+    <div><div class="pv-meta-lbl">Company</div><div class="pv-meta-val">${d.vendor.company||'—'}</div></div>
+    <div><div class="pv-meta-lbl">Primary Contact</div><div class="pv-meta-val">${d.vendor.contact||'—'}</div></div>
+    <div><div class="pv-meta-lbl">Phone</div><div class="pv-meta-val">${d.vendor.phone||'—'}</div></div>
+    <div><div class="pv-meta-lbl">Email</div><div class="pv-meta-val">${d.vendor.email||'—'}</div></div>
+    ${d.vendor.license?`<div><div class="pv-meta-lbl">License #</div><div class="pv-meta-val">${d.vendor.license}</div></div>`:''}
+    ${d.vendor.insurance_provider?`<div><div class="pv-meta-lbl">Insurance</div><div class="pv-meta-val">${d.vendor.insurance_provider}${d.vendor.insurance_policy?' · '+d.vendor.insurance_policy:''}${d.vendor.insurance_expiry?' (exp. '+fmtD(d.vendor.insurance_expiry)+')':''}</div></div>`:''}
+    ${d.vendor.payment_terms?`<div><div class="pv-meta-lbl">Payment Terms</div><div class="pv-meta-val">${d.vendor.payment_terms}</div></div>`:''}
+  </div>
+
+  <div class="pv-section">
+    <div class="pv-section-title">Scope of Work</div>
+    <div class="pv-meta">
+      <div><div class="pv-meta-lbl">Service Category</div><div class="pv-meta-val">${d.scope.category||'—'}</div></div>
+      <div><div class="pv-meta-lbl">Service Subtype</div><div class="pv-meta-val">${d.scope.subtype||d.scope.subtype_unlisted||'—'}</div></div>
+      <div><div class="pv-meta-lbl">Facility / Location</div><div class="pv-meta-val">${d.scope.location||'—'}</div></div>
+      ${d.scope.requested_start?`<div><div class="pv-meta-lbl">Requested Start Date</div><div class="pv-meta-val">${fmtD(d.scope.requested_start)}</div></div>`:''}
+    </div>
+    ${d.scope.description?`<div style="font-size:9pt;color:#333;margin-top:4pt">${d.scope.description.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>`:''}
+  </div>
+
+  <div class="pv-section">
+    <div class="pv-section-title">Labor</div>
+    ${laborRows ? `<table class="pv-table"><thead><tr><th>Trade / Role</th><th>Detail</th><th class="r">Amount</th></tr></thead><tbody>${laborRows}</tbody></table>` : '<div style="color:#888;font-size:9pt">No labor rows entered.</div>'}
+  </div>
+
+  <div class="pv-section">
+    <div class="pv-section-title">Materials</div>
+    ${matRows ? `<table class="pv-table"><thead><tr><th>Item</th><th>Unit</th><th class="r">Qty</th><th class="r">Unit Cost</th><th class="r">Total</th></tr></thead><tbody>${matRows}</tbody></table>` : '<div style="color:#888;font-size:9pt">No materials entered.</div>'}
+  </div>
+
+  ${travelSection}
+  ${notesSection}
+
+  <div class="pv-section">
+    <div class="pv-section-title">Bid Summary</div>
+    <div class="pv-totals">
+      <div class="pv-totals-row"><span>Labor</span><span>${fmtC(d.totals.labor)}</span></div>
+      <div class="pv-totals-row"><span>Materials</span><span>${fmtC(d.totals.materials)}</span></div>
+      ${travelTotRow}
+      ${taxRow}
+      <div class="pv-totals-row grand"><span>Total Bid</span><span>${fmtC(d.totals.grand_total)}</span></div>
+    </div>
+  </div>
+
+  <div class="pv-sig-block">
+    <div class="pv-sig-item">
+      <div class="pv-sig-lbl">Vendor Signature / Acknowledgement</div>
+      <div class="pv-sig-val">${(d.vendor.signature||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>
+    </div>
+    <div class="pv-sig-item">
+      <div class="pv-sig-lbl">Date Signed</div>
+      <div class="pv-sig-val">${todayStr}</div>
+    </div>
+  </div>
+
+  <div class="pv-footer">
+    <span>FlixBus Facility Services Request — Vendor Proposal</span>
+    <span>This document is confidential and intended for FlixBus internal use only.</span>
+  </div>`;
 }
 
 /* ── Date pickers ───────────────────────────────────────────────── */
