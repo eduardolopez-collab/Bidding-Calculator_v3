@@ -150,7 +150,7 @@ a{color:var(--fg)}
 .dp-input{width:100%;background:var(--bi);color:var(--tp);border:1px solid var(--bm);border-radius:6px;padding:7px 36px 7px 10px;font-size:13px;font-family:inherit;cursor:pointer;transition:border-color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;user-select:none}
 .dp-input:focus,.dp-input.open{outline:none;border-color:var(--fg);box-shadow:0 0 0 2px var(--fg-dim)}
 .dp-icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--tm);pointer-events:none;display:flex;align-items:center}
-.dp-pop{display:none;position:absolute;z-index:9999;background:var(--bs);border:1px solid var(--bm);border-radius:12px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,.45);width:min(280px,calc(100vw - 16px));touch-action:manipulation}
+.dp-pop{display:none;position:fixed;z-index:9999;background:var(--bs);border:1px solid var(--bm);border-radius:12px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,.45);width:min(280px,calc(100vw - 16px));touch-action:manipulation}
 .dp-pop.open{display:block}
 .dp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:4px}
 .dp-nav{background:none;border:1px solid var(--bm);color:var(--tp);border-radius:6px;width:36px;height:36px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -1654,15 +1654,12 @@ function buildPrintView() {
     function fmtDisp(d) { return MONTHS[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear(); }
     function positionPop() {
       const rect = wrap.getBoundingClientRect();
-      const scrollX = window.scrollX || window.pageXOffset;
-      const scrollY = window.scrollY || window.pageYOffset;
       const popW = Math.min(Math.max(rect.width, 240), 280);
-      // Right-align to wrap's right edge; fall back to left-align if that clips left edge
-      let left = rect.right + scrollX - popW;
-      if (left < 8 + scrollX) left = rect.left + scrollX;
-      if (left + popW > scrollX + window.innerWidth - 8) left = scrollX + window.innerWidth - popW - 8;
-      let top = rect.bottom + scrollY + 4;
-      if (rect.bottom + 340 > window.innerHeight - 8) top = rect.top + scrollY - 340 - 4;
+      let left = rect.right - popW;
+      if (left < 8) left = rect.left;
+      if (left + popW > window.innerWidth - 8) left = window.innerWidth - popW - 8;
+      let top = rect.bottom + 4;
+      if (top + 340 > window.innerHeight - 8) top = rect.top - 340 - 4;
       pop.style.top = top+'px'; pop.style.left = left+'px'; pop.style.width = popW+'px';
     }
     function render() {
