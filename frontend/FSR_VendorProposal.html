@@ -859,25 +859,47 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
 
 /* -- Material filtering -------------------------------------------- */
-function getFilteredMats() {
-  const cat = (document.getElementById('svc_cat').value||'').toLowerCase();
-  const catWords = cat.split(/\W+/).filter(w=>w.length>2);
+const CAT_MAT_TYPES = {
+  'Access Points':         ['Access Points', 'Electrical', 'Other'],
+  'Ceiling':               ['Ceiling', 'Wall Repair', 'Other'],
+  'Electrical':            ['Electrical', 'Lighting', 'Other'],
+  'Exterior Painting':     ['Exterior Painting', 'Wall Repair', 'Other'],
+  'Fire Systems':          ['Fire Systems', 'Electrical', 'Other'],
+  'Graffiti Removal':      ['Exterior Painting', 'Interior Painting', 'Janitorial', 'Other'],
+  'HVAC':                  ['HVAC', 'Electrical', 'Other'],
+  'Interior Flooring':     ['Interior Flooring', 'Other'],
+  'Interior Painting':     ['Interior Painting', 'Wall Repair', 'Other'],
+  'Janitorial':            ['Janitorial', 'Other'],
+  'Landscaping':           ['Landscaping', 'Other'],
+  'Lighting':              ['Lighting', 'Electrical', 'Other'],
+  'Lobby Seating':         ['Lobby Seating', 'Other'],
+  'Other':                 null,
+  'Pavement':              ['Pavement', 'Other'],
+  'Pest Removal':          ['Pest Removal', 'Other'],
+  'Plumbing':              ['Plumbing', 'Restroom Renovation', 'Other'],
+  'Pressure Washing':      ['Janitorial', 'Other'],
+  'Restroom Renovation':   ['Restroom Renovation', 'Plumbing', 'Other'],
+  'Roof':                  ['Roof', 'Other'],
+  'Ticket Counter Refresh':['Ticket Counter Refresh', 'Interior Flooring', 'Interior Painting', 'Wall Repair', 'Other'],
+  'Wall Repair':           ['Wall Repair', 'Interior Painting', 'Exterior Painting', 'Other'],
+};
 
-  return MATERIALS.map(m => {
-    const mtype = m.type || '';
-    const key = (m.item+' '+mtype+' '+m.unit).toLowerCase();
-    let score = 0;
-    if (mtype.toLowerCase() === cat) score += 10;
-    catWords.forEach(w => { if(key.includes(w)) score += 2; });
-    return {m, score};
-  })
-  .filter(({m, score}) => {
-    if (m.id === 'M-OTHER') return true;
-    if (!cat) return true;
-    return score > 0;
-  })
-  .sort((a,b) => b.score - a.score)
-  .map(({m}) => m);
+function getFilteredMats() {
+  const cat = document.getElementById('svc_cat').value || '';
+  if (!cat) return MATERIALS.slice();
+  const allowed = CAT_MAT_TYPES[cat] || null;
+  if (!allowed) return MATERIALS.slice(); // "Other" → show all
+  const primary = allowed[0];
+  return MATERIALS
+    .filter(m => m.id === 'M-OTHER' || allowed.includes(m.type || ''))
+    .sort((a, b) => {
+      if (a.id === 'M-OTHER') return 1;
+      if (b.id === 'M-OTHER') return -1;
+      const ap = a.type === primary, bp = b.type === primary;
+      if (ap && !bp) return -1;
+      if (!ap && bp) return 1;
+      return 0;
+    });
 }
 
 function filterMats() {
