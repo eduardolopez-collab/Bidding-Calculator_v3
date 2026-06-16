@@ -1057,7 +1057,6 @@ function addLaborRow() {
       </div>
     </div>
     <span class="vrow-total" id="ltot_${i}">-</span>
-    <input type="text" autocomplete="off" id="ln_${i}" class="vrow-notes" placeholder="Notes" style="border:1px solid var(--bm);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;background:var(--bi);color:var(--tp);height:30px">
     <button type="button" class="del-btn" onclick="delRow('lr_${i}');recalc()" title="Remove">&#x2715;</button>`;
   container.appendChild(div);
 }
@@ -1230,13 +1229,12 @@ function buildSubmission() {
     const workers=parseFloat(document.getElementById('lw_'+id)?.value)||0;
     const hours=parseFloat(document.getElementById('lh_'+id)?.value)||0;
     const rate=parseFloat(document.getElementById('lr2_'+id)?.value)||0;
-    const notes=document.getElementById('ln_'+id)?.value||'';
     if(!trade) return;
     labor.push({
       trade:trade==='Other - Not Listed'?(tradeOther||'Other'):trade,
       trade_unlisted:trade==='Other - Not Listed'?tradeOther:'',
       workers,hours,rate_per_hr:rate,
-      row_total:parseFloat((workers*hours*rate).toFixed(2)),notes
+      row_total:parseFloat((workers*hours*rate).toFixed(2))
     });
   });
   const materials=[];
@@ -1340,8 +1338,7 @@ function saveState() {
         tradeOther: document.getElementById('lt_other_text_'+id)?.value||'',
         workers: document.getElementById('lw_'+id)?.value||'1',
         hours:   document.getElementById('lh_'+id)?.value||'0',
-        rate:    document.getElementById('lr2_'+id)?.value||'0',
-        notes:   document.getElementById('ln_'+id)?.value||''
+        rate:    document.getElementById('lr2_'+id)?.value||'0'
       });
     });
     const mats = [];
@@ -1446,7 +1443,6 @@ function restoreState() {
     set('lw_'+i, row.workers || '1');
     set('lh_'+i, row.hours   || '0');
     set('lr2_'+i, row.rate   || '0');
-    set('ln_'+i, row.notes   || '');
     if (row.trade) onTradeChange(i);
   });
 
@@ -1521,7 +1517,7 @@ function buildPrintView() {
   const laborRows = d.labor.filter(r=>r.row_total>0||r.trade_unlisted||r.trade).map(r=>{
     const trade = r.trade==='Other - Not Listed' ? (r.trade_unlisted||'Other') : r.trade;
     const detail = `${r.workers} worker${r.workers!==1?'s':''} × ${r.hours} hr${r.hours!==1?'s':''} @ ${fmtC(r.rate_per_hr)}/hr`;
-    return `<tr><td>${trade||'—'}${r.notes?`<br><span style="color:#888;font-size:8pt">${r.notes}</span>`:''}</td><td>${detail}</td><td class="r">${fmtC(r.row_total)}</td></tr>`;
+    return `<tr><td>${trade||'—'}</td><td>${detail}</td><td class="r">${fmtC(r.row_total)}</td></tr>`;
   }).join('');
 
   // Material rows
