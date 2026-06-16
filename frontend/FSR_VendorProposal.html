@@ -1026,25 +1026,34 @@ function addLaborRow() {
         <input type="text" id="lt_other_text_${i}" autocomplete="off" placeholder="Describe trade / role" style="width:100%;border:1px solid var(--bm);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;background:var(--bi);color:var(--tp)">
       </div>
     </div>
-    <div class="spin-wrap">
-      <input type="number" autocomplete="off" id="lw_${i}" min="1" step="1" value="1" oninput="recalc()">
-      <div class="spin-btns">
-        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lw_${i}',1,1,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lw_${i}',-1,1,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div style="display:flex;align-items:center;gap:4px">
+      <span class="vrow-lbl">Wkrs</span>
+      <div class="spin-wrap">
+        <input type="number" autocomplete="off" id="lw_${i}" min="1" step="1" value="1" oninput="recalc()">
+        <div class="spin-btns">
+          <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lw_${i}',1,1,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lw_${i}',-1,1,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
       </div>
     </div>
-    <div class="spin-wrap">
-      <input type="number" autocomplete="off" id="lh_${i}" min="0" step="0.25" value="0" oninput="recalc()">
-      <div class="spin-btns">
-        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lh_${i}',1,0,0.25)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lh_${i}',-1,0,0.25)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div style="display:flex;align-items:center;gap:4px">
+      <span class="vrow-lbl">Hrs</span>
+      <div class="spin-wrap">
+        <input type="number" autocomplete="off" id="lh_${i}" min="0" step="0.25" value="0" oninput="recalc()">
+        <div class="spin-btns">
+          <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lh_${i}',1,0,0.25)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lh_${i}',-1,0,0.25)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
       </div>
     </div>
-    <div class="spin-wrap">
-      <input type="number" autocomplete="off" id="lr2_${i}" min="0" step="1" value="0" oninput="recalc()">
-      <div class="spin-btns">
-        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lr2_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lr2_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div style="display:flex;align-items:center;gap:4px">
+      <span class="vrow-lbl">$/Hr</span>
+      <div class="spin-wrap">
+        <input type="number" autocomplete="off" id="lr2_${i}" min="0" step="1" value="0" oninput="recalc()">
+        <div class="spin-btns">
+          <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lr2_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('lr2_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
       </div>
     </div>
     <span class="vrow-total" id="ltot_${i}">-</span>
@@ -1079,18 +1088,24 @@ function addMatRow() {
       <span class="vrow-lbl" style="white-space:nowrap">Unit</span>
       <input type="text" autocomplete="off" id="mu_${i}" class="vrow-unit" placeholder="—" readonly style="border:1px solid var(--bm);border-radius:6px;padding:5px 8px;font-size:12px;height:30px;background:var(--br);color:var(--tm);width:60px">
     </div>
-    <div class="spin-wrap">
-      <input type="number" autocomplete="off" id="mq_${i}" min="0" step="1" value="1" oninput="recalc()">
-      <div class="spin-btns">
-        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mq_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mq_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div style="display:flex;align-items:center;gap:4px">
+      <span class="vrow-lbl">Qty</span>
+      <div class="spin-wrap">
+        <input type="number" autocomplete="off" id="mq_${i}" min="0" step="1" value="1" oninput="recalc()">
+        <div class="spin-btns">
+          <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mq_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mq_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
       </div>
     </div>
-    <div class="spin-wrap">
-      <input type="number" autocomplete="off" id="mc_${i}" min="0" step="1" value="0" oninput="recalc()">
-      <div class="spin-btns">
-        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mc_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mc_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div style="display:flex;align-items:center;gap:4px">
+      <span class="vrow-lbl">$/Unit</span>
+      <div class="spin-wrap">
+        <input type="number" autocomplete="off" id="mc_${i}" min="0" step="1" value="0" oninput="recalc()">
+        <div class="spin-btns">
+          <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mc_${i}',1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 4L4 1L7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="spin-btn" onmousedown="event.preventDefault()" onclick="spinStep('mc_${i}',-1,0,1)"><svg viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
       </div>
     </div>
     <span class="vrow-total" id="mtot_${i}">-</span>
