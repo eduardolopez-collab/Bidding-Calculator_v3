@@ -188,7 +188,7 @@ a{color:var(--fg)}
   .pv-header-right{text-align:right;font-size:7pt;color:#444;line-height:1.6}
   .pv-header-right strong{font-size:8pt;color:#111;display:block}
   /* meta grid */
-  .pv-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3pt 16pt;margin-bottom:14pt;font-size:8pt}
+  .pv-meta{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:3pt 16pt;margin-bottom:14pt;font-size:8pt}
   .pv-meta-row{display:contents}
   .pv-meta-lbl{color:#666;font-size:6.5pt;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
   .pv-meta-val{color:#111}
@@ -1575,11 +1575,11 @@ function buildPrintView() {
   <div class="pv-meta">
     <div><div class="pv-meta-lbl">Company</div><div class="pv-meta-val">${d.vendor.company||'—'}</div></div>
     <div><div class="pv-meta-lbl">Primary Contact</div><div class="pv-meta-val">${d.vendor.contact||'—'}</div></div>
+    ${d.vendor.license?`<div><div class="pv-meta-lbl">Proposal #</div><div class="pv-meta-val">${d.vendor.license}</div></div>`:'<div></div>'}
+    ${d.vendor.insurance_policy?`<div><div class="pv-meta-lbl">FST #</div><div class="pv-meta-val">${d.vendor.insurance_policy}${d.vendor.insurance_expiry?' · Ins. Exp. '+fmtD(d.vendor.insurance_expiry):''}</div></div>`:'<div></div>'}
     <div><div class="pv-meta-lbl">Phone</div><div class="pv-meta-val">${d.vendor.phone||'—'}</div></div>
     <div><div class="pv-meta-lbl">Email</div><div class="pv-meta-val">${d.vendor.email||'—'}</div></div>
-    ${d.vendor.license?`<div><div class="pv-meta-lbl">Proposal #</div><div class="pv-meta-val">${d.vendor.license}</div></div>`:''}
     ${d.vendor.insurance_provider?`<div><div class="pv-meta-lbl">Work Order #</div><div class="pv-meta-val">${d.vendor.insurance_provider}</div></div>`:''}
-    ${d.vendor.insurance_policy?`<div><div class="pv-meta-lbl">FST #</div><div class="pv-meta-val">${d.vendor.insurance_policy}${d.vendor.insurance_expiry?' · Ins. Exp. '+fmtD(d.vendor.insurance_expiry):''}</div></div>`:''}
     ${d.vendor.payment_terms?`<div><div class="pv-meta-lbl">Payment Terms</div><div class="pv-meta-val">${d.vendor.payment_terms}</div></div>`:''}
   </div>
 
